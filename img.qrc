@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/">
+        <file>interface_icons/bin (1).png</file>
+        <file>interface_icons/bin.png</file>
+        <file>interface_icons/football-pitch (1).png</file>
+        <file>interface_icons/football-pitch.png</file>
+        <file>interface_icons/group (1).png</file>
+        <file>interface_icons/group.png</file>
+        <file>interface_icons/home (1).png</file>
+        <file>interface_icons/home.png</file>
+        <file>interface_icons/referee (1).png</file>
+        <file>interface_icons/referee.png</file>
+        <file>interface_icons/soccer-player (1).png</file>
+        <file>interface_icons/soccer-player.png</file>
+        <file>interface_icons/stadium (1).png</file>
+        <file>interface_icons/stadium.png</file>
+        <file>interface_icons/trophy (1).png</file>
+        <file>interface_icons/trophy.png</file>
+        <file>interface_icons/pdf-file.png</file>
+        <file>interface_icons/logo.jpg</file>
+        <file>interface_icons/logo2.jpg</file>
+        <file>interface_icons/logout (1).png</file>
+        <file>interface_icons/logout.png</file>
+        <file>interface_icons/menu.png</file>
+        <file>interface_icons/bg.jpg</file>
+        <file>interface_icons/bg2.jpg</file>
+        <file>interface_icons/background.jpeg</file>
+        <file>interface_icons/check.png</file>
+        <file>interface_icons/a.png</file>
+        <file>interface_icons/ball.png</file>
+        <file>interface_icons/competition.png</file>
+        <file>interface_icons/p.png</file>
+        <file>interface_icons/q.png</file>
+        <file>interface_icons/ss.png</file>
+        <file>interface_icons/t.png</file>
+        <file>interface_icons/log.png</file>
+        <file>interface_icons/koura.png</file>
+        <file>interface_icons/login.png</file>
+        <file>interface_icons/faceid.png</file>
+        <file>interface_icons/micro1.png</file>
+    </qresource>
+</RCC>
