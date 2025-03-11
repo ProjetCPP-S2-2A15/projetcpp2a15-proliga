@@ -29,5 +29,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    int selected_row=-1;
 };
 #endif // MAINWINDOW_H

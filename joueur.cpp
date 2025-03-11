@@ -108,3 +108,42 @@ void Joueur::deleteJoueur(const QString &nom) {
         qDebug() << "Joueur deleted successfully!";
     }
 }
+
+bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate &date, const QString &position, const QString &paysOrigine) {
+    // Establish connection
+    Connection conn;
+
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return false;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return false;
+    }
+
+    // Prepare the query
+    QSqlQuery query(db);
+    query.prepare("UPDATE joueurs SET Prenom = :prenom, Date_de_naissance = TO_DATE(:date, 'YYYY-MM-DD'), Position = :position, Pays_origine = :paysOrigine WHERE Nom = :nom");
+
+    // Bind values
+    query.bindValue(":nom", nom);
+    query.bindValue(":prenom", prenom);
+    query.bindValue(":date", date.toString("yyyy-MM-dd"));  // Format the date as 'YYYY-MM-DD'
+    query.bindValue(":position", position);
+    query.bindValue(":paysOrigine", paysOrigine);
+
+    // Execute the query and check for errors
+    if (!query.exec()) {
+        qDebug() << "Error updating player: " << query.lastError().text();
+        return false;
+    } else {
+        qDebug() << "Player updated successfully!";
+        return true;
+    }
+}
+
+

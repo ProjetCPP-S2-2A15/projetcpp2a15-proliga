@@ -11,7 +11,7 @@ public:
     Joueur();
     void addJoueur();
     void deleteJoueur(const QString &nom);
-    void updateJoueur();
+    bool updateJoueur(const QString &nom, const QString &prenom, const QDate &date, const QString &position, const QString &paysOrigine);
     void readJoueur(QTableWidget *tableWidget);
 
     // Setters

@@ -749,14 +749,14 @@ height: 30px;</string>
           <widget class="QPushButton" name="AjouterButton">
            <property name="geometry">
             <rect>
-             <x>50</x>
+             <x>40</x>
              <y>20</y>
-             <width>121</width>
+             <width>71</width>
              <height>29</height>
             </rect>
            </property>
            <property name="text">
-            <string>Ajouter Joueur</string>
+            <string>Ajouter </string>
            </property>
           </widget>
           <widget class="QTableWidget" name="tableWidgetPlayers">
@@ -1025,6 +1025,19 @@ height: 30px;</string>
              </widget>
             </item>
            </layout>
+          </widget>
+          <widget class="QPushButton" name="modifierButton">
+           <property name="geometry">
+            <rect>
+             <x>130</x>
+             <y>20</y>
+             <width>71</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>modifier</string>
+           </property>
           </widget>
          </widget>
          <widget class="QWidget" name="tab_2">

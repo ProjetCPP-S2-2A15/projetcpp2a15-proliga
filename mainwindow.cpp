@@ -32,8 +32,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     //crud joueur
     connect(ui->AjouterButton, &QPushButton::clicked, this, &MainWindow::onAjouterButtonClicked);
+
     //connect(ui->deleteButton, &QPushButton::clicked, this, [=]() {deleteJoueurFromUI(this);});
     //connect(ui->uploadButton, &QPushButton::clicked, this, &MainWindow::uploadImage);
+
+    connect(ui->modifierButton, &QPushButton::clicked, this, [this]() {
+        if (selected_row == -1) return;
+        confirmUpdate(this, selected_row);
+        selected_row = -1;
+    });
+
 
 
     //read joueur
@@ -69,34 +77,74 @@ void MainWindow::uploadImage() {
 }
 */
 
+/*
 void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
     Joueur j;
     j.readJoueur(tableWidgetPlayers);
 
-    // Clear any existing buttons in the last column before adding new ones
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        QWidget *widget = tableWidgetPlayers->cellWidget(row, 5); // 5th column for delete button
+        QWidget *widget = tableWidgetPlayers->cellWidget(row, 5);
         if (widget) {
-            delete widget;  // Remove the old delete button if it exists
+            delete widget;
         }
     }
 
-    // Now, add new delete buttons to each row
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
         QPushButton *deleteButton = new QPushButton("Delete");
 
-        // Get the player's name (assuming the name is in the first column)
         QString nom = tableWidgetPlayers->item(row, 0)->text();
 
-        // Connect the delete button to a slot (delete function in this case)
         connect(deleteButton, &QPushButton::clicked, this, [this, nom]() {
             deleteJoueurFromUI(this, nom);
         });
 
-        // Insert the button into the last column (5th column in this case)
         tableWidgetPlayers->setCellWidget(row, 5, deleteButton);
     }
+}*/
+
+void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
+    Joueur j;
+    j.readJoueur(tableWidgetPlayers); // Refresh the table
+
+    // Clear previous widgets in column 6
+    for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
+        tableWidgetPlayers->removeCellWidget(row, 5);
+    }
+
+    // Add action buttons (Delete & Update)
+    for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
+        // Create a container widget
+        QWidget *buttonContainer = new QWidget();
+        QHBoxLayout *layout = new QHBoxLayout(buttonContainer);
+        layout->setContentsMargins(0, 0, 0, 0); // Remove extra spacing
+
+        QPushButton *deleteButton = new QPushButton("Delete");
+        QPushButton *updateButton = new QPushButton("Update");
+
+        QString nom = tableWidgetPlayers->item(row, 0)->text();
+
+        connect(deleteButton, &QPushButton::clicked, this, [this, nom]() {
+            deleteJoueurFromUI(this, nom);
+        });
+
+        // Connect Update button
+        connect(updateButton, &QPushButton::clicked, this, [this, row]() {
+            selected_row=row;
+            updateJoueurFromUI(this, row); // Call update function
+        });
+
+        // Add buttons to layout
+        layout->addWidget(updateButton);
+        layout->addWidget(deleteButton);
+
+        // Set layout to the container widget
+        buttonContainer->setLayout(layout);
+
+        // Insert the container widget into the 6th column (index 5)
+        tableWidgetPlayers->setCellWidget(row, 5, buttonContainer);
+    }
 }
+
 
 
 
