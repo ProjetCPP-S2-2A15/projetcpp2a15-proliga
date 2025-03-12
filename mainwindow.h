@@ -23,7 +23,9 @@ private:
 
     QPushButton *newButton;
 private slots:
-    void on_addStadiumButton_clicked(); // Slot for adding a stadium
+    void on_addStadiumbutton_clicked(); // Slot for adding a stadium
+    void on_pushbuttonmodifier_clicked();
+    void on_pushButton_supprimer_clicked();
 };
 
 #endif // MAINWINDOW_H

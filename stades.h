@@ -6,6 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 
+
 class Stade {
 private:
     int ID_stade;  // Auto-incremented by the database, no need to set it manually
@@ -38,7 +39,10 @@ public:
     // Basic functionality for the Stade entity
     bool ajouter();
     QSqlQueryModel* afficher();
-    bool supprimer(int);
+    bool modifier(int id);
+    bool supprimer(int id);
+
+
 };
 
 #endif // STADES_H
