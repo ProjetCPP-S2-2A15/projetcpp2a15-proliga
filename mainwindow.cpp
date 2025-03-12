@@ -5,6 +5,7 @@
 #include "joueur_utils.h"
 #include <QFileDialog>
 #include <QPixmap>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -41,6 +42,13 @@ MainWindow::MainWindow(QWidget *parent)
         confirmUpdate(this, selected_row);
         selected_row = -1;
     });
+
+    //controle de saisie
+    connect(ui->NomInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    connect(ui->PrenomInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    connect(ui->PositionInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    connect(ui->NationaliteInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    connect(ui->dsInput, &QDateEdit::dateChanged, this, &MainWindow::validateInputs);
 
 
 
@@ -147,5 +155,72 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
 
 
 
+void MainWindow::validateInputs() {
+    bool allValid = true;
+
+    // Regular expression for names (only letters)
+    QRegularExpression alphaRegex("^[A-Za-zÀ-ÖØ-öø-ÿ\\s-]+$");
+
+    // Validate Name
+    if (ui->NomInput->text().trimmed().isEmpty() ||
+        !alphaRegex.match(ui->NomInput->text().trimmed()).hasMatch() || ui->NomInput->text().length() > 10) {
+        ui->NomError->setText("invalide !");
+        ui->NomError->setStyleSheet("color: red;");
+        allValid = false;
+    } else {
+        ui->NomError->setText("valide");
+        ui->NomError->setStyleSheet("color: green;");
+    }
+
+    // Validate Prenom
+    if (ui->PrenomInput->text().trimmed().isEmpty() ||
+        !alphaRegex.match(ui->PrenomInput->text().trimmed()).hasMatch() || ui->PrenomInput->text().length() > 10) {
+        ui->PrenomError->setText("invalide !");
+        ui->PrenomError->setStyleSheet("color: red;");
+        allValid = false;
+    } else {
+        ui->PrenomError->setText("valide");
+        ui->PrenomError->setStyleSheet("color: green;");
+    }
+
+    // Validate Position
+    if (ui->PositionInput->text().trimmed().isEmpty() ||
+        !alphaRegex.match(ui->PositionInput->text().trimmed()).hasMatch()) {
+        ui->PositionError->setText("invalide !");
+        ui->PositionError->setStyleSheet("color: red;");
+        allValid = false;
+    } else {
+        ui->PositionError->setText("valide");
+        ui->PositionError->setStyleSheet("color: green;");
+    }
+
+    // Validate Nationality
+    if (ui->NationaliteInput->text().trimmed().isEmpty() ||
+        !alphaRegex.match(ui->NationaliteInput->text().trimmed()).hasMatch()) {
+        ui->NationaliteError->setText("invalide !");
+        ui->NationaliteError->setStyleSheet("color: red;");
+        allValid = false;
+    } else {
+        ui->NationaliteError->setText("valide");
+        ui->NationaliteError->setStyleSheet("color: green;");
+    }
+
+    // Validate Date of Birth (minimum age 10)
+    QDate birthDate = ui->dsInput->date();
+    QDate currentDate = QDate::currentDate();
+    int age = birthDate.daysTo(currentDate) / 365;
+
+    if (age < 10) {
+        ui->DsError->setText("invalide !");
+        ui->DsError->setStyleSheet("color: red;");
+        allValid = false;
+    } else {
+        ui->DsError->setText("valide");
+        ui->DsError->setStyleSheet("color: green;");
+    }
+
+    // Enable the button only if all inputs are valid
+    ui->AjouterButton->setEnabled(allValid);
+}
 
 

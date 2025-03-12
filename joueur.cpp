@@ -4,6 +4,7 @@
 #include <QVariant>
 #include <QDebug>
 #include <QTableWidget>
+#include <QMessageBox>
 
 Joueur::Joueur() {}
 

@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QLineEdit>
 #include <QDateEdit>
+#include <QMessageBox>
 
 void createJoueurFromUI(MainWindow *mainWin) {
     if (!mainWin) return;
@@ -11,6 +12,10 @@ void createJoueurFromUI(MainWindow *mainWin) {
     Joueur j;
 
     Ui::MainWindow *ui = mainWin->getUi();
+    if (!ui->AjouterButton->isEnabled()) {
+        QMessageBox::warning(mainWin, "Input Error", "Please correct all invalid inputs before proceeding.");
+        return;
+    }
 
     int pageIndex = ui->stackedWidget->indexOf(ui->joueurPage);
     QWidget* joueurWidget = ui->stackedWidget->widget(pageIndex);
@@ -44,7 +49,7 @@ void createJoueurFromUI(MainWindow *mainWin) {
     j.addJoueur();
     QTableWidget* tableWidgetPlayers = joueurWidget->findChild<QTableWidget*>("tableWidgetPlayers");
     if (tableWidgetPlayers){
-        //j.readJoueur(tableWidgetPlayers);
+        //refresh the table
         mainWin->setupTableWithDeleteButtons(ui->tableWidgetPlayers);
     }else{
         qDebug() << "table widgetPlayers not foud !";

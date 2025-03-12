@@ -22,6 +22,7 @@ public:
     ~MainWindow();
     Ui::MainWindow* getUi() const { return ui; }
     void setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers);
+    void validateInputs();
 
 private slots:
     void onAjouterButtonClicked();   \

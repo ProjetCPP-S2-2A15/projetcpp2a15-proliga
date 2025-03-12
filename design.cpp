@@ -85,7 +85,7 @@ void applyDesign(Ui::MainWindow *ui)
     QWidget* joueurWidget = ui->stackedWidget->widget(pageIndex);
     if (joueurWidget) {
         //labels
-        QList<QLabel*> labels = joueurWidget->findChildren<QLabel*>();
+        /*QList<QLabel*> labels = joueurWidget->findChildren<QLabel*>();
 
         for (QLabel* label : labels) {
             if (label->objectName().endsWith("Label")) {
@@ -96,7 +96,7 @@ void applyDesign(Ui::MainWindow *ui)
                 label->setStyleSheet("color: red; font-weight: bold;");
                 label->setText("Invalide!");
             }
-        }
+        }*/
         //inputs
         QList<QLineEdit*> inputs = joueurWidget->findChildren<QLineEdit*>();
 
