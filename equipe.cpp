@@ -1,94 +1,33 @@
 #include "equipe.h"
-
+#include <QDebug>
+#include <QSqlError>
 
 // Constructeur
-Equipe::Equipe(int id, const QString& nom, const QString& ville,
+
+Equipe::Equipe( const QString& nom, const QString& ville,
                const QString& entraineur, int nbJoueurs, const QString& typeEquipe,
                int butsMarques, const QDate& debutContrat, const QDate& finContrat)
- {this->idEquipe=id;
-     this->nomEquipe=nom;
-     this->nomVille=ville;
-     this->nomEntraineur=entraineur;
-     this->nombreJoueurs=nbJoueurs;
-     this->type=typeEquipe;
-     this->nombreButsMarques=butsMarques;
-     this->dateDebutContrat=debutContrat;
-     this->dateFinContrat=finContrat;
-
- }
-
-// Accesseurs
-int Equipe::getIdEquipe() const {
-    return idEquipe;
+{
+    this->nomEquipe = nom;
+    this->nomVille = ville;
+    this->nomEntraineur = entraineur;
+    this->nombreJoueurs = nbJoueurs;
+    this->type = typeEquipe;
+    this->nombreButsMarques = butsMarques;
+    this->dateDebutContrat = debutContrat;
+    this->dateFinContrat = finContrat;
 }
 
-QString Equipe::getNomEquipe() const {
-    return nomEquipe;
-}
+// Accesseurs and Mutateurs remain the same
 
-QString Equipe::getNomVille() const {
-    return nomVille;
-}
-QString Equipe::getNomEntraineur() const {
-    return nomEntraineur;
-}
-int Equipe::getNombreJoueurs() const {
-    return nombreJoueurs;
-}
-QString Equipe::getType() const {
-    return type;
-}
-int Equipe::getNombreButsMarques() const {
-    return nombreButsMarques;
-}
-QDate Equipe::getDateDebutContrat() const {
-    return dateDebutContrat;
-}
-
-QDate Equipe::getDateFinContrat() const {
-    return dateFinContrat;
-}
-
-// Mutateurs
-void Equipe::setNomEquipe(const QString& nom) {
-    nomEquipe = nom;
-}
-
-void Equipe::setNomVille(const QString& ville) {
-    nomVille = ville;
-}
-
-void Equipe::setNomEntraineur(const QString& entraineur) {
-    nomEntraineur = entraineur;
-}
-
-void Equipe::setNombreJoueurs(int nbJoueurs) {
-    nombreJoueurs = nbJoueurs;
-}
-
-void Equipe::setType(const QString& typeEquipe) {
-    type = typeEquipe;
-}
-
-void Equipe::setNombreButsMarques(int butsMarques) {
-    nombreButsMarques = butsMarques;
-}
-
-void Equipe::setDateDebutContrat(const QDate& debutContrat) {
-    dateDebutContrat = debutContrat;
-}
-void Equipe::setDateFinContrat(const QDate& finContrat) {
-    dateFinContrat = finContrat;
-}
-bool Equipe::ajouter() {
+bool Equipe::Ajouter() {
     QSqlQuery query;
 
-    // Prepare the SQL query
-    query.prepare("INSERT INTO equipe (IDEQUIPE, NOMEQUIPE, NOMVILLE, NOMENTRAINEUR, NOMBREJOUEURS, TYPE, NOMBREBUTSMARQUES, DATEDEBUTCONTRAT, DATEFINCONTRAT) "
-                  "VALUES (:idEquipe, :nomEquipe, :nomVille, :nomEntraineur, :nombreJoueurs, :type, :nombreButsMarques, :dateDebutContrat, :dateFinContrat)");
+    // Prepare the SQL query without IDEQUIPE (assuming it's auto-incremented)
+    query.prepare("INSERT INTO equipe (NOMEQUIPE, NOMVILLE, NOMENTRAINEUR, NOMBREJOUEURS, TYPE, NOMBREBUTSMARQUES, DATEDEBUTCONTRAT, DATEFINCONTRAT) "
+                  "VALUES (:nomEquipe, :nomVille, :nomEntraineur, :nombreJoueurs, :type, :nombreButsMarques, :dateDebutContrat, :dateFinContrat)");
 
     // Bind the values
-    query.bindValue(":idEquipe", idEquipe);
     query.bindValue(":nomEquipe", nomEquipe);
     query.bindValue(":nomVille", nomVille);
     query.bindValue(":nomEntraineur", nomEntraineur);
@@ -105,4 +44,18 @@ bool Equipe::ajouter() {
         qDebug() << "Error inserting into database: " << query.lastError().text();
         return false; // Insertion failed
     }
+}
+QSqlQueryModel * Equipe::loadequipeData(){
+    QSqlQueryModel * model=new QSqlQueryModel();
+    model->setQuery("select * from equipe");
+  //  model->setHeaderData(0,Qt::Horizontal,QObject::tr("Id_equipe"));
+    model->setHeaderData(1,Qt::Horizontal,QObject::tr("Nom_equipe"));
+    model->setHeaderData(2,Qt::Horizontal,QObject::tr("Nom_ville"));
+    model->setHeaderData(3,Qt::Horizontal,QObject::tr("Nom_entraineur"));
+    model->setHeaderData(4,Qt::Horizontal,QObject::tr("Nombre_joueurs"));
+    model->setHeaderData(5,Qt::Horizontal,QObject::tr("Type"));
+    model->setHeaderData(6,Qt::Horizontal,QObject::tr("Nombrebuts_marquees"));
+    model->setHeaderData(7,Qt::Horizontal,QObject::tr("Debut_contrat"));
+    model->setHeaderData(8,Qt::Horizontal,QObject::tr("Fin_contrat"));
+    return model ;
 }

@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 
     Connection c;
     bool test = c.createconnect();
+    MainWindow w;
     if (!test) {
         QMessageBox::critical(nullptr, QObject::tr("Database Error"),
                               QObject::tr("Connection failed.\nClick Cancel to exit."), QMessageBox::Cancel);

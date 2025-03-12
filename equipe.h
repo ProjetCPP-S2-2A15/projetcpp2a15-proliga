@@ -22,10 +22,11 @@ private:
 
 public:
     // Constructeur
-    Equipe(int id, const QString& nom, const QString& ville,
+
+
+    Equipe( const QString& nom, const QString& ville,
            const QString& entraineur, int nbJoueurs, const QString& typeEquipe,
            int butsMarques, const QDate& debutContrat, const QDate& finContrat);
-
     // Accesseurs
     int getIdEquipe() const;
     QString getNomEquipe() const;
@@ -38,6 +39,8 @@ public:
     QDate getDateFinContrat() const;
 
     // Mutateurs
+    void setIdEquipe(int id);
+
     void setNomEquipe(const QString& nom);
     void setNomVille(const QString& ville);
     void setNomEntraineur(const QString& entraineur);
@@ -47,7 +50,9 @@ public:
     void setDateDebutContrat(const QDate& debutContrat);
     void setDateFinContrat(const QDate& finContrat);
 
-    bool ajouter();
+    bool Ajouter();
+    QSqlQueryModel *loadequipeData();
+
 };
 
 #endif // EQUIPE_H
