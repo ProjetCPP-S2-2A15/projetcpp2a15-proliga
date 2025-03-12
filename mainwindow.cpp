@@ -6,6 +6,12 @@
 #include <QFileDialog>
 #include <QPixmap>
 #include <QMessageBox>
+#include <QPdfWriter>
+#include <QPainter>
+#include <QFileDialog>
+#include <QTextDocument>
+#include <QSqlQuery>
+#include <QSqlError>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -61,6 +67,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     //j.readJoueur(tableWidgetPlayers);
     setupTableWithDeleteButtons(tableWidgetPlayers);
+
+
+    //export pdf
+    connect(ui->pdfButton, &QPushButton::clicked, this, &MainWindow::exportToPDF);
 
 }
 
@@ -221,6 +231,78 @@ void MainWindow::validateInputs() {
 
     // Enable the button only if all inputs are valid
     ui->AjouterButton->setEnabled(allValid);
+    ui->modifierButton->setEnabled(allValid);
 }
 
+
+
+void MainWindow::exportToPDF() {
+    // Step 1: Select file to save
+    QString fileName = QFileDialog::getSaveFileName(this, "Save PDF", "", "PDF Files (*.pdf)");
+    if (fileName.isEmpty()) return;  // User canceled
+
+    // Step 2: Set up database connection
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return;
+    }
+
+    // Step 3: Fetch data from the database
+    QSqlQuery query(db);
+    query.prepare("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueurs");
+
+    if (!query.exec()) {
+        qDebug() << "Error executing query:" << query.lastError().text();
+        return;
+    }
+
+    // Step 4: Create PDF document
+    QPdfWriter pdfWriter(fileName);
+    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
+    pdfWriter.setResolution(300);
+
+    QPainter painter(&pdfWriter);
+    painter.setFont(QFont("Arial", 10));
+
+    int y = 50;
+
+    // Title
+    painter.setFont(QFont("Arial", 16, QFont::Bold));
+    painter.drawText(200, y, "Players List");
+    painter.setFont(QFont("Arial", 10));
+    y += 350;
+
+    // Column Headers
+    painter.drawText(250, y, "Nom");
+    painter.drawText(500, y, "Prenom");
+    painter.drawText(750, y, "Position");
+    painter.drawText(1100, y, "Nationalite");
+    painter.drawText(1500, y, "Date Naissance");
+    y += 100;
+
+    painter.drawLine(250, y, 1900, y);
+    y += 200;
+
+    // Step 5: Write player data
+    while (query.next()) {
+        painter.drawText(250, y, query.value(0).toString());
+        painter.drawText(500, y, query.value(1).toString());
+        painter.drawText(750, y, query.value(3).toString());
+        painter.drawText(1100, y, query.value(2).toString());
+        painter.drawText(1500, y, query.value(4).toDate().toString("yyyy-MM-dd"));
+        y += 100;
+    }
+
+    painter.end();
+
+    // Step 6: Success Message
+    QMessageBox::information(this, "Success", "PDF exported successfully!");
+}
 

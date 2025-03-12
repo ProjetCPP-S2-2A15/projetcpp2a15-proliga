@@ -94,6 +94,10 @@ void confirmUpdate(MainWindow *mainWin, int row){
     if (!mainWin || row == -1) return; // Ensure valid inputs
 
     Ui::MainWindow *ui = mainWin->getUi();
+    if (!ui->modifierButton->isEnabled()) {
+        QMessageBox::warning(mainWin, "Input Error", "Please correct all invalid inputs before proceeding.");
+        return;
+    }
 
     // Get updated values from input fields
     QString nom = ui->NomInput->text();

@@ -26,6 +26,7 @@ public:
 
 private slots:
     void onAjouterButtonClicked();   \
+    void exportToPDF();
     //void uploadImage();
 
 private:
