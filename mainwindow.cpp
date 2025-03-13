@@ -37,53 +37,53 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_addStadiumbutton_clicked()
 {
-    // Récupérer les données depuis l'interface utilisateur
+
     QString name = ui->lineEdit_nomA->text();
     QString location = ui->lineEdit_lieuA->text();
-    QString capacityStr = ui->lineEdit_capaciteA->text(); // Capacité saisie par l'utilisateur
+    QString capacityStr = ui->lineEdit_capaciteA->text();
     QString ticketsSoldStr = ui->lineEdit_ticketsA->text();
     QDate dateCreation = ui->dateEdit_creationA->date();
 
-    // Validation : Nom doit contenir uniquement des lettres
+
     QRegularExpression regexName("^[a-zA-Z\\s]+$");
     if (!regexName.match(name).hasMatch()) {
         QMessageBox::critical(this, "Erreur de validation", "Le nom du stade doit contenir uniquement des lettres et des espaces.");
-        return; // Arrêter le processus d'ajout
+        return;
     }
 
-    // Validation : Capacite doit être un nombre
-    QRegularExpression regexNumber("^[0-9]+$"); // Expression régulière pour vérifier uniquement les chiffres
+
+    QRegularExpression regexNumber("^[0-9]+$");
     if (!regexNumber.match(capacityStr).hasMatch()) {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre valide.");
-        return; // Arrêter le processus d'ajout
+        return;
     }
 
-    // Conversion de capacité et validation pour un entier positif
+
     int capacity = capacityStr.toInt();
     if (capacity <= 0) {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre supérieur à zéro.");
         return;
     }
 
-    // Validation : Nombre de tickets vendus doit être un nombre entier positif ou zéro
+
     bool ticketsOk;
     int ticketsSold = ticketsSoldStr.toInt(&ticketsOk);
     if (!ticketsOk || ticketsSold < 0) {
         QMessageBox::critical(this, "Erreur de validation", "Le nombre de tickets vendus doit être un nombre entier positif ou zéro.");
-        return; // Arrêter le processus d'ajout
+        return;
     }
     if (ticketsSold > capacity) {
         QMessageBox::critical(this, "Erreur de validation", "Le nombre de tickets vendus ne peut pas dépasser la capacité.");
-        return; // Arrêter le processus d'ajout
+        return;
     }
 
-    // Créer un objet Stade avec les données validées
+
     Stade newStade(name, location, capacity, ticketsSold, dateCreation);
 
-    // Appeler la méthode ajouter
+
     bool success = newStade.ajouter();
 
-    // Vérifier si l'ajout a réussi
+
     if (success) {
         QMessageBox::information(this, "Succès", "Stade ajouté avec succès !");
         ui->tableView->setModel(Stade().afficher());
@@ -91,18 +91,18 @@ void MainWindow::on_addStadiumbutton_clicked()
         QMessageBox::critical(this, "Erreur", "Échec de l'ajout du stade : " + QSqlDatabase::database().lastError().text());
     }
 }
-void MainWindow::on_pushbuttonmodifier_clicked()
+void MainWindow::on_pushbuttonmodifieR_clicked()
 {
-    // Récupérer l'ID du stade à modifier
+
     int id = ui->lineEdit_ID2->text().toInt();
 
-    // Vérifier si l'ID est valide
+
     if (id <= 0) {
         QMessageBox::critical(this, "Erreur de validation", "Veuillez saisir un ID valide pour le stade.");
         return;
     }
 
-    // Vérifier si l'ID existe dans la base de données
+
     QSqlQuery checkQuery;
     checkQuery.prepare("SELECT COUNT(*) FROM Stades WHERE ID_stade = :id");
     checkQuery.bindValue(":id", id);
@@ -111,61 +111,61 @@ void MainWindow::on_pushbuttonmodifier_clicked()
         return;
     }
 
-    // Lire le résultat
+
     checkQuery.next();
     if (checkQuery.value(0).toInt() == 0) {
         QMessageBox::critical(this, "Erreur", "L'ID spécifié n'existe pas dans la base de données.");
-        return; // Arrêter le processus si l'ID n'existe pas
+        return;
     }
 
-    // Récupérer les nouvelles données depuis les champs de saisie
+
     QString name = ui->lineEdit_nom2->text();
     QString location = ui->lineEdit_lieu2->text();
     QString capacityStr = ui->lineEdit_capacite2->text();
     QString ticketsSoldStr = ui->lineEdit_tickets2->text();
     QDate dateCreation = ui->dateEdit_creation2->date();
 
-    // Validation : Nom doit contenir uniquement des lettres
+
     QRegularExpression regexName("^[a-zA-Z\\s]+$");
     if (!regexName.match(name).hasMatch()) {
         QMessageBox::critical(this, "Erreur de validation", "Le nom du stade doit contenir uniquement des lettres et des espaces.");
-        return; // Arrêter le processus de modification
+        return;
     }
     QRegularExpression regexLocation("^[a-zA-Z\\s]+$");
     if (!regexLocation.match(location).hasMatch()) {
         QMessageBox::critical(this, "Erreur de validation", "Le lieu du stade doit contenir uniquement des lettres et des espaces.");
-        return; // Arrêter le processus de modification
+        return;
     }
 
-    // Validation : Capacité doit être un nombre
+
     QRegularExpression regexNumber("^[0-9]+$");
     if (!regexNumber.match(capacityStr).hasMatch()) {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre valide.");
         return;
     }
 
-    // Conversion de capacité et validation pour un entier positif
+
     int capacity = capacityStr.toInt();
     if (capacity <= 0) {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre supérieur à zéro.");
         return;
     }
 
-    // Validation : Nombre de tickets vendus doit être un nombre entier positif ou zéro
+
     bool ticketsOk;
     int ticketsSold = ticketsSoldStr.toInt(&ticketsOk);
     if (!ticketsOk || ticketsSold < 0) {
         QMessageBox::critical(this, "Erreur de validation", "Le nombre de tickets vendus doit être un nombre entier positif ou zéro.");
-        return; // Arrêter le processus de modification
+        return;
     }
 
-    // Nouvelle validation : Nombre de tickets vendus <= Capacité
+
     if (ticketsSold > capacity) {
         QMessageBox::critical(this, "Erreur de validation", "Le nombre de tickets vendus ne peut pas dépasser la capacité.");
-        return; // Arrêter le processus de modification
+        return;
     }
 
-    // Créer un objet Stade avec les nouvelles données validées
+
     Stade stade;
     stade.setNom(name);
     stade.setLieu(location);
@@ -173,7 +173,7 @@ void MainWindow::on_pushbuttonmodifier_clicked()
     stade.setNbrTicketsVd(ticketsSold);
     stade.setDateCreation(dateCreation);
 
-    // Appeler une fonction pour mettre à jour l'entrée dans la base de données
+
     QSqlQuery query;
     query.prepare("UPDATE Stades SET nom = :nom, lieu = :lieu, capacite = :capacite, nbr_tickets_vd = :tickets, date_creation = :date "
                   "WHERE ID_stade = :id");
@@ -184,7 +184,7 @@ void MainWindow::on_pushbuttonmodifier_clicked()
     query.bindValue(":date", dateCreation);
     query.bindValue(":id", id);
 
-    // Vérifier si la requête de mise à jour réussit
+
     if (query.exec()) {
         QMessageBox::information(this, "Succès", "Le stade a été mis à jour avec succès !");
         ui->tableView->setModel(stade.afficher()); // Mettre à jour la vue
@@ -195,22 +195,95 @@ void MainWindow::on_pushbuttonmodifier_clicked()
 
 void MainWindow::on_pushButton_supprimer_clicked()
 {
-    // Récupérer l'ID depuis le champ de texte
+
     int id = ui->lineEdit_ID->text().toInt();
 
-    // Appeler la méthode supprimer de la classe Stade
+
     Stade stade;
     bool test = stade.supprimer(id);
 
-    // Vérifier si la suppression a réussi
+
     if (test) {
         QMessageBox::information(this, QObject::tr("Succès"),
                                  QObject::tr("Suppression effectuée"),
 
                                  QMessageBox::Cancel);
-        // Mettre à jour la vue
+
         ui->tableView->setModel(stade.afficher());
 
 }
 }
+void MainWindow::on_pushButton_rechercherNom_clicked()
+{
+    QString nomRecherche = ui->lineEdit_rechercheNom->text();
+
+
+    if (nomRecherche.isEmpty()) {
+        QMessageBox::critical(this, "Erreur", "Veuillez saisir un nom pour la recherche.");
+        return;
+    }
+
+
+    Stade stade;
+    QSqlQueryModel* model = stade.rechercherParNom(nomRecherche);
+
+    if (model->rowCount() > 0) {
+        ui->tableView->setModel(model);
+    } else {
+        QMessageBox::information(this, "Résultat", "Aucun stade trouvé avec ce nom.");
+    }
+}
+void MainWindow::on_pushButton_rechercherCapacite_clicked()
+{
+    int capaciteMin = ui->lineEdit_capaciteMin->text().toInt();
+    int capaciteMax = ui->lineEdit_capaciteMax->text().toInt();
+
+
+    if (capaciteMin <= 0 || capaciteMax <= 0) {
+        QMessageBox::critical(this, "Erreur", "Veuillez saisir des valeurs positives pour la capacité.");
+        return;
+    }
+    if (capaciteMin > capaciteMax) {
+        QMessageBox::critical(this, "Erreur", "La capacité minimale doit être inférieure ou égale à la capacité maximale.");
+        return;
+    }
+
+
+    Stade stade;
+    QSqlQueryModel* model = stade.rechercherParCapacite(capaciteMin, capaciteMax);
+
+    if (model->rowCount() > 0) {
+        ui->tableView->setModel(model);
+    } else {
+        QMessageBox::information(this, "Résultat", "Aucun stade trouvé dans cette plage de capacité.");
+    }
+}
+void MainWindow::on_comboBoxTri_currentIndexChanged(int index)
+{
+    Stade stade;
+    QSqlQueryModel* model;
+
+
+    switch (index) {
+    case 0:
+        model = stade.trier("capacite", "ASC");
+        break;
+    case 1:
+        model = stade.trier("capacite", "DESC");
+        break;
+    case 2:
+        model = stade.trier("nbr_tickets_vd", "ASC");
+        break;
+    case 3:
+        model = stade.trier("nbr_tickets_vd", "DESC");
+        break;
+    default:
+        return;
+    }
+
+
+    ui->tableView->setModel(model);
+}
+
+
 

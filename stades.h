@@ -6,10 +6,9 @@
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 
-
 class Stade {
 private:
-    int ID_stade;  // Auto-incremented by the database, no need to set it manually
+    int ID_stade;
     QString nom;
     QString lieu;
     int capacite;
@@ -17,11 +16,11 @@ private:
     QDate date_creation;
 
 public:
-    // Constructors
-    Stade() {}
-    Stade(QString, QString, int, int, QDate);  // Removed the ID parameter
 
-    // Getters
+    Stade() {}
+    Stade(QString, QString, int, int, QDate);
+
+
     int getID() { return ID_stade; }
     QString getNom() { return nom; }
     QString getLieu() { return lieu; }
@@ -29,21 +28,21 @@ public:
     int getNbrTicketsVd() { return nbr_tickets_vd; }
     QDate getDateCreation() { return date_creation; }
 
-    // Setters
+
     void setNom(QString name) { nom = name; }
     void setLieu(QString location) { lieu = location; }
     void setCapacite(int capacity) { capacite = capacity; }
     void setNbrTicketsVd(int tickets) { nbr_tickets_vd = tickets; }
     void setDateCreation(QDate date) { date_creation = date; }
 
-    // Basic functionality for the Stade entity
+
     bool ajouter();
     QSqlQueryModel* afficher();
     bool modifier(int id);
     bool supprimer(int id);
-
-
+    QSqlQueryModel* rechercherParNom(QString nomRecherche);
+    QSqlQueryModel* rechercherParCapacite(int capaciteMin, int capaciteMax);
+    QSqlQueryModel* trier(QString critere, QString ordre);
 };
 
 #endif // STADES_H
-

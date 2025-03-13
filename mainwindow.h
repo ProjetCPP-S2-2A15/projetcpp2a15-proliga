@@ -23,9 +23,12 @@ private:
 
     QPushButton *newButton;
 private slots:
-    void on_addStadiumbutton_clicked(); // Slot for adding a stadium
-    void on_pushbuttonmodifier_clicked();
+    void on_addStadiumbutton_clicked();
+    void on_pushbuttonmodifieR_clicked();
     void on_pushButton_supprimer_clicked();
+    void on_pushButton_rechercherNom_clicked();
+    void on_pushButton_rechercherCapacite_clicked();
+    void on_comboBoxTri_currentIndexChanged(int index);
 };
 
 #endif // MAINWINDOW_H
