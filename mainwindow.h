@@ -24,11 +24,13 @@ public:
     void setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers);
     void setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, const QString nom);
     void validateInputs();
+    void freeInputs();
 
 private slots:
     void onAjouterButtonClicked();   \
         void onrechercherButtonClicked();
     void exportToPDF();
+
     //void uploadImage();
 
 private:

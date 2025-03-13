@@ -51,6 +51,7 @@ void createJoueurFromUI(MainWindow *mainWin) {
     if (tableWidgetPlayers){
         //refresh the table
         mainWin->setupTableWithDeleteButtons(ui->tableWidgetPlayers);
+        mainWin->freeInputs();
     }else{
         qDebug() << "table widgetPlayers not foud !";
     }
@@ -119,6 +120,7 @@ void confirmUpdate(MainWindow *mainWin, int row){
 
     // Refresh the table to reflect changes
     mainWin->setupTableWithDeleteButtons(ui->tableWidgetPlayers);
+    mainWin->freeInputs();
 }
 
 

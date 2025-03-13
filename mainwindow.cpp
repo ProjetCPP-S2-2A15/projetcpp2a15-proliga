@@ -144,51 +144,6 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
     }
 }
 
-/*
-
-void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, const QString nom) {
-    Joueur j;
-    j.rechercheJoueur(tableWidgetPlayers, nom); // Refresh the table
-
-    // Clear previous widgets in column 6
-    for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 5);
-    }
-
-    // Add action buttons (Delete & Update)
-    for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        // Create a container widget
-        QWidget *buttonContainer = new QWidget();
-        QHBoxLayout *layout = new QHBoxLayout(buttonContainer);
-        layout->setContentsMargins(0, 0, 0, 0); // Remove extra spacing
-
-        QPushButton *deleteButton = new QPushButton("Delete");
-        QPushButton *updateButton = new QPushButton("Update");
-
-        QString nom = tableWidgetPlayers->item(row, 0)->text();
-
-        connect(deleteButton, &QPushButton::clicked, this, [this, nom]() {
-            deleteJoueurFromUI(this, nom);
-        });
-
-        // Connect Update button
-        connect(updateButton, &QPushButton::clicked, this, [this, row]() {
-            selected_row=row;
-            updateJoueurFromUI(this, row); // Call update function
-        });
-
-        // Add buttons to layout
-        layout->addWidget(updateButton);
-        layout->addWidget(deleteButton);
-
-        // Set layout to the container widget
-        buttonContainer->setLayout(layout);
-
-        // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 5, buttonContainer);
-    }
-}*/
-
 
 void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, const QString nom) {
     // First, call rechercheJoueur to refresh the table with the search results
@@ -255,46 +210,81 @@ void MainWindow::validateInputs() {
 
     // Validate Name
     if (ui->NomInput->text().trimmed().isEmpty() ||
-        !alphaRegex.match(ui->NomInput->text().trimmed()).hasMatch() || ui->NomInput->text().length() > 10) {
+        !alphaRegex.match(ui->NomInput->text().trimmed()).hasMatch() || ui->NomInput->text().length() > 10 || ui->NomInput->text().length() <3) {
         ui->NomError->setText("invalide !");
-        ui->NomError->setStyleSheet("color: red;");
+        ui->NomError->setStyleSheet(
+            "color: #D32F2F; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
         allValid = false;
     } else {
         ui->NomError->setText("valide");
-        ui->NomError->setStyleSheet("color: green;");
+        ui->NomError->setStyleSheet(
+            "color: #2E7D32; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
     }
 
     // Validate Prenom
     if (ui->PrenomInput->text().trimmed().isEmpty() ||
-        !alphaRegex.match(ui->PrenomInput->text().trimmed()).hasMatch() || ui->PrenomInput->text().length() > 10) {
+        !alphaRegex.match(ui->PrenomInput->text().trimmed()).hasMatch() || ui->PrenomInput->text().length() > 10 || ui->PrenomInput->text().length() < 3) {
         ui->PrenomError->setText("invalide !");
-        ui->PrenomError->setStyleSheet("color: red;");
+        ui->PrenomError->setStyleSheet(
+            "color: #D32F2F; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
         allValid = false;
     } else {
         ui->PrenomError->setText("valide");
-        ui->PrenomError->setStyleSheet("color: green;");
+        ui->PrenomError->setStyleSheet(
+            "color: #2E7D32; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
     }
 
     // Validate Position
+    QStringList validPositions = {"GK", "LB", "RB", "CB", "CMD", "CM", "CAM", "LW", "RW", "ST"};
     if (ui->PositionInput->text().trimmed().isEmpty() ||
-        !alphaRegex.match(ui->PositionInput->text().trimmed()).hasMatch()) {
+        !alphaRegex.match(ui->PositionInput->text().trimmed()).hasMatch() || !validPositions.contains(ui->PositionInput->text().trimmed().toUpper())) {
         ui->PositionError->setText("invalide !");
-        ui->PositionError->setStyleSheet("color: red;");
+        ui->PositionError->setStyleSheet(
+            "color: #D32F2F; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; "
+            );
         allValid = false;
     } else {
         ui->PositionError->setText("valide");
-        ui->PositionError->setStyleSheet("color: green;");
+        ui->PositionError->setStyleSheet(
+            "color: #2E7D32; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; "
+            );
     }
 
     // Validate Nationality
     if (ui->NationaliteInput->text().trimmed().isEmpty() ||
         !alphaRegex.match(ui->NationaliteInput->text().trimmed()).hasMatch()) {
         ui->NationaliteError->setText("invalide !");
-        ui->NationaliteError->setStyleSheet("color: red;");
+        ui->NationaliteError->setStyleSheet(
+            "color: #D32F2F; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
         allValid = false;
     } else {
         ui->NationaliteError->setText("valide");
-        ui->NationaliteError->setStyleSheet("color: green;");
+        ui->NationaliteError->setStyleSheet(
+            "color: #2E7D32; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
     }
 
     // Validate Date of Birth (minimum age 10)
@@ -304,11 +294,19 @@ void MainWindow::validateInputs() {
 
     if (age < 10) {
         ui->DsError->setText("invalide !");
-        ui->DsError->setStyleSheet("color: red;");
+        ui->DsError->setStyleSheet(
+            "color: #D32F2F; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
         allValid = false;
     } else {
         ui->DsError->setText("valide");
-        ui->DsError->setStyleSheet("color: green;");
+        ui->DsError->setStyleSheet(
+            "color: #2E7D32; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
     }
 
     // Enable the button only if all inputs are valid
@@ -386,5 +384,12 @@ void MainWindow::exportToPDF() {
 
     // Step 6: Success Message
     QMessageBox::information(this, "Success", "PDF exported successfully!");
+}
+
+void MainWindow::freeInputs(){
+    ui->NomInput->setText("");
+    ui->PrenomInput->setText("");
+    ui->PositionInput->setText("");
+    ui->NationaliteInput->setText("");
 }
 

@@ -743,7 +743,8 @@ height: 30px;</string>
             </rect>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: black;</string>
+            <string notr="true">color: black;
+/*background-color:rgba(70, 130, 120, 255);*/</string>
            </property>
           </widget>
           <widget class="QPushButton" name="AjouterButton">
@@ -767,6 +768,9 @@ height: 30px;</string>
              <width>431</width>
              <height>311</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
            </property>
            <column>
             <property name="text">
@@ -862,9 +866,9 @@ height: 30px;</string>
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>70</y>
-             <width>199</width>
-             <height>59</height>
+             <y>60</y>
+             <width>191</width>
+             <height>61</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -873,7 +877,8 @@ height: 30px;</string>
               <item>
                <widget class="QLabel" name="NomLabel">
                 <property name="styleSheet">
-                 <string notr="true">color: black;</string>
+                 <string notr="true">color: black;
+background-color: rgba(70, 130, 120, 255);</string>
                 </property>
                 <property name="text">
                  <string>Nom</string>
@@ -881,12 +886,19 @@ height: 30px;</string>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="NomInput"/>
+               <widget class="QLineEdit" name="NomInput">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
             <item>
              <widget class="QLabel" name="NomError">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+              </property>
               <property name="text">
                <string>TextLabel</string>
               </property>
@@ -899,8 +911,8 @@ height: 30px;</string>
             <rect>
              <x>20</x>
              <y>130</y>
-             <width>199</width>
-             <height>59</height>
+             <width>191</width>
+             <height>61</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -908,18 +920,28 @@ height: 30px;</string>
              <layout class="QVBoxLayout" name="PrenomAss">
               <item>
                <widget class="QLabel" name="PrenomLabel">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
                 <property name="text">
                  <string>Prenom</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="PrenomInput"/>
+               <widget class="QLineEdit" name="PrenomInput">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
             <item>
              <widget class="QLabel" name="PrenomError">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+              </property>
               <property name="text">
                <string>TextLabel</string>
               </property>
@@ -931,9 +953,9 @@ height: 30px;</string>
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>190</y>
-             <width>201</width>
-             <height>59</height>
+             <y>200</y>
+             <width>191</width>
+             <height>61</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -941,18 +963,28 @@ height: 30px;</string>
              <layout class="QVBoxLayout" name="DsAss">
               <item>
                <widget class="QLabel" name="DsLabel">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
                 <property name="text">
                  <string>DateDeNaissance</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QDateEdit" name="dsInput"/>
+               <widget class="QDateEdit" name="dsInput">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
             <item>
              <widget class="QLabel" name="DsError">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+              </property>
               <property name="text">
                <string>TextLabel</string>
               </property>
@@ -964,9 +996,9 @@ height: 30px;</string>
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>250</y>
-             <width>199</width>
-             <height>59</height>
+             <y>270</y>
+             <width>191</width>
+             <height>61</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -974,18 +1006,28 @@ height: 30px;</string>
              <layout class="QVBoxLayout" name="NationaliteAss">
               <item>
                <widget class="QLabel" name="NationaliteLabel">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
                 <property name="text">
                  <string>Nationalite</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="NationaliteInput"/>
+               <widget class="QLineEdit" name="NationaliteInput">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
             <item>
              <widget class="QLabel" name="NationaliteError">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+              </property>
               <property name="text">
                <string>TextLabel</string>
               </property>
@@ -997,9 +1039,9 @@ height: 30px;</string>
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>310</y>
-             <width>199</width>
-             <height>59</height>
+             <y>340</y>
+             <width>191</width>
+             <height>61</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -1007,18 +1049,28 @@ height: 30px;</string>
              <layout class="QVBoxLayout" name="PositionAss">
               <item>
                <widget class="QLabel" name="PositionLabel">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
                 <property name="text">
                  <string>Position</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="PositionInput"/>
+               <widget class="QLineEdit" name="PositionInput">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
             <item>
              <widget class="QLabel" name="PositionError">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(70, 130, 120, 255);</string>
+              </property>
               <property name="text">
                <string>TextLabel</string>
               </property>
@@ -1038,6 +1090,44 @@ height: 30px;</string>
            <property name="text">
             <string>modifier</string>
            </property>
+          </widget>
+          <widget class="QLabel" name="trierLabel">
+           <property name="geometry">
+            <rect>
+             <x>500</x>
+             <y>30</y>
+             <width>63</width>
+             <height>21</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>trier par:</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="comboBox">
+           <property name="geometry">
+            <rect>
+             <x>571</x>
+             <y>30</y>
+             <width>91</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <item>
+            <property name="text">
+             <string>Nom</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Nationalite</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Position</string>
+            </property>
+           </item>
           </widget>
          </widget>
          <widget class="QWidget" name="tab_2">
