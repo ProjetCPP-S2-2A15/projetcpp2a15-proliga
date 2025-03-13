@@ -22,10 +22,12 @@ public:
     ~MainWindow();
     Ui::MainWindow* getUi() const { return ui; }
     void setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers);
+    void setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, const QString nom);
     void validateInputs();
 
 private slots:
     void onAjouterButtonClicked();   \
+        void onrechercherButtonClicked();
     void exportToPDF();
     //void uploadImage();
 

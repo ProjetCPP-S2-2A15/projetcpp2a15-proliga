@@ -120,3 +120,27 @@ void confirmUpdate(MainWindow *mainWin, int row){
     // Refresh the table to reflect changes
     mainWin->setupTableWithDeleteButtons(ui->tableWidgetPlayers);
 }
+
+
+void rechercheJoueurFromUI(MainWindow *mainWin){
+    if (!mainWin){
+        return;
+    }
+    Ui::MainWindow *ui = mainWin->getUi();
+
+    QString nom_recherche = ui->rechercherInput->text();
+    QTableWidget* tableWidget = ui->tableWidgetPlayers;
+
+    Joueur j;
+    j.rechercheJoueur(tableWidget, nom_recherche);
+
+    // Refresh the table to reflect changes
+    mainWin->setupTableWithDeleteButtons2(tableWidget, nom_recherche);
+}
+
+
+
+
+
+
+

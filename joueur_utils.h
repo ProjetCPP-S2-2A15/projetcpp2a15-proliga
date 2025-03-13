@@ -8,5 +8,6 @@ void createJoueurFromUI(MainWindow *mainWin);
 void deleteJoueurFromUI(MainWindow *mainWin, const QString &nom);
 void updateJoueurFromUI(MainWindow *mainWin, int row);
 void confirmUpdate(MainWindow *mainWin, int row);
+void rechercheJoueurFromUI(MainWindow *mainWin);
 
 #endif // JOUEUR_UTILS_H

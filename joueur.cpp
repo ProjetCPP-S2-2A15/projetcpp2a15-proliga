@@ -59,7 +59,7 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
 
     QSqlQuery query("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueurs");
 
-    tableWidget->setRowCount(0);  // Clear the table before inserting new data
+    tableWidget->setRowCount(0);
     int row = 0;
 
     while (query.next()) {
@@ -111,7 +111,6 @@ void Joueur::deleteJoueur(const QString &nom) {
 }
 
 bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate &date, const QString &position, const QString &paysOrigine) {
-    // Establish connection
     Connection conn;
 
     if (!conn.createconnect()) {
@@ -126,18 +125,16 @@ bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate
         return false;
     }
 
-    // Prepare the query
     QSqlQuery query(db);
     query.prepare("UPDATE joueurs SET Prenom = :prenom, Date_de_naissance = TO_DATE(:date, 'YYYY-MM-DD'), Position = :position, Pays_origine = :paysOrigine WHERE Nom = :nom");
 
     // Bind values
     query.bindValue(":nom", nom);
     query.bindValue(":prenom", prenom);
-    query.bindValue(":date", date.toString("yyyy-MM-dd"));  // Format the date as 'YYYY-MM-DD'
+    query.bindValue(":date", date.toString("yyyy-MM-dd"));
     query.bindValue(":position", position);
     query.bindValue(":paysOrigine", paysOrigine);
 
-    // Execute the query and check for errors
     if (!query.exec()) {
         qDebug() << "Error updating player: " << query.lastError().text();
         return false;
@@ -147,4 +144,53 @@ bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate
     }
 }
 
+
+void Joueur::rechercheJoueur(QTableWidget *tableWidget, const QString &nom) {
+    if (!tableWidget) return;
+
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return;
+    }
+
+    QString trimmedNom = nom.trimmed();
+    QString lowerCaseNom = trimmedNom.toLower();
+
+    QSqlQuery query(db);
+    QString queryString = QString("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance "
+                                  "FROM joueurs WHERE LOWER(Nom) = LOWER('%1')").arg(lowerCaseNom);
+    query.prepare(queryString);
+
+    if (!query.exec()) {
+        qDebug() << "Query failed:" << query.lastError().text();
+        return;
+    }
+
+    tableWidget->setRowCount(0);
+    int row = 0;
+
+    while (query.next()) {
+        tableWidget->insertRow(row);
+        tableWidget->setItem(row, 0, new QTableWidgetItem(query.value("Nom").toString()));
+        tableWidget->setItem(row, 1, new QTableWidgetItem(query.value("Prenom").toString()));
+        tableWidget->setItem(row, 3, new QTableWidgetItem(query.value("Position").toString()));
+        tableWidget->setItem(row, 2, new QTableWidgetItem(query.value("Date_de_naissance").toDate().toString("yyyy-MM-dd")));
+        tableWidget->setItem(row, 4, new QTableWidgetItem(query.value("Pays_origine").toString()));
+
+        row++;
+    }
+
+    if (row == 0) {
+        qDebug() << "No players found for the given name:" << nom;
+    } else {
+        qDebug() << "Players loaded successfully!";
+    }
+}
 

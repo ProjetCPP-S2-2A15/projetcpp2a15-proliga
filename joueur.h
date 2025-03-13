@@ -13,6 +13,7 @@ public:
     void deleteJoueur(const QString &nom);
     bool updateJoueur(const QString &nom, const QString &prenom, const QDate &date, const QString &position, const QString &paysOrigine);
     void readJoueur(QTableWidget *tableWidget);
+    void rechercheJoueur(QTableWidget *tableWidget, const QString &nom);
 
     // Setters
     void setNom(const QString &nom) { Nom = nom; }
