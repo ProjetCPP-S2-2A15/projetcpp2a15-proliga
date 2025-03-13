@@ -801,6 +801,66 @@ font: 700 9pt &quot;System&quot;;
               <normaloff>:/interface_icons/more.png</normaloff>:/interface_icons/more.png</iconset>
             </property>
            </widget>
+           <widget class="QTableWidget" name="historique_table">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>51</y>
+              <width>341</width>
+              <height>111</height>
+             </rect>
+            </property>
+            <column>
+             <property name="text">
+              <string>Match ID</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Type</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Equipe 1 </string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Equipe 2</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Score</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Date</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>ID Arbitre 1</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>ID Arbitre 2</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>ID Arbitre 3</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>ID Arbitre 4</string>
+             </property>
+            </column>
+           </widget>
           </widget>
           <widget class="QWidget" name="widget_8" native="true">
            <property name="geometry">
@@ -887,7 +947,7 @@ font: 700 9pt &quot;System&quot;;
               <rect>
                <x>80</x>
                <y>20</y>
-               <width>201</width>
+               <width>231</width>
                <height>21</height>
               </rect>
              </property>
@@ -934,11 +994,6 @@ font: 700 9pt &quot;System&quot;;
              </column>
              <column>
               <property name="text">
-               <string>Stade</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
                <string>Date</string>
               </property>
              </column>
@@ -967,29 +1022,6 @@ font: 700 9pt &quot;System&quot;;
                <string>🤔</string>
               </property>
              </column>
-            </widget>
-            <widget class="QPushButton" name="edit_match">
-             <property name="geometry">
-              <rect>
-               <x>290</x>
-               <y>20</y>
-               <width>21</width>
-               <height>20</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="img.qrc">
-               <normaloff>:/interface_icons/editee7.png</normaloff>:/interface_icons/editee7.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>23</width>
-               <height>23</height>
-              </size>
-             </property>
             </widget>
             <widget class="QPushButton" name="delete_match">
              <property name="geometry">
@@ -1098,16 +1130,6 @@ font: 700 9pt &quot;System&quot;;
              </property>
              <property name="text">
               <string>Equipe 2:</string>
-             </property>
-            </widget>
-            <widget class="QDateEdit" name="dateEdit_2">
-             <property name="geometry">
-              <rect>
-               <x>100</x>
-               <y>50</y>
-               <width>110</width>
-               <height>22</height>
-              </rect>
              </property>
             </widget>
             <widget class="QPushButton" name="add_match">
@@ -1241,23 +1263,6 @@ font: 700 9pt &quot;System&quot;;
               </property>
              </item>
             </widget>
-            <widget class="QPushButton" name="show">
-             <property name="geometry">
-              <rect>
-               <x>330</x>
-               <y>0</y>
-               <width>21</width>
-               <height>20</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="img.qrc">
-               <normaloff>:/interface_icons/more.png</normaloff>:/interface_icons/more.png</iconset>
-             </property>
-            </widget>
             <widget class="QComboBox" name="comboBox_arbitre1">
              <property name="geometry">
               <rect>
@@ -1373,6 +1378,16 @@ font: 700 9pt &quot;System&quot;;
              </property>
              <property name="text">
               <string>Chois Aleatoire des Arbitres </string>
+             </property>
+            </widget>
+            <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+             <property name="geometry">
+              <rect>
+               <x>100</x>
+               <y>50</y>
+               <width>161</width>
+               <height>20</height>
+              </rect>
              </property>
             </widget>
            </widget>
