@@ -25,7 +25,7 @@ void Joueur::addJoueur() {
 
     QSqlQuery query(db);
 
-    query.prepare("INSERT INTO joueurs (Nom, Prenom, Date_de_naissance, Pays_origine, Position) "
+    query.prepare("INSERT INTO joueur1 (Nom, Prenom, Date_de_naissance, Pays_origine, Position) "
                   "VALUES (:Nom, :Prenom, :Date_de_naissance, :Pays_origine, :Position)");
 
     query.bindValue(":Nom", this->Nom);
@@ -57,7 +57,7 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         return;
     }
 
-    QSqlQuery query("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueurs");
+    QSqlQuery query("SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1");
 
     tableWidget->setRowCount(0);
     int row = 0;
@@ -100,7 +100,7 @@ void Joueur::deleteJoueur(const QString &nom) {
     }
 
     QSqlQuery query(db);
-    query.prepare("DELETE FROM joueurs WHERE Nom = :Nom");
+    query.prepare("DELETE FROM joueur1 WHERE Nom = :Nom");
     query.bindValue(":Nom", nom);
 
     if (!query.exec()) {
@@ -126,7 +126,7 @@ bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate
     }
 
     QSqlQuery query(db);
-    query.prepare("UPDATE joueurs SET Prenom = :prenom, Date_de_naissance = TO_DATE(:date, 'YYYY-MM-DD'), Position = :position, Pays_origine = :paysOrigine WHERE Nom = :nom");
+    query.prepare("UPDATE joueur1 SET Prenom = :prenom, Date_de_naissance = TO_DATE(:date, 'YYYY-MM-DD'), Position = :position, Pays_origine = :paysOrigine WHERE Nom = :nom");
 
     // Bind values
     query.bindValue(":nom", nom);
@@ -165,7 +165,7 @@ void Joueur::rechercheJoueur(QTableWidget *tableWidget, const QString &nom) {
 
     QSqlQuery query(db);
     QString queryString = QString("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance "
-                                  "FROM joueurs WHERE LOWER(Nom) = LOWER('%1')").arg(lowerCaseNom);
+                                  "FROM joueur1 WHERE LOWER(Nom) = LOWER('%1')").arg(lowerCaseNom);
     query.prepare(queryString);
 
     if (!query.exec()) {

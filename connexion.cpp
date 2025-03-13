@@ -2,7 +2,7 @@
 
 Connection::Connection(){
     db = QSqlDatabase::addDatabase("QODBC");
-    db.setDatabaseName("ProjetCpp2A15");
+    db.setDatabaseName("Source_Projet2A");
     db.setUserName("system");
     db.setPassword("ala123");
 }

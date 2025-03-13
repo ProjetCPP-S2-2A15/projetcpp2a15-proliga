@@ -336,7 +336,7 @@ void MainWindow::exportToPDF() {
 
     // Step 3: Fetch data from the database
     QSqlQuery query(db);
-    query.prepare("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueurs");
+    query.prepare("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueur1");
 
     if (!query.exec()) {
         qDebug() << "Error executing query:" << query.lastError().text();
