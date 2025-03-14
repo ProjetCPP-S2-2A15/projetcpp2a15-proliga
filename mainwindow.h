@@ -28,6 +28,11 @@ private slots:
     void ajoutChampB_clicked();
     void loadChampData();
     void SuppChamp(int ind);
+    void loadForUpdate(int ind);
+    void modifChampB_clicked();
+    void validateInputs();
+    void validateInputsUP();
+
 
 };
 

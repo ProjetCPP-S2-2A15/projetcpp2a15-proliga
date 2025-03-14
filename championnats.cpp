@@ -10,8 +10,8 @@ Championnats::Championnats() {
     this->poolGains = 0;
 }
 
-Championnats::Championnats(int idChamp, int nbrEquipe, const QString& type, const QString& nom, const QString& org, int poolGains) {
-    this->idChamp = idChamp;
+Championnats::Championnats( int nbrEquipe, const QString& type, const QString& nom, const QString& org, int poolGains) {
+
     this->nbrEquipe = nbrEquipe;
     this->type = type;
     this->nom = nom;
@@ -82,10 +82,9 @@ void Championnats::setPoolGains(int poolGains)
 bool Championnats::ajoutChamp() {
 
     QSqlQuery query;
-    query.prepare("INSERT INTO CHAMPIONNATS (ID_CHAMP, NBR_EQUIPE, TYPE, NOM, ORGANIZATEUR, POOL_GAINS) "
-                  "VALUES (:idChamp, :nbrEquipe, :type, :nom, :org, :poolGains)");
+    query.prepare("INSERT INTO CHAMPIONNATS (NBR_EQUIPE, TYPE, NOM, ORGANIZATEUR, POOL_GAINS) "
+                  "VALUES (:nbrEquipe, :type, :nom, :org, :poolGains)");
 
-    query.bindValue(":idChamp", idChamp);
     query.bindValue(":nbrEquipe", nbrEquipe);
     query.bindValue(":type", type);
     query.bindValue(":nom", nom);
@@ -93,10 +92,31 @@ bool Championnats::ajoutChamp() {
     query.bindValue(":poolGains", poolGains);
 
     if (query.exec()) {
+        idChamp=query.lastInsertId().toInt();
         qDebug() << "Championnat added successfully.";
         return true;
     } else {
         qDebug() << "Error adding Championnat:" << query.lastError().text();
         return false;
+    }
+}
+
+
+bool Championnats::saveUpdates() {
+
+    QSqlQuery query;
+    query.prepare("UPDATE CHAMPIONNATS SET NBR_EQUIPE = :nbrEquipe, TYPE = :type, NOM = :nom, ORGANIZATEUR = :org, POOL_GAINS = :poolGains WHERE ID_CHAMP = :id");
+    query.bindValue(":nbrEquipe", nbrEquipe);
+    query.bindValue(":type", type);
+    query.bindValue(":nom", nom);
+    query.bindValue(":org", org);
+    query.bindValue(":poolGains", poolGains);
+    query.bindValue(":id", idChamp);
+
+    if (query.exec()) {
+        return true;
+    } else {
+        return false;
+        qDebug() << "Update error: " << query.lastError().text();
     }
 }

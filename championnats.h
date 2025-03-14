@@ -5,6 +5,7 @@
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 #include <QSqlError>
+#include "ui_mainwindow.h"
 
 class Championnats
 {
@@ -20,7 +21,7 @@ private:
 
 public:
 Championnats();
-Championnats(int idChamp, int nbrEquipe, const QString& type, const QString& nom, const QString& org, int poolGains);
+Championnats(int nbrEquipe, const QString& type, const QString& nom, const QString& org, int poolGains);
 
 int getIdChamp() const;
 void setIdChamp(int idChamp);
@@ -41,6 +42,7 @@ int getPoolGains() const;
 void setPoolGains(int poolGains);
 
 bool ajoutChamp();
+bool saveUpdates();
 
 };
 
