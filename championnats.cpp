@@ -83,7 +83,8 @@ bool Championnats::ajoutChamp() {
 
     QSqlQuery query;
     query.prepare("INSERT INTO CHAMPIONNATS (NBR_EQUIPE, TYPE, NOM, ORGANIZATEUR, POOL_GAINS) "
-                  "VALUES (:nbrEquipe, :type, :nom, :org, :poolGains)");
+                  "VALUES (:nbrEquipe, :type, :nom, :org, :poolGains)"
+                  "RETURNING ID_CHAMP INTO :idChamp");
 
     query.bindValue(":nbrEquipe", nbrEquipe);
     query.bindValue(":type", type);
@@ -91,8 +92,12 @@ bool Championnats::ajoutChamp() {
     query.bindValue(":org", org);
     query.bindValue(":poolGains", poolGains);
 
+    int lastID;
+    query.bindValue(":idChamp", lastID, QSql::Out);
+
+
     if (query.exec()) {
-        idChamp=query.lastInsertId().toInt();
+        idChamp=lastID;
         qDebug() << "Championnat added successfully.";
         return true;
     } else {

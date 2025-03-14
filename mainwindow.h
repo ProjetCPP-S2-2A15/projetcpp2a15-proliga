@@ -5,6 +5,13 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QPixmap>
+#include <QTimer>
+#include <QAxObject>
+#include <QPdfWriter>
+#include <QPainter>
+#include <QDate>
+#include <QFileDialog>
+#include <QDate>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,17 +30,28 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QTimer *validationTimer;
+    QTimer *validationTimerUP;
+    QString rechercheact;
+    QString triact;
 
 private slots:
     void ajoutChampB_clicked();
-    void loadChampData();
+    void loadChampData(const QString &searchTerm = "");
     void SuppChamp(int ind);
     void loadForUpdate(int ind);
     void modifChampB_clicked();
-    void validateInputs();
-    void validateInputsUP();
+    bool validateInputs();
+    bool validateInputsUP();
+    void rechrecheparnom();
+    void freeallfields();
+    void exportToExcel();
+    void selectExp();
+    void exportToPDF();
 
 
 };
+
+
 
 #endif // MAINWINDOW_H

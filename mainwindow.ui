@@ -642,13 +642,13 @@ height: 30px;</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>0</y>
+           <y>10</y>
            <width>681</width>
            <height>451</height>
           </rect>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>2</number>
          </property>
          <property name="tabBarAutoHide">
           <bool>false</bool>
@@ -1086,11 +1086,138 @@ QTableWidget::QToolTip {
             </property>
            </column>
           </widget>
+          <widget class="QLineEdit" name="recherche_LI">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>10</y>
+             <width>181</width>
+             <height>35</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 2px solid #3498db;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    color: #2c3e50;
+    background-color: #ecf0f1;</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="recherche">
+           <property name="geometry">
+            <rect>
+             <x>190</x>
+             <y>13</y>
+             <width>81</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+           </property>
+           <property name="text">
+            <string>Rechercher</string>
+           </property>
+          </widget>
          </widget>
          <widget class="QWidget" name="Other">
           <attribute name="title">
            <string>Autre</string>
           </attribute>
+          <widget class="QStackedWidget" name="stackedWidget_2">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>261</width>
+             <height>181</height>
+            </rect>
+           </property>
+           <widget class="QWidget" name="page">
+            <widget class="QPushButton" name="exp_b">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>81</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+             </property>
+             <property name="text">
+              <string>Exporter</string>
+             </property>
+            </widget>
+            <widget class="QComboBox" name="type_f">
+             <property name="geometry">
+              <rect>
+               <x>120</x>
+               <y>10</y>
+               <width>91</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 2px solid black; /* Black border */
+    border-radius: 10px; /* Adjust the radius for desired roundness */
+    background-color: black; /* Black background */
+    color: white; /* White text color */
+    padding: 5px; /* Add some padding */
+	font-size: 12px;</string>
+             </property>
+             <item>
+              <property name="text">
+               <string>Exel</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>PDF</string>
+              </property>
+             </item>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="page_2"/>
+          </widget>
          </widget>
          <widget class="QWidget" name="tab">
           <attribute name="title">

@@ -30,18 +30,36 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->setTabVisible(3, false);
     connect(ui->PBA, &QPushButton::clicked, this, &MainWindow::ajoutChampB_clicked);
     connect(ui->majbutton, &QPushButton::clicked, this, &MainWindow::modifChampB_clicked);
+    connect(ui->recherche, &QPushButton::clicked, this, &MainWindow::rechrecheparnom);
+    connect(ui->exp_b,&QPushButton::clicked,this,&MainWindow::selectExp);
+    ui->tableWidget->setSortingEnabled(true);
 
-    connect(ui->lineEdit_nom, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
-    connect(ui->lineEdit_nbrE, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
-    connect(ui->lineEdit_Org, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
-    connect(ui->lineEdit_PG, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
-    connect(ui->comboBox_T, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::validateInputs);
 
-    connect(ui->majNom, &QLineEdit::textChanged, this, &MainWindow::validateInputsUP);
-    connect(ui->majNbrE, &QLineEdit::textChanged, this, &MainWindow::validateInputsUP);
-    connect(ui->majOrg, &QLineEdit::textChanged, this, &MainWindow::validateInputsUP);
-    connect(ui->majPG, &QLineEdit::textChanged, this, &MainWindow::validateInputsUP);
-    connect(ui->majT, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::validateInputsUP);
+
+    validationTimer = new QTimer(this);
+    validationTimer->setInterval(200);  // 200ms delay
+    validationTimer->setSingleShot(true);
+
+    validationTimerUP = new QTimer(this);
+    validationTimerUP->setInterval(200);  // Debounce time
+    validationTimerUP->setSingleShot(true);
+
+    connect(validationTimer, &QTimer::timeout, this, &MainWindow::validateInputs);
+    connect(validationTimerUP, &QTimer::timeout, this, &MainWindow::validateInputsUP);
+
+    connect(ui->lineEdit_nom, &QLineEdit::textChanged, this, [=]() { validationTimer->start(); });
+    connect(ui->lineEdit_nbrE, &QLineEdit::textChanged, this, [=]() { validationTimer->start(); });
+    connect(ui->comboBox_T, &QComboBox::currentTextChanged, this, [=]() { validationTimer->start(); });
+    connect(ui->lineEdit_Org, &QLineEdit::textChanged, this, [=]() { validationTimer->start(); });
+    connect(ui->lineEdit_PG, &QLineEdit::textChanged, this, [=]() { validationTimer->start(); });
+
+
+
+    connect(ui->majNom, &QLineEdit::textChanged, this, [=]() { validationTimer->start(); });
+    connect(ui->majNbrE, &QLineEdit::textChanged, this, [=]() { validationTimerUP->start(); });
+    connect(ui->majOrg, &QLineEdit::textChanged, this, [=]() { validationTimerUP->start(); });
+    connect(ui->majPG, &QLineEdit::textChanged, this, [=]() { validationTimerUP->start(); });
+    connect(ui->majT, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=]() { validationTimerUP->start(); });
 
     loadChampData();
 
@@ -53,7 +71,9 @@ MainWindow::~MainWindow()
 }
 void MainWindow::ajoutChampB_clicked(){
 
-    validateInputs();
+    bool test = validateInputs();
+
+    if (test == true){
 
     int nbr_eq = ui->lineEdit_nbrE->text().toInt();
     QString type = ui->comboBox_T->currentText();
@@ -75,9 +95,29 @@ void MainWindow::ajoutChampB_clicked(){
     } else {
         QMessageBox::critical(this, "Error", "Failed to add the Champs: " + QSqlDatabase::database().lastError().text());
     }
+
+    }else{
+        QMessageBox::critical(this, "error", "Certains champs ne sont pas valides ");
+    }
 }
 
-//void MainWindow::freespaces(){}
+void MainWindow::rechrecheparnom() {
+    QString searchTerm = ui->recherche_LI->text().trimmed();
+
+
+    loadChampData(searchTerm);
+}
+
+/*void MainWindow::tri() {
+    int ind = ui->tri_opts->currentIndex();
+    switch (ind) {
+    case 1: ui->tableWidget->sortItems(5, Qt::AscendingOrder); break;  // Pool Prize ASC
+    case 2: ui->tableWidget->sortItems(5, Qt::DescendingOrder); break; // Pool Prize DESC
+    case 3: ui->tableWidget->sortItems(1, Qt::AscendingOrder); break;  // Number of Teams ASC
+    case 4: ui->tableWidget->sortItems(1, Qt::DescendingOrder); break; // Number of Teams DESC
+    default: break;
+    }
+}*/
 
 void MainWindow::loadForUpdate(int ind) {
 
@@ -108,28 +148,36 @@ void MainWindow::loadForUpdate(int ind) {
 }
 void MainWindow::modifChampB_clicked(){
 
-    validateInputsUP();
+    //validateInputsUP();
+    bool test = validateInputsUP();
 
-    int id = ui->IDchamphidden->text().toInt();
-    int nbrEquipe = ui->majNbrE->text().toInt();
-    QString type = ui->comboBox_T->currentText();
-    QString nom = ui->majNom->text();
-    QString org = ui->majOrg->text();
-    int pool = ui->majPG->text().toInt();
+    if(test == true ){
+        int id = ui->IDchamphidden->text().toInt();
+        int nbrEquipe = ui->majNbrE->text().toInt();
+        QString type = ui->majT->currentText();
+        QString nom = ui->majNom->text();
+        QString org = ui->majOrg->text();
+        int pool = ui->majPG->text().toInt();
 
-    Championnats champ(nbrEquipe, type, nom, org, pool);
+        Championnats champ(nbrEquipe, type, nom, org, pool);
 
-    champ.setIdChamp(id);
+        champ.setIdChamp(id);
 
-    bool success = champ.saveUpdates();
+        bool success = champ.saveUpdates();
 
-    if (success) {
-        QMessageBox::information(nullptr, "Updated", "Championship updated successfully.");
-        freeallfields();
-        loadChampData();
-    } else {
-        QMessageBox::warning(nullptr, "Error", "Failed to update championship.");
+        if (success) {
+            QMessageBox::information(nullptr, "Updated", "Championship updated successfully.");
+            loadChampData();
+            freeallfields();
+        } else {
+            QMessageBox::warning(nullptr, "Error", "Failed to update championship.");
+        }
     }
+
+    else {
+        QMessageBox::critical(this, "error", "Certains champs ne sont pas valides ");
+    }
+
 }
 
 
@@ -159,10 +207,16 @@ void MainWindow::SuppChamp(int ind){
     }
 }
 
-void MainWindow::loadChampData() {
+void MainWindow::loadChampData(const QString &searchTerm) {
 
     QSqlQuery query;
-    query.prepare("SELECT * FROM CHAMPIONNATS");
+    if (searchTerm.isEmpty()) {
+        query.prepare("SELECT * FROM CHAMPIONNATS");
+    } else {
+        // If search term is provided, search for similar names
+        query.prepare("SELECT * FROM CHAMPIONNATS WHERE NOM LIKE :searchTerm");
+        query.bindValue(":searchTerm", "%" + searchTerm + "%"); // Partial match
+    }
 
     if (!query.exec()) {
         qDebug() << "Error retrieving data: " << query.lastError().text();
@@ -202,11 +256,11 @@ void MainWindow::loadChampData() {
 }
 
 
-void MainWindow::validateInputs() {
+bool MainWindow::validateInputs() {
     bool allValid = true;
 
 
-    QRegularExpression alphaRegex("^[A-Za-zÀ-ÖØ-öø-ÿ\\s-]+$");
+    static QRegularExpression alphaRegex("^[A-Za-zÀ-ÖØ-öø-ÿ\\s-]+$");
 
 
     if (ui->lineEdit_nom->text().trimmed().isEmpty() ||
@@ -285,7 +339,7 @@ void MainWindow::validateInputs() {
     }
 
     if (ui->lineEdit_PG->text().trimmed().isEmpty() ||
-        ui->lineEdit_PG->text().toInt() < 0 || (ui->lineEdit_PG->text().toInt() / ui->lineEdit_nbrE->text().toInt()) >= 2000) {
+        ui->lineEdit_PG->text().toInt() < 0 || (ui->lineEdit_PG->text().toInt() / ui->lineEdit_nbrE->text().toInt()) <= 2000) {
         ui->err_pool->setText("le montant est issufisant (min 2000 par équipe)!");
         ui->err_pool->setStyleSheet(
             "color: #D32F2F; "
@@ -302,15 +356,16 @@ void MainWindow::validateInputs() {
             "padding: 2px; ");
     }
 
+    return allValid;
 
-    ui->PBA->setEnabled(allValid);
+    qDebug() << "validateInputs() called";
 }
 
-void MainWindow::validateInputsUP() {
+bool MainWindow::validateInputsUP() {
     bool allValid = true;
 
 
-    QRegularExpression alphaRegex("^[A-Za-zÀ-ÖØ-öø-ÿ\\s-]+$");
+    static QRegularExpression alphaRegex("^[A-Za-zÀ-ÖØ-öø-ÿ\\s-]+$");
 
 
     if (ui->majNom->text().trimmed().isEmpty() ||
@@ -407,7 +462,7 @@ void MainWindow::validateInputsUP() {
     }
 
 
-    ui->majbutton->setEnabled(allValid);
+    return allValid;
 }
 
 void MainWindow::freeallfields(){
@@ -415,11 +470,139 @@ void MainWindow::freeallfields(){
     ui->lineEdit_nom->setText("");
     ui->lineEdit_Org->setText("");
     ui->lineEdit_PG->setText("");
-    ui->comboBox_T->setCurrentIndex(0);
+    //ui->comboBox_T->setCurrentIndex(0);
 
     ui->majNbrE->setText("");
     ui->majNom->setText("");
     ui->majOrg->setText("");
     ui->majPG->setText("");
-    ui->majT->setCurrentIndex(0);
+    //ui->majT->setCurrentIndex(0);
+}
+
+#include <QAxObject>
+
+void MainWindow::exportToExcel() {
+    QString filePath = QFileDialog::getSaveFileName(this, "Save File", "C:/Utilisateurs/ADMIN/", "Excel Files (*.xlsx)");
+    if (filePath.isEmpty()) return;
+    QAxObject *excel = new QAxObject("Excel.Application", nullptr);
+    excel->setProperty("Visible", false);
+    QAxObject *workbook = excel->querySubObject("Workbooks")->querySubObject("Add");
+    QAxObject *sheet = workbook->querySubObject("Sheets(int)", 1);
+
+    int rowCount = ui->tableWidget->rowCount();
+    int colCount = ui->tableWidget->columnCount();
+    colCount -= 2;
+
+    // Set Headers
+    for (int col = 0; col < colCount; ++col) {
+        sheet->querySubObject("Cells(int,int)", 1, col + 1)->setProperty("Value", ui->tableWidget->horizontalHeaderItem(col)->text());
+    }
+
+    // Set Data
+    for (int row = 0; row < rowCount; ++row) {
+        for (int col = 0; col < colCount; ++col) {
+            QTableWidgetItem *item = ui->tableWidget->item(row, col);
+            if (item) {
+                sheet->querySubObject("Cells(int,int)", row + 2, col + 1)->setProperty("Value", item->text());
+            }
+        }
+    }
+
+    // Save and Close
+    if (!filePath.isEmpty()) {
+        workbook->querySubObject("SaveAs(const QString&)", filePath.replace("/", "\\"), 51);
+    }
+
+    workbook->querySubObject("Close");
+    excel->querySubObject("Quit");
+
+    delete sheet;
+    delete workbook;
+    delete excel;
+
+    QMessageBox::information(this, "Export", "Exportation reussite.");
+}
+
+void MainWindow::exportToPDF() {
+    QString filePath = QFileDialog::getSaveFileName(this, "Save PDF", "", "PDF Files (*.pdf)");
+
+    if (filePath.isEmpty()) {
+        return;  // If user cancels, do nothing
+    }
+
+    QPdfWriter writer(filePath);
+    writer.setPageSize(QPageSize::A4);
+    writer.setResolution(300);
+    QPainter painter(&writer);
+
+    if (!painter.isActive()) {
+        QMessageBox::warning(this, "Export Failed", "Failed to open PDF for writing.");
+        return;
+    }
+
+    int margin = 100;
+    int titleHeight = 200;
+    int rowHeight = 150;
+    int columnWidth =350;  // Reduced width for better fit
+    int yPosition = margin;
+
+    // **Set Title**
+    QFont titleFont("Arial", 14, QFont::Bold);
+    painter.setFont(titleFont);
+    painter.drawText(margin, yPosition, "Championnats Report");
+
+    // **Set Date**
+    QFont dateFont("Arial", 10);
+    painter.setFont(dateFont);
+    QString date = "Date: " + QDate::currentDate().toString("dd/MM/yyyy");
+    painter.drawText(writer.width() - margin * 10, yPosition, date);  // Right-aligned date
+
+    yPosition += titleHeight;  // Move down after title
+
+    // **Draw Table Headers**
+    QFont headerFont("Arial", 9, QFont::Bold);
+    painter.setFont(headerFont);
+
+    QStringList headers = {"ID", "Nb Equipes", "Type", "nom", "Organisateur", "Pool"};
+
+    int xPosition = margin;
+    for (const QString &header : headers) {
+        painter.drawText(xPosition, yPosition, header);
+        xPosition += columnWidth;
+    }
+
+    // **Draw Header Line**
+    painter.drawLine(margin, yPosition + 20, xPosition, yPosition + 20);
+    yPosition += rowHeight;  // Move to first data row
+
+    // **Draw Table Data**
+    QFont rowFont("Arial", 8);
+    painter.setFont(rowFont);
+
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+        xPosition = margin;
+        for (int col = 0; col < headers.size(); ++col) {
+            if (ui->tableWidget->item(row, col)) {
+                painter.drawText(xPosition, yPosition, ui->tableWidget->item(row, col)->text());
+            }
+            xPosition += columnWidth;
+        }
+        // **Draw Row Line**
+        painter.drawLine(margin, yPosition + 10, xPosition, yPosition + 10);
+        yPosition += rowHeight;
+    }
+
+    painter.end();
+    QMessageBox::information(this, "Exportation Réussie", "PDF exporté avec succès à: " + filePath);
+}
+
+void MainWindow::selectExp(){
+    QString type = ui->type_f->currentText();
+
+    if (type == "Exel"){
+       exportToExcel();
+    }
+    else{
+       exportToPDF();
+    }
 }
