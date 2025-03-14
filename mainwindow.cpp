@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->programme->setModel(Eq->loadequipeData());
 
-
+addActionColumn();
 
 
     // Apply design
@@ -65,102 +65,168 @@ MainWindow::~MainWindow()
 
 #include <QRegularExpression> // Assurez-void vous d'inclure cette bibliothèque
 
-void MainWindow::refreshTable()
-{
-    // Check if the input fields are empty
-    if (ui->nome->text().isEmpty() || ui->Pays->text().isEmpty() ||
-        ui->coach->text().isEmpty() || ui->nbj->text().isEmpty() ||
-        ui->nbmarquee->text().isEmpty()) {
-        QMessageBox::warning(this, "Input Error", "Please fill in all fields before refreshing the table.");
-        return; // Exit the function if any field is empty
-    }
-
-    // Create a new model
-    QSqlQueryModel *model = new QSqlQueryModel(this); // Set 'this' as the parent for automatic deletion
-
-    // Create a query to select all data from the equipe table
+void MainWindow::refreshTable() {
+    // Créer un nouveau modèle
+    QSqlQueryModel *model = new QSqlQueryModel(this);
     QSqlQuery query;
-    query.prepare("SELECT NOMEQUIPE, NOMVILLE, NOMENTRAINEUR, NOMBREJOUEURS, TYPE, NOMBREBUTSMARQUES, DATEDEBUTCONTRAT, DATEFINCONTRAT FROM equipe");
+    query.prepare("SELECT * FROM equipe");
 
     if (query.exec()) {
-        model->setQuery(std::move(query)); // Use std::move to pass the query
-        model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom Equipe"));
-        model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom Ville"));
-        model->setHeaderData(2, Qt::Horizontal, QObject::tr("Nom Entraineur"));
-        model->setHeaderData(3, Qt::Horizontal, QObject::tr("Nombre Joueurs"));
-        model->setHeaderData(4, Qt::Horizontal, QObject::tr("Type"));
-        model->setHeaderData(5, Qt::Horizontal, QObject::tr("Nombre Buts Marqués"));
-        model->setHeaderData(6, Qt::Horizontal, QObject::tr("Date Debut Contrat"));
-        model->setHeaderData(7, Qt::Horizontal, QObject::tr("Date Fin Contrat"));
+        model->setQuery(std::move(query));
+        model->setHeaderData(0, Qt::Horizontal, QObject::tr("Id_equipe"));
+        model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom_equipe"));
+        model->setHeaderData(2, Qt::Horizontal, QObject::tr("Nom_ville"));
+        model->setHeaderData(3, Qt::Horizontal, QObject::tr("Nom_entraineur"));
+        model->setHeaderData(4, Qt::Horizontal, QObject::tr("Nombre_joueurs"));
+        model->setHeaderData(5, Qt::Horizontal, QObject::tr("Type"));
+        model->setHeaderData(6, Qt::Horizontal, QObject::tr("Nombrebuts_marquees"));
+        model->setHeaderData(7, Qt::Horizontal, QObject::tr("Debut_contrat"));
+        model->setHeaderData(8, Qt::Horizontal, QObject::tr("Fin_contrat"));
 
-        // Set the model to the QTableView
+        // Définir le modèle dans la table
         ui->programme->setModel(model);
+
+        // Ajouter la colonne "Action" et les boutons "Modifier" et "Supprimer"
+        addActionColumn(); // Ajouter la colonne "Action" après avoir défini le modèle
     } else {
-        // Handle query error if there is one
         QMessageBox::critical(this, "Erreur", "Erreur lors de la récupération des données : " + query.lastError().text());
     }
 }
+void MainWindow::addActionColumn() {
+    // Récupérer le modèle de données actuel
+    QSqlQueryModel *model = qobject_cast<QSqlQueryModel *>(ui->programme->model());
 
+    if (model) {
+        // Ajouter une colonne "Action" au modèle
+        model->insertColumn(model->columnCount()); // Ajouter une nouvelle colonne à la fin
+        model->setHeaderData(model->columnCount() - 1, Qt::Horizontal, QObject::tr("Action"));
+
+        // Ajouter les boutons "Modifier" et "Supprimer" dans la colonne "Action"
+        addButtonsToTable();
+    }
+}
+
+void MainWindow::addButtonsToTable() {
+    for (int row = 0; row < ui->programme->model()->rowCount(); ++row) {
+        // Créer les boutons "Modifier" et "Supprimer"
+        QPushButton *modifyButton = new QPushButton("Modifier");
+        QPushButton *deleteButton = new QPushButton("Supprimer");
+
+        // Récupérer l'ID de l'équipe pour la ligne actuelle
+        int equipeId = ui->programme->model()->data(ui->programme->model()->index(row, 0)).toInt();
+
+        // Connecter le bouton "Modifier" à la méthode openModificationDialog
+        connect(modifyButton, &QPushButton::clicked, [this, equipeId]() {
+            openModificationDialog(equipeId);
+        });
+
+        // Connecter le bouton "Supprimer" à la méthode de suppression
+        connect(deleteButton, &QPushButton::clicked, [this, equipeId]() {
+            if (QMessageBox::question(this, "Confirmation", "Êtes-vous sûr de vouloir supprimer cette équipe ?") == QMessageBox::Yes) {
+                if (Eq->Delete(equipeId)) {
+                    QMessageBox::information(this, "Succès", "Équipe supprimée avec succès !");
+                    refreshTable(); // Rafraîchir la table après la suppression
+                } else {
+                    QMessageBox::critical(this, "Erreur", "Échec de la suppression de l'équipe.");
+                }
+            }
+        });
+
+        // Créer un layout horizontal pour les boutons
+        QHBoxLayout *layout = new QHBoxLayout();
+        layout->addWidget(modifyButton);
+        layout->addWidget(deleteButton);
+        layout->setAlignment(Qt::AlignCenter);
+        layout->setContentsMargins(0, 0, 0, 0);
+
+        // Créer un widget pour contenir les boutons
+        QWidget *buttonWidget = new QWidget();
+        buttonWidget->setLayout(layout);
+
+        // Ajouter le widget dans la colonne "Action" (dernière colonne)
+        ui->programme->setIndexWidget(ui->programme->model()->index(row, ui->programme->model()->columnCount() - 1), buttonWidget);
+    }
+}
     // Connecter chaque QLineEdit à sa fonction de validation
 
 
 bool MainWindow::validateName() {
+    bool valide=true;
+
     QRegularExpression regex("^[A-Z][a-zA-Z]*$");
     if (!regex.match(ui->nome->text()).hasMatch()) {
         QMessageBox::warning(this, "Input Error", "Invalid name. It should start with a capital letter and contain only letters.");
         ui->nome->setFocus();
-        return false;
+        valide = false;
+
     }
+    return valide;
+
 }
 
 bool MainWindow::validateCountry() {
+    bool valide=true;
+
     QRegularExpression regex("^[A-Z][a-zA-Z]*$");
     if (!regex.match(ui->Pays->text()).hasMatch()) {
         QMessageBox::warning(this, "Input Error", "Invalid country name. It should start with a capital letter and contain only letters.");
         ui->Pays->setFocus();
-        return false;
+        valide = false;
+
 
     }
+    return valide;
+
 }
 
 bool MainWindow::validateCoach() {
+    bool valide=true;
+
     QRegularExpression regex("^[A-Z][a-zA-Z]*$");
     if (!regex.match(ui->coach->text()).hasMatch()) {
         QMessageBox::warning(this, "Input Error", "Invalid coach name. It should start with a capital letter and contain only letters.");
         ui->coach->setFocus();
-        return false;
+        valide = false;
+
 
     }
+    return valide;
+
 }
 
 bool MainWindow::validateGoals() {
+    bool valide=true;
     QRegularExpression numberRegex("^[0-9]+$");
     if (!numberRegex.match(ui->nbmarquee->text()).hasMatch()) {
         QMessageBox::warning(this, "Input Error", "Invalid number of goals. It should contain only digits.");
         ui->nbmarquee->setFocus();
-        return false;
+       valide = false;
 
     } else if (ui->nbmarquee->text().toInt() < 0) {
         QMessageBox::warning(this, "Input Error", "The number of goals scored must be non-negative.");
         ui->nbmarquee->setFocus();
-        return false;
-
+valide = false;
     }
+    return valide;
 }
 
 bool MainWindow::validatePlayers() {
+    bool valide=true;
+
     QRegularExpression numberRegex("^[0-9]+$");
     if (!numberRegex.match(ui->nbj->text()).hasMatch()) {
         QMessageBox::warning(this, "Input Error", "Invalid number of players. It should contain only digits.");
         ui->nbj->setFocus();
-        return false;
+        valide = false;
 
     } else if (ui->nbj->text().toInt() < 11) {
         QMessageBox::warning(this, "Input Error", "The number of players must be at least 11.");
         ui->nbj->setFocus();
-        return false;
+        valide = false;
 
     }
+    return valide;
+
 }
 
 void MainWindow::checkInput() {
@@ -172,9 +238,9 @@ void MainWindow::Ajouter_clicked() {
     QString nomE = ui->nome->text();
     QString nomv = ui->Pays->text();
     QString nomC = ui->coach->text();
-    int nbj = ui->nbj->text().toInt();
+    int nbj = ui->nbj->value();
 
-    // Check which checkbox is checked and set type accordingly
+    // Vérifier quel bouton est coché et définir le type en conséquence
     QString type;
     if (ui->Normal->isChecked()) {
         type = "Normal";
@@ -182,20 +248,95 @@ void MainWindow::Ajouter_clicked() {
         type = "National";
     } else {
         QMessageBox::warning(this, "Warning", "Please select a type.");
-        return; // Exit if none is selected
+        return; // Quitter si aucun type n'est sélectionné
     }
 
     int nbm = ui->nbmarquee->text().toInt();
-    QDate dateDebutContrat = ui->dbcnt->date(); // Assuming dbcnt is a QDateEdit widget
-    QDate dateFinContrat = ui->fincnt->date();  // Assuming fincnt is a QDateEdit widget
+    QDate dateDebutContrat = ui->dbcnt->date(); // Supposons que dbcnt est un QDateEdit
+    QDate dateFinContrat = ui->fincnt->date();  // Supposons que fincnt est un QDateEdit
 
-    // Create an Equipe object with the data
+    // Créer un objet Equipe avec les données
     Equipe EQUIPE(nomE, nomv, nomC, nbj, type, nbm, dateDebutContrat, dateFinContrat);
     bool success = EQUIPE.Ajouter();
     if (success) {
         QMessageBox::information(this, "Success", "Equipe added successfully!");
-        refreshTable(); // Call refreshTable to update the displayed data
+        refreshTable(); // Rafraîchir la table après l'ajout
     } else {
         QMessageBox::critical(this, "Error", "Failed to add the EQUIPE: " + QSqlDatabase::database().lastError().text());
+    }
+}
+void MainWindow::openModificationDialog(int equipeId) {
+    // Récupérer les données de l'équipe
+    QSqlQuery query;
+    query.prepare("SELECT * FROM equipe WHERE IDEQUIPE = :id");
+    query.bindValue(":id", equipeId);
+    query.exec();
+
+    if (query.next()) {
+        ui->nome->setText(query.value("NOMEQUIPE").toString());
+        ui->Pays->setText(query.value("NOMVILLE").toString());
+        ui->coach->setText(query.value("NOMENTRAINEUR").toString());
+        ui->nbj->setValue(query.value("NOMBREJOUEURS").toInt());
+        ui->nbmarquee->setText(query.value("NOMBREBUTSMARQUES").toString());
+
+        // Gérer le type (Normal ou National)
+        if (query.value("TYPE").toString() == "Normal") {
+            ui->Normal->setChecked(true);
+        } else {
+            ui->Nationnal->setChecked(true);
+        }
+
+        // Changer le texte du bouton "Ajouter" en "Modifier"
+        ui->Ajouter->setText("Modifier");
+
+        // Déconnecter tous les signaux précédents du bouton "Ajouter"
+        disconnect(ui->Ajouter, &QPushButton::clicked, nullptr, nullptr);
+
+        // Connecter le signal du bouton "Ajouter" à la méthode modifyEquipe
+        connect(ui->Ajouter, &QPushButton::clicked, [this, equipeId]() { modifyEquipe(equipeId); });
+    }
+}
+void MainWindow::modifyEquipe(int equipeId) {
+    QString nomE = ui->nome->text();
+    QString nomv = ui->Pays->text();
+    QString nomC = ui->coach->text();
+    int nbj = ui->nbj->value();
+    int nbm = ui->nbmarquee->text().toInt();
+    QString type = ui->Normal->isChecked() ? "Normal" : "National";
+
+    QSqlQuery query;
+    query.prepare("UPDATE equipe SET NOMEQUIPE = :nomE, NOMVILLE = :nomv, NOMENTRAINEUR = :nomC, "
+                  "NOMBREJOUEURS = :nbj, NOMBREBUTSMARQUES = :nbm, TYPE = :type WHERE IDEQUIPE = :id");
+    query.bindValue(":nomE", nomE);
+    query.bindValue(":nomv", nomv);
+    query.bindValue(":nomC", nomC);
+    query.bindValue(":nbj", nbj);
+    query.bindValue(":nbm", nbm);
+    query.bindValue(":type", type);
+    query.bindValue(":id", equipeId);
+
+    if (query.exec()) {
+        QMessageBox::information(this, "Success", "Equipe modified successfully!");
+
+        // Réinitialiser les champs
+        ui->nome->clear();
+        ui->Pays->clear();
+        ui->coach->clear();
+        ui->nbj->setValue(0);
+        ui->nbmarquee->clear();
+
+        // Réinitialiser le bouton "Ajouter"
+        ui->Ajouter->setText("Ajouter");
+
+        // Déconnecter tous les signaux précédents du bouton "Ajouter"
+        disconnect(ui->Ajouter, &QPushButton::clicked, nullptr, nullptr);
+
+        // Reconnecter le bouton "Ajouter" à la méthode Ajouter_clicked
+        connect(ui->Ajouter, &QPushButton::clicked, this, &MainWindow::Ajouter_clicked);
+
+        // Recharger les données
+        refreshTable();
+    } else {
+        QMessageBox::critical(this, "Error", "Failed to modify the equipe: " + query.lastError().text());
     }
 }

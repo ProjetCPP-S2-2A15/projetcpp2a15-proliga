@@ -2,9 +2,8 @@
 #include <QDebug>
 #include <QSqlError>
 
-// Constructeur
-
-Equipe::Equipe( const QString& nom, const QString& ville,
+// Constructor
+Equipe::Equipe(const QString& nom, const QString& ville,
                const QString& entraineur, int nbJoueurs, const QString& typeEquipe,
                int butsMarques, const QDate& debutContrat, const QDate& finContrat)
 {
@@ -18,12 +17,8 @@ Equipe::Equipe( const QString& nom, const QString& ville,
     this->dateFinContrat = finContrat;
 }
 
-// Accesseurs and Mutateurs remain the same
-
 bool Equipe::Ajouter() {
     QSqlQuery query;
-
-    // Prepare the SQL query without IDEQUIPE (assuming it's auto-incremented)
     query.prepare("INSERT INTO equipe (NOMEQUIPE, NOMVILLE, NOMENTRAINEUR, NOMBREJOUEURS, TYPE, NOMBREBUTSMARQUES, DATEDEBUTCONTRAT, DATEFINCONTRAT) "
                   "VALUES (:nomEquipe, :nomVille, :nomEntraineur, :nombreJoueurs, :type, :nombreButsMarques, :dateDebutContrat, :dateFinContrat)");
 
@@ -37,7 +32,6 @@ bool Equipe::Ajouter() {
     query.bindValue(":dateDebutContrat", dateDebutContrat);
     query.bindValue(":dateFinContrat", dateFinContrat);
 
-    // Execute the query and check if it was successful
     if (query.exec()) {
         return true; // Insertion successful
     } else {
@@ -45,30 +39,31 @@ bool Equipe::Ajouter() {
         return false; // Insertion failed
     }
 }
-QSqlQueryModel * Equipe::loadequipeData(){
-    QSqlQueryModel * model=new QSqlQueryModel();
-    model->setQuery("select * from equipe");
-  model->setHeaderData(0,Qt::Horizontal,QObject::tr("Id_equipe"));
-    model->setHeaderData(1,Qt::Horizontal,QObject::tr("Nom_equipe"));
-    model->setHeaderData(2,Qt::Horizontal,QObject::tr("Nom_ville"));
-    model->setHeaderData(3,Qt::Horizontal,QObject::tr("Nom_entraineur"));
-    model->setHeaderData(4,Qt::Horizontal,QObject::tr("Nombre_joueurs"));
-    model->setHeaderData(5,Qt::Horizontal,QObject::tr("Type"));
-    model->setHeaderData(6,Qt::Horizontal,QObject::tr("Nombrebuts_marquees"));
-    model->setHeaderData(7,Qt::Horizontal,QObject::tr("Debut_contrat"));
-    model->setHeaderData(8,Qt::Horizontal,QObject::tr("Fin_contrat"));
 
-    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Action")); // New header for action column
+QSqlQueryModel * Equipe::loadequipeData() {
+    QSqlQueryModel * model = new QSqlQueryModel();
+    model->setQuery("SELECT * FROM equipe");
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Id_equipe"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom_equipe"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Nom_ville"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Nom_entraineur"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Nombre_joueurs"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Type"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("Nombrebuts_marquees"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("Debut_contrat"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("Fin_contrat"));
 
-    return model ;
+    return model;
 }
+
 bool Equipe::Delete(int id) {
     QSqlQuery query;
-    query.prepare("DELETE FROM equipe WHERE IDEQUIPE = :id"); // Assuming IDEQUIPE is the primary key
+    query.prepare("DELETE FROM equipe WHERE IDEQUIPE = :id");
     query.bindValue(":id", id);
 
     if (query.exec()) {
-        return true; // Deletion successful
+        return true;
+        // Deletion successful
     } else {
         qDebug() << "Error deleting from database: " << query.lastError().text();
         return false; // Deletion failed

@@ -33,6 +33,10 @@ private slots:
     bool validatePlayers();
     void checkInput();
     void refreshTable();
+    void openModificationDialog(int idEquipe);
+    void modifyEquipe(int equipeId);
+    void addButtonsToTable();
+    void addActionColumn();
 private:
     Ui::MainWindow *ui;
 
