@@ -29,6 +29,7 @@ private slots:
     void on_pushButton_rechercherNom_clicked();
     void on_pushButton_rechercherCapacite_clicked();
     void on_comboBoxTri_currentIndexChanged(int index);
+    void on_pushButton_genererPDF_clicked();
 };
 
 #endif // MAINWINDOW_H

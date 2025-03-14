@@ -792,7 +792,7 @@ height: 30px;</string>
             </property>
            </item>
           </widget>
-          <widget class="QPushButton" name="pushButton_7">
+          <widget class="QPushButton" name="pushButton_genererPDF">
            <property name="geometry">
             <rect>
              <x>690</x>
@@ -852,19 +852,6 @@ height: 30px;</string>
     font-size: 14px;
     color: #2c3e50;
     background-color: #ecf0f1;</string>
-           </property>
-          </widget>
-          <widget class="QTableView" name="tableView">
-           <property name="geometry">
-            <rect>
-             <x>310</x>
-             <y>60</y>
-             <width>621</width>
-             <height>301</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(172, 216, 235, 255), stop:0.468504 rgba(202, 235, 234, 255), stop:0.854331 rgba(184, 216, 194, 255));</string>
            </property>
           </widget>
           <widget class="QLineEdit" name="lineEdit_ID">
@@ -1347,6 +1334,16 @@ height: 30px;</string>
            </property>
            <property name="autoExclusive">
             <bool>true</bool>
+           </property>
+          </widget>
+          <widget class="QTableView" name="tableView">
+           <property name="geometry">
+            <rect>
+             <x>305</x>
+             <y>90</y>
+             <width>601</width>
+             <height>261</height>
+            </rect>
            </property>
           </widget>
          </widget>

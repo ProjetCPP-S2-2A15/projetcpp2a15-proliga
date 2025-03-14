@@ -6,6 +6,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QPdfWriter>
+#include <QPainter>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->arbitre2, &QPushButton::toggled, [this](bool checked) { on_arbitre2_toggled(ui, checked); });
     connect(ui->stade1, &QPushButton::toggled, [this](bool checked) { on_stade1_toggled(ui, checked); });
     connect(ui->stade2, &QPushButton::toggled, [this](bool checked) { on_stade2_toggled(ui, checked); });
+
 }
 
 MainWindow::~MainWindow()
@@ -285,5 +288,86 @@ void MainWindow::on_comboBoxTri_currentIndexChanged(int index)
     ui->tableView->setModel(model);
 }
 
+void MainWindow::on_pushButton_genererPDF_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Enregistrer le PDF", "", "*.pdf");
+    if (fileName.isEmpty())
+        return;
+
+    QPdfWriter pdfWriter(fileName);
+    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
+    pdfWriter.setResolution(300);
+
+    QPainter painter(&pdfWriter);
+    int pageWidth = pdfWriter.width();
+    int xStart;
+    int yStart = 200;
+    int rowHeight = 200;
+    int colWidth = 400;
+    int tableWidth = 5 * colWidth;
+
+    xStart = (pageWidth - tableWidth) / 2;
+
+    QFont titleFont = painter.font();
+    titleFont.setPointSize(16);
+    titleFont.setBold(true);
+    painter.setFont(titleFont);
+    painter.setPen(Qt::green);
+
+    QString title = "Liste des Stades";
+    int titleWidth = painter.fontMetrics().horizontalAdvance(title);
+    int titleX = (pageWidth - titleWidth) / 2;
+    painter.drawText(titleX, 100, title);
+
+    QFont font = painter.font();
+    font.setPointSize(10);
+    painter.setFont(font);
+    painter.setPen(Qt::black);
 
 
+    painter.drawRect(xStart, yStart, tableWidth, rowHeight);
+    painter.drawText(xStart + 50, yStart + 100, "Nom");
+    painter.drawText(xStart + colWidth + 50, yStart + 100, "Lieu");
+    painter.drawText(xStart + 2 * colWidth + 50, yStart + 100, "Capacité");
+    painter.drawText(xStart + 3 * colWidth + 50, yStart + 100, "Tickets Vendus");
+    painter.drawText(xStart + 4 * colWidth + 50, yStart + 100, "Date de Création");
+
+    yStart += rowHeight;
+
+
+    QSqlQuery query("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades");
+    while (query.next()) {
+        painter.drawRect(xStart, yStart, tableWidth, rowHeight);
+
+
+        QString nom = query.value("nom").toString();
+        QString lieu = query.value("lieu").toString();
+        int capacite = query.value("capacite").toInt();
+        int tickets = query.value("nbr_tickets_vd").toInt();
+        QDate dateCreation = query.value("date_creation").toDate();
+
+
+        painter.drawText(xStart + 50, yStart + 100, nom);
+        painter.drawText(xStart + colWidth + 50, yStart + 100, lieu);
+        painter.drawText(xStart + 2 * colWidth + 50, yStart + 100, QString::number(capacite));
+        painter.drawText(xStart + 3 * colWidth + 50, yStart + 100, QString::number(tickets));
+        painter.drawText(xStart + 4 * colWidth + 50, yStart + 100, dateCreation.toString("dd/MM/yyyy"));
+
+        yStart += rowHeight;
+
+
+        if (yStart > pdfWriter.height() - 100) {
+            pdfWriter.newPage();
+            yStart = 200;
+        }
+    }
+
+
+    for (int i = 0; i <= 5; i++) {
+        painter.drawLine(xStart + i * colWidth, 200, xStart + i * colWidth, yStart);
+    }
+
+    painter.end();
+
+    QMessageBox::information(this, "Succès", "Le fichier PDF a été généré avec succès !");
+}

@@ -1,5 +1,4 @@
 #include "stades.h"
-
 Stade::Stade(QString name, QString location, int capacity, int tickets, QDate date) {
     this->nom = name;
     this->lieu = location;

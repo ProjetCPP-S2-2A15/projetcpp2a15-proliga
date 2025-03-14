@@ -5,6 +5,10 @@
 #include <QDate>
 #include <QSqlQuery>
 #include <QSqlQueryModel>
+#include <QPainter>
+#include <QPdfWriter>
+#include <QFileDialog>
+
 
 class Stade {
 private:
@@ -43,6 +47,7 @@ public:
     QSqlQueryModel* rechercherParNom(QString nomRecherche);
     QSqlQueryModel* rechercherParCapacite(int capaciteMin, int capaciteMax);
     QSqlQueryModel* trier(QString critere, QString ordre);
+
 };
 
 #endif // STADES_H
