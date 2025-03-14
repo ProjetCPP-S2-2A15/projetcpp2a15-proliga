@@ -37,6 +37,7 @@ private slots:
     void modifyEquipe(int equipeId);
     void addButtonsToTable();
     void addActionColumn();
+    void exportTableToPDF();
 private:
     Ui::MainWindow *ui;
 

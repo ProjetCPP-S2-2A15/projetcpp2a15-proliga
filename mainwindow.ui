@@ -139,7 +139,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/competition.png</normaloff>:/interface_icons/competition.png</iconset>
            </property>
            <property name="checkable">
@@ -160,7 +160,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/ball.png</normaloff>:/interface_icons/ball.png</iconset>
            </property>
            <property name="checkable">
@@ -182,7 +182,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/t.png</normaloff>:/interface_icons/t.png</iconset>
            </property>
            <property name="checkable">
@@ -203,7 +203,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/p.png</normaloff>:/interface_icons/p.png</iconset>
            </property>
            <property name="checkable">
@@ -224,7 +224,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/a.png</normaloff>:/interface_icons/a.png</iconset>
            </property>
            <property name="checkable">
@@ -245,7 +245,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/ss.png</normaloff>:/interface_icons/ss.png</iconset>
            </property>
            <property name="checkable">
@@ -281,7 +281,7 @@ border: none;</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+          <iconset resource="img.qrc">
            <normaloff>:/interface_icons/q.png</normaloff>:/interface_icons/q.png</iconset>
          </property>
          <property name="checkable">
@@ -346,7 +346,7 @@ color: white;</string>
             <string>ArenaChamps</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/log.png</normaloff>:/interface_icons/log.png</iconset>
            </property>
            <property name="iconSize">
@@ -370,7 +370,7 @@ color: #788596;</string>
             <string> Competition</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/competition.png</normaloff>:/interface_icons/competition.png</iconset>
            </property>
            <property name="checkable">
@@ -394,7 +394,7 @@ color: #788596;</string>
             <string>  Matches</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/ball.png</normaloff>:/interface_icons/ball.png</iconset>
            </property>
            <property name="checkable">
@@ -418,7 +418,7 @@ color: #788596;</string>
             <string>   Equipes</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/t.png</normaloff>:/interface_icons/t.png</iconset>
            </property>
            <property name="checkable">
@@ -442,7 +442,7 @@ color: #788596;</string>
             <string>   Joueurs</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/p.png</normaloff>:/interface_icons/p.png</iconset>
            </property>
            <property name="checkable">
@@ -466,7 +466,7 @@ color: #788596;</string>
             <string>   Arbitres</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/a.png</normaloff>:/interface_icons/a.png</iconset>
            </property>
            <property name="checkable">
@@ -490,7 +490,7 @@ color: #788596;</string>
             <string>   Stades</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+            <iconset resource="img.qrc">
              <normaloff>:/interface_icons/ss.png</normaloff>:/interface_icons/ss.png</iconset>
            </property>
            <property name="checkable">
@@ -529,7 +529,7 @@ color: #788596;</string>
           <string>logout</string>
          </property>
          <property name="icon">
-          <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+          <iconset resource="img.qrc">
            <normaloff>:/interface_icons/q.png</normaloff>:/interface_icons/q.png</iconset>
          </property>
          <property name="checkable">
@@ -577,7 +577,7 @@ height: 30px;</string>
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../../projetcpp2a15-proliga-ahmed/projetcpp2a15-proliga-ahmed/img.qrc">
+         <iconset resource="img.qrc">
           <normaloff>:/interface_icons/menu.png</normaloff>:/interface_icons/menu.png</iconset>
         </property>
         <property name="checkable">
@@ -691,10 +691,27 @@ height: 30px;</string>
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>20</y>
+             <y>30</y>
              <width>681</width>
-             <height>201</height>
+             <height>171</height>
             </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="telechargement">
+           <property name="geometry">
+            <rect>
+             <x>560</x>
+             <y>200</y>
+             <width>101</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>telecharger</string>
+           </property>
+           <property name="icon">
+            <iconset resource="img.qrc">
+             <normaloff>:/interface_icons/pdf-file.png</normaloff>:/interface_icons/pdf-file.png</iconset>
            </property>
           </widget>
          </widget>
@@ -1160,7 +1177,9 @@ color: rgb(0, 0, 0);</string>
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="img.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>sidebar</sender>

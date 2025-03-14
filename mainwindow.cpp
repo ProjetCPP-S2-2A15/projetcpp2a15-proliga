@@ -55,6 +55,7 @@ addActionColumn();
     connect(ui->coach, &QLineEdit::textChanged, this, &MainWindow::validateCoach);
     connect(ui->nbmarquee, &QLineEdit::textChanged, this, &MainWindow::validateGoals);
     connect(ui->nbj, &QSpinBox::textChanged, this, &MainWindow::validatePlayers);
+    connect(ui->telechargement, &QPushButton::clicked, this, &MainWindow::exportTableToPDF); // Assurez-vous d'avoir un bouton "exportButton" dans votre interface
 
 }
 
@@ -261,6 +262,11 @@ void MainWindow::Ajouter_clicked() {
     if (success) {
         QMessageBox::information(this, "Success", "Equipe added successfully!");
         refreshTable(); // Rafraîchir la table après l'ajout
+        ui->nome->clear();
+        ui->Pays->clear();
+        ui->coach->clear();
+        ui->nbj->setValue(0);
+        ui->nbmarquee->clear();
     } else {
         QMessageBox::critical(this, "Error", "Failed to add the EQUIPE: " + QSqlDatabase::database().lastError().text());
     }
@@ -339,4 +345,58 @@ void MainWindow::modifyEquipe(int equipeId) {
     } else {
         QMessageBox::critical(this, "Error", "Failed to modify the equipe: " + query.lastError().text());
     }
+}
+// exportation pdf
+#include <QTextDocument>
+#include <QTextCursor>
+#include <QPrinter>
+#include <QFileDialog>
+
+void MainWindow::exportTableToPDF() {
+    // Créer un document texte
+    QTextDocument document;
+
+    // Créer un curseur pour insérer du contenu dans le document
+    QTextCursor cursor(&document);
+
+    // Créer un tableau HTML pour représenter les données du tableau
+    QString html = "<table border='1' cellpadding='5'>";
+
+    // Ajouter l'en-tête du tableau
+    html += "<tr>";
+    for (int col = 0; col < ui->programme->model()->columnCount() - 1; ++col) { // Exclure la dernière colonne (Action)
+        QString header = ui->programme->model()->headerData(col, Qt::Horizontal).toString();
+        html += "<th>" + header + "</th>";
+    }
+    html += "</tr>";
+
+    // Ajouter les données du tableau
+    for (int row = 0; row < ui->programme->model()->rowCount(); ++row) {
+        html += "<tr>";
+        for (int col = 0; col < ui->programme->model()->columnCount() - 1; ++col) { // Exclure la dernière colonne (Action)
+            QString data = ui->programme->model()->data(ui->programme->model()->index(row, col)).toString();
+            html += "<td>" + data + "</td>";
+        }
+        html += "</tr>";
+    }
+    html += "</table>";
+
+    // Insérer le tableau HTML dans le document
+    cursor.insertHtml(html);
+
+    // Demander à l'utilisateur où enregistrer le fichier PDF
+    QString fileName = QFileDialog::getSaveFileName(this, "Exporter en PDF", "", "Fichiers PDF (*.pdf)");
+    if (fileName.isEmpty()) {
+        return; // Annuler si l'utilisateur n'a pas sélectionné de fichier
+    }
+
+    // Créer un QPrinter pour générer le PDF
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+
+    // Exporter le document en PDF
+    document.print(&printer);
+
+    QMessageBox::information(this, "Succès", "Le tableau a été exporté en PDF avec succès !");
 }
