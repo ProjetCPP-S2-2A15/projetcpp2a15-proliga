@@ -26,6 +26,13 @@ public:
 
 private slots:
     void Ajouter_clicked();
+    bool validateName();
+    bool validateCountry();
+    bool validateCoach();
+    bool validateGoals();
+    bool validatePlayers();
+    void checkInput();
+    void refreshTable();
 private:
     Ui::MainWindow *ui;
 

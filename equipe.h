@@ -27,6 +27,8 @@ public:
     Equipe( const QString& nom, const QString& ville,
            const QString& entraineur, int nbJoueurs, const QString& typeEquipe,
            int butsMarques, const QDate& debutContrat, const QDate& finContrat);
+    Equipe(); // Add this line
+
     // Accesseurs
     int getIdEquipe() const;
     QString getNomEquipe() const;
@@ -52,6 +54,8 @@ public:
 
     bool Ajouter();
     QSqlQueryModel *loadequipeData();
+    bool Delete(int id); // Add this method to delete a team by ID
+
 
 };
 

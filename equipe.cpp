@@ -48,7 +48,7 @@ bool Equipe::Ajouter() {
 QSqlQueryModel * Equipe::loadequipeData(){
     QSqlQueryModel * model=new QSqlQueryModel();
     model->setQuery("select * from equipe");
-  //  model->setHeaderData(0,Qt::Horizontal,QObject::tr("Id_equipe"));
+  model->setHeaderData(0,Qt::Horizontal,QObject::tr("Id_equipe"));
     model->setHeaderData(1,Qt::Horizontal,QObject::tr("Nom_equipe"));
     model->setHeaderData(2,Qt::Horizontal,QObject::tr("Nom_ville"));
     model->setHeaderData(3,Qt::Horizontal,QObject::tr("Nom_entraineur"));
@@ -57,5 +57,20 @@ QSqlQueryModel * Equipe::loadequipeData(){
     model->setHeaderData(6,Qt::Horizontal,QObject::tr("Nombrebuts_marquees"));
     model->setHeaderData(7,Qt::Horizontal,QObject::tr("Debut_contrat"));
     model->setHeaderData(8,Qt::Horizontal,QObject::tr("Fin_contrat"));
+
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("Action")); // New header for action column
+
     return model ;
+}
+bool Equipe::Delete(int id) {
+    QSqlQuery query;
+    query.prepare("DELETE FROM equipe WHERE IDEQUIPE = :id"); // Assuming IDEQUIPE is the primary key
+    query.bindValue(":id", id);
+
+    if (query.exec()) {
+        return true; // Deletion successful
+    } else {
+        qDebug() << "Error deleting from database: " << query.lastError().text();
+        return false; // Deletion failed
+    }
 }
