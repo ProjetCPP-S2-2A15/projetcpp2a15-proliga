@@ -38,6 +38,9 @@ private slots:
     void addButtonsToTable();
     void addActionColumn();
     void exportTableToPDF();
+    bool isTeamNameUnique(const QString& teamName, int excludedId = -1);
+    bool validateContractDates();
+    bool validateTypeSelection();
 private:
     Ui::MainWindow *ui;
 

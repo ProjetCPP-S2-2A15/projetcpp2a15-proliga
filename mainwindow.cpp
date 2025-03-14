@@ -150,19 +150,61 @@ void MainWindow::addButtonsToTable() {
 }
     // Connecter chaque QLineEdit à sa fonction de validation
 
+bool MainWindow::isTeamNameUnique(const QString& teamName, int excludedId) { // Pas de valeur par défaut ici
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM equipe WHERE NOMEQUIPE = :nomE AND IDEQUIPE != :excludedId");
+    query.bindValue(":nomE", teamName);
+    query.bindValue(":excludedId", excludedId);
 
+    if (query.exec() && query.next()) {
+        int count = query.value(0).toInt();
+        return count == 0; // Retourne true si le nom est unique
+    } else {
+        QMessageBox::critical(this, "Erreur", "Erreur lors de la vérification du nom de l'équipe : " + query.lastError().text());
+        return false;
+    }
+}
 bool MainWindow::validateName() {
-    bool valide=true;
+    bool valide = true;
 
     QRegularExpression regex("^[A-Z][a-zA-Z]*$");
     if (!regex.match(ui->nome->text()).hasMatch()) {
         QMessageBox::warning(this, "Input Error", "Invalid name. It should start with a capital letter and contain only letters.");
         ui->nome->setFocus();
         valide = false;
-
+    } else if (!isTeamNameUnique(ui->nome->text())) {
+        QMessageBox::warning(this, "Input Error", "Le nom de l'équipe doit être unique.");
+        ui->nome->setFocus();
+        valide = false;
     }
-    return valide;
 
+    return valide;
+}
+bool MainWindow::validateContractDates() {
+    QDate dateDebut = ui->dbcnt->date();
+    QDate dateFin = ui->fincnt->date();
+
+    if (dateFin <= dateDebut) {
+        QMessageBox::warning(this, "Input Error", "La date de fin de contrat doit être postérieure à la date de début de contrat.");
+        ui->fincnt->setFocus();
+        return false;
+    }
+
+    return true;
+}
+bool MainWindow::validateTypeSelection() {
+    bool normalChecked = ui->Normal->isChecked();
+    bool nationalChecked = ui->Nationnal->isChecked();
+
+    if (!normalChecked && !nationalChecked) {
+        QMessageBox::warning(this, "Input Error", "Veuillez sélectionner un type (Normal ou National).");
+        return false;
+    } else if (normalChecked && nationalChecked) {
+        QMessageBox::warning(this, "Input Error", "Veuillez sélectionner un seul type (Normal ou National).");
+        return false;
+    }
+
+    return true;
 }
 
 bool MainWindow::validateCountry() {
@@ -232,10 +274,14 @@ bool MainWindow::validatePlayers() {
 
 void MainWindow::checkInput() {
     // Vérifier que tous les champs sont valides avant d'activer le bouton "Ajouter"
-    bool isValid = validateName() && validateCountry() && validateCoach() && validateGoals() && validatePlayers();
+    bool isValid = validateName() && validateCountry() && validateCoach() && validateGoals() && validatePlayers() && validateContractDates() && validateTypeSelection();
     ui->Ajouter->setEnabled(isValid);
 }
 void MainWindow::Ajouter_clicked() {
+    if (!validateName() || !validateCountry() || !validateCoach() || !validateGoals() || !validatePlayers() || !validateContractDates() || !validateTypeSelection()) {
+        return; // Arrêter si une validation échoue
+    }
+
     QString nomE = ui->nome->text();
     QString nomv = ui->Pays->text();
     QString nomC = ui->coach->text();
@@ -247,9 +293,6 @@ void MainWindow::Ajouter_clicked() {
         type = "Normal";
     } else if (ui->Nationnal->isChecked()) {
         type = "National";
-    } else {
-        QMessageBox::warning(this, "Warning", "Please select a type.");
-        return; // Quitter si aucun type n'est sélectionné
     }
 
     int nbm = ui->nbmarquee->text().toInt();
@@ -303,6 +346,10 @@ void MainWindow::openModificationDialog(int equipeId) {
     }
 }
 void MainWindow::modifyEquipe(int equipeId) {
+    if (!validateName() || !validateCountry() || !validateCoach() || !validateGoals() || !validatePlayers() || !validateContractDates() || !validateTypeSelection()) {
+        return; // Arrêter si une validation échoue
+    }
+
     QString nomE = ui->nome->text();
     QString nomv = ui->Pays->text();
     QString nomC = ui->coach->text();
