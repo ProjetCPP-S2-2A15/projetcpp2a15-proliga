@@ -17,9 +17,7 @@ QSqlDatabase Connection::getDatabase(){
 }*/
 
 QSqlDatabase Connection::getDatabase() {
-    // Check if the connection exists, if not, create a new one
     if (!db.isOpen() && !db.open()) {
-        // Handle the database connection failure
         qDebug() << "Failed to open database!";
         return QSqlDatabase();
     }

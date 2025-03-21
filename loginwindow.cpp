@@ -95,6 +95,8 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
     mainLayout->addWidget(loginWidget);
 
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLogin);
+    connect(faceIdButton, &QPushButton::clicked, this, &LoginWindow::on_faceRecognitionButton_clicked);
+
 
     mainLayout->setSpacing(20);
 }
@@ -109,5 +111,59 @@ void LoginWindow::checkLogin() {
         close();
     } else {
         QMessageBox::warning(this, "Login Failed", "Invalid email or password.");
+    }
+}
+
+
+
+
+#include <QMessageBox>
+#include <QProcess>
+#include <QCoreApplication>
+#include <QString>
+
+void LoginWindow::on_faceRecognitionButton_clicked()
+{
+    QString appDir = QCoreApplication::applicationDirPath();  // Get current directory
+    QString pythonPath = "C:\\Users\\alabe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe";
+    QString scriptPath = "C:\\Users\\alabe\\Pictures\\metiers avances\\face\\detect.py";  // Path to script
+
+    QProcess *process = new QProcess(this);
+    process->setWorkingDirectory(appDir);  // Set working directory to app directory
+    // Set up the environment for the process
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert("PATH", "C:\\Users\\alabe\\AppData\\Local\\Programs\\Python\\Python312\\Scripts");  // Add your Python path
+    env.insert("PYTHONPATH", "C:\\Users\\alabe\\AppData\\Local\\Programs\\Python\\Python312");  // Add Python home
+
+    process->setProcessEnvironment(env);  // Apply the environment
+
+    // Connect signals to capture output
+    connect(process, &QProcess::readyReadStandardOutput, this, [this, process]() {
+        QByteArray output = process->readAllStandardOutput();
+        qDebug() << "Output: " << output;
+
+        // Check for "Access denied" in the output
+        if (output.contains("Access denied")) {
+            QMessageBox::critical(this, "Error", "Face recognition failed. Access denied.");
+        } else {
+            // Success, proceed to the main window
+            QMessageBox::information(this, "Success", "Face recognition completed successfully.");
+            MainWindow *mainWindow = new MainWindow();
+            mainWindow->show();
+            this->close();  // Close the current LoginWindow
+        }
+    });
+
+    connect(process, &QProcess::readyReadStandardError, this, [process]() {
+        QByteArray errorOutput = process->readAllStandardError();
+        qDebug() << "Error: " << errorOutput;
+    });
+
+    process->start(pythonPath, QStringList() << scriptPath);
+
+    if (!process->waitForStarted()) {
+        qDebug() << "Failed to start Python script!";
+    } else {
+        qDebug() << "Face recognition started.";
     }
 }
