@@ -30,6 +30,7 @@ private slots:
     void onAjouterButtonClicked();   \
         void onrechercherButtonClicked();
     void exportToPDF();
+        void on_deleteButton_clicked();
 
     //void uploadImage();
 

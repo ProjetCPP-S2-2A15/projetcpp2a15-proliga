@@ -12,6 +12,9 @@
 #include <QTextDocument>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QProcess>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -393,3 +396,70 @@ void MainWindow::freeInputs(){
     ui->NationaliteInput->setText("");
 }
 
+
+
+#include <QProcess>
+#include <QFileDialog>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QDebug>
+
+void MainWindow::on_deleteButton_clicked()
+{
+    // Open file dialog for user to select a license image
+    QString filePath = QFileDialog::getOpenFileName(this, "Select License Image", "", "Images (*.png *.jpg *.jpeg)");
+    if (filePath.isEmpty())
+        return; // If no file selected, exit function
+
+    // Create a QProcess to run the Python script
+    QProcess process;
+    QString pythonPath = "C:/Users/alabe/AppData/Local/Programs/Python/Python312/python.exe";  // Use forward slashes
+    QString scriptPath = "C:/Users/alabe/Pictures/metiers avances/extraction/text.py";  // Use forward slashes
+
+    // Run Python script with the selected image path
+    process.start(pythonPath, QStringList() << scriptPath << filePath);
+    process.waitForFinished(); // Wait for the script to finish execution
+
+    // Read output from the Python script
+    QByteArray output = process.readAllStandardOutput();
+    QByteArray error = process.readAllStandardError();
+
+    if (!error.isEmpty()) {
+        qDebug() << "Python script error: " << error;
+        return;
+    }
+
+    // Parse the JSON output
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(output);
+    if (jsonResponse.isNull()) {
+        qDebug() << "Error parsing JSON response.";
+        return;
+    }
+
+    QJsonObject jsonObject = jsonResponse.object();
+
+    // Extract information
+    QString extractedInfo = "Nom: " + jsonObject["Nom"].toString() + "\n";
+    ui->NomInput->setText(jsonObject["Nom"].toString());
+
+    extractedInfo += "Prénom: " + jsonObject["Prenom"].toString() + "\n";
+    ui->PrenomInput->setText(jsonObject["Prenom"].toString());
+
+    extractedInfo += "Date de naissance: " + jsonObject["Date de naissance"].toString() + "\n";
+    QString dateString = jsonObject["Date de naissance"].toString();  // Extract date as string
+
+    // Convert "21/05/2001" to QDate
+    QDate date = QDate::fromString(dateString, "dd/MM/yyyy");  // Adjust format if needed
+
+    // Set date to QDateEdit
+    if (date.isValid()) {
+        ui->dsInput->setDate(date);
+    } else {
+        qDebug() << "Invalid date format:" << dateString;  // Debugging output if conversion fails
+    }
+
+    extractedInfo += "Nationalité: " + jsonObject["Nationalite"].toString();
+    ui->NationaliteInput->setText(jsonObject["Nationalite"].toString());
+    // Display extracted information in terminal
+    qDebug() << "Extracted License Info:\n" << extractedInfo;
+}
