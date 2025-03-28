@@ -44,6 +44,8 @@ public:
     QSqlQueryModel* afficher();
     bool modifier(int id);
     bool supprimer(int id);
+    bool idExiste(int id);
+    Stade getStade(int id);
     QSqlQueryModel* rechercherParNom(QString nomRecherche);
     QSqlQueryModel* rechercherParCapacite(int capaciteMin, int capaciteMax);
     QSqlQueryModel* trier(QString critere, QString ordre);

@@ -2,6 +2,7 @@ QT       += core gui
 QT += sql
 QT += widgets sql
 QT += printsupport
+QT += axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

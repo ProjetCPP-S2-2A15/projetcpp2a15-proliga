@@ -64,6 +64,29 @@ bool Stade::supprimer(int id)
 
     return query.exec();
 }
+bool Stade::idExiste(int id) {
+    QSqlQuery query;
+    query.prepare("SELECT 1 FROM Stades WHERE ID_stade = :id");
+    query.bindValue(":id", id);
+    return query.exec() && query.next();
+}
+
+Stade Stade::getStade(int id) {
+    QSqlQuery query;
+    query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades WHERE ID_stade = :id");
+    query.bindValue(":id", id);
+
+    Stade stade;
+
+    if (query.exec() && query.next()) {
+        stade.nom = query.value("nom").toString();
+        stade.lieu = query.value("lieu").toString();
+        stade.capacite = query.value("capacite").toInt();
+        stade.nbr_tickets_vd = query.value("nbr_tickets_vd").toInt();
+        stade.date_creation = query.value("date_creation").toDate();
+    }
+    return stade;
+}
 QSqlQueryModel* Stade::rechercherParNom(QString nomRecherche)
 {
     QSqlQueryModel* model = new QSqlQueryModel();
