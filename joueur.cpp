@@ -57,7 +57,21 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         return;
     }
 
-    QSqlQuery query("SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1");
+    //QSqlQuery query("SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1");
+    QString queryString;
+    if (filter == 1) {
+        // Filter by Name (Order by NOM)
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1 ORDER BY NOM";
+    } else if (filter == 2) {
+        // Filter by Nationality (Order by PAYS_ORIGINE)
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1 ORDER BY PAYS_ORIGINE";
+    } else {
+        // Filter by Position (Order by POSITION)
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1 ORDER BY POSITION";
+    }
+
+    // Create the query using the constructed query string
+    QSqlQuery query(queryString);
 
     tableWidget->setRowCount(0);
     int row = 0;
@@ -194,3 +208,60 @@ void Joueur::rechercheJoueur(QTableWidget *tableWidget, const QString &nom) {
     }
 }
 
+void Joueur::rechercheJoueurFilter(QTableWidget *tableWidget, const QString &arg1) {
+    if (!tableWidget) return;
+
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return;
+    }
+
+    QSqlQuery query(db);
+    QString queryString = "SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueur1";
+
+    // Modify query based on selected filter option
+    if (arg1 == "Nom") {
+        queryString += " ORDER BY Nom";
+    } else if (arg1 == "Nationalite") {
+        queryString += " ORDER BY Pays_origine";
+    } else if (arg1 == "Position") {
+        queryString += " ORDER BY Position";
+    }
+
+    query.prepare(queryString);
+
+    if (!query.exec()) {
+        qDebug() << "Query failed:" << query.lastError().text();
+        return;
+    }
+
+    tableWidget->clearContents();  // Clear previous rows but keep the table structure (headers)
+
+    int row = 0;
+    bool playersFound = false;
+
+    while (query.next()) {
+        tableWidget->insertRow(row);
+        tableWidget->setItem(row, 0, new QTableWidgetItem(query.value("Nom").toString()));
+        tableWidget->setItem(row, 1, new QTableWidgetItem(query.value("Prenom").toString()));
+        tableWidget->setItem(row, 3, new QTableWidgetItem(query.value("Position").toString()));
+        tableWidget->setItem(row, 2, new QTableWidgetItem(query.value("Date_de_naissance").toDate().toString("yyyy-MM-dd")));
+        tableWidget->setItem(row, 4, new QTableWidgetItem(query.value("Pays_origine").toString()));
+
+        row++;
+        playersFound = true;
+    }
+
+    if (!playersFound) {
+        qDebug() << "No players found for the selected filter: " << arg1;
+    } else {
+        qDebug() << "Players loaded successfully!";
+    }
+}

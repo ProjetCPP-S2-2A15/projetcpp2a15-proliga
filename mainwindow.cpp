@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget* joueurWidget = ui->stackedWidget->widget(pageIndex);
     QTableWidget* tableWidgetPlayers = joueurWidget->findChild<QTableWidget*>("tableWidgetPlayers");
 
-    //j.readJoueur(tableWidgetPlayers);
+    j.readJoueur(tableWidgetPlayers);
     setupTableWithDeleteButtons(tableWidgetPlayers);
 
 
@@ -91,6 +91,12 @@ void MainWindow::onrechercherButtonClicked(){
     rechercheJoueurFromUI(this);
 }
 
+
+void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
+{
+    //j.readJoueur(ui->tableWidgetPlayers);
+    this->setupTableWithDeleteButtons3(ui->tableWidgetPlayers, arg1);
+}
 /*
 void MainWindow::uploadImage() {
     // Open file dialog to select an image
@@ -203,7 +209,56 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
     }
 }
 
+//filter
+void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, const QString arg1) {
+    Joueur j;
+    if (arg1=="Nom"){
+        j.setFilter(1);
+    }else if (arg1=="Nationalite"){
+        j.setFilter(2);
+    }else{
+        j.setFilter(3);
+    }
+    j.readJoueur(tableWidgetPlayers); // Refresh the table
 
+    // Clear previous widgets in column 6
+    for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
+        tableWidgetPlayers->removeCellWidget(row, 5);
+    }
+
+    // Add action buttons (Delete & Update)
+    for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
+        // Create a container widget
+        QWidget *buttonContainer = new QWidget();
+        QHBoxLayout *layout = new QHBoxLayout(buttonContainer);
+        layout->setContentsMargins(0, 0, 0, 0); // Remove extra spacing
+
+        QPushButton *deleteButton = new QPushButton("Delete");
+        QPushButton *updateButton = new QPushButton("Update");
+
+        QString nom = tableWidgetPlayers->item(row, 0)->text();
+
+        connect(deleteButton, &QPushButton::clicked, this, [this, nom]() {
+            deleteJoueurFromUI(this, nom);
+        });
+
+        // Connect Update button
+        connect(updateButton, &QPushButton::clicked, this, [this, row]() {
+            selected_row=row;
+            updateJoueurFromUI(this, row); // Call update function
+        });
+
+        // Add buttons to layout
+        layout->addWidget(updateButton);
+        layout->addWidget(deleteButton);
+
+        // Set layout to the container widget
+        buttonContainer->setLayout(layout);
+
+        // Insert the container widget into the 6th column (index 5)
+        tableWidgetPlayers->setCellWidget(row, 5, buttonContainer);
+    }
+}
 
 void MainWindow::validateInputs() {
     bool allValid = true;
@@ -411,6 +466,7 @@ void MainWindow::on_deleteButton_clicked()
     if (filePath.isEmpty())
         return; // If no file selected, exit function
 
+    filePath = filePath.replace("\\", "/");
     // Create a QProcess to run the Python script
     QProcess process;
     QString pythonPath = "C:/Users/alabe/AppData/Local/Programs/Python/Python312/python.exe";  // Use forward slashes
@@ -432,7 +488,7 @@ void MainWindow::on_deleteButton_clicked()
     // Parse the JSON output
     QJsonDocument jsonResponse = QJsonDocument::fromJson(output);
     if (jsonResponse.isNull()) {
-        qDebug() << "Error parsing JSON response.";
+        qDebug() << "Error parsing JSON response." << output;
         return;
     }
 
@@ -463,3 +519,6 @@ void MainWindow::on_deleteButton_clicked()
     // Display extracted information in terminal
     qDebug() << "Extracted License Info:\n" << extractedInfo;
 }
+
+
+

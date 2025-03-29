@@ -144,5 +144,3 @@ void rechercheJoueurFromUI(MainWindow *mainWin){
 
 
 
-
-

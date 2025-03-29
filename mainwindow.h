@@ -23,6 +23,7 @@ public:
     Ui::MainWindow* getUi() const { return ui; }
     void setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers);
     void setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, const QString nom);
+    void setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, const QString arg1);
     void validateInputs();
     void freeInputs();
 
@@ -34,7 +35,9 @@ private slots:
 
     //void uploadImage();
 
-private:
+        void on_comboBox_currentTextChanged(const QString &arg1);
+
+    private:
     Ui::MainWindow *ui;
     int selected_row=-1;
 };
