@@ -9,6 +9,13 @@
 #include <QPdfWriter>
 #include <QPainter>
 #include <QAxObject>
+#include <QSqlRecord>
+#include <QtCharts/QChartView>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QChart>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -38,11 +45,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::on_tableView_clicked(const QModelIndex &index) {
-    int id = ui->tableView->model()->data(ui->tableView->model()->index(index.row(), 0)).toInt();
+    QString name = ui->tableView->model()->data(ui->tableView->model()->index(index.row(), 0)).toString();
     Stade stadeInstance;
-    Stade stade = stadeInstance.getStade(id);
+    Stade stade = stadeInstance.getStadeByName(name);
     ui->lineEdit_nom2->setText(stade.getNom());
     ui->lineEdit_lieu2->setText(stade.getLieu());
     ui->lineEdit_capacite2->setText(QString::number(stade.getCapacite()));
@@ -50,15 +56,12 @@ void MainWindow::on_tableView_clicked(const QModelIndex &index) {
     ui->dateEdit_creation2->setDate(stade.getDateCreation());
 }
 
-void MainWindow::on_addStadiumbutton_clicked()
-{
-
+void MainWindow::on_addStadiumbutton_clicked() {
     QString name = ui->lineEdit_nomA->text();
     QString location = ui->lineEdit_lieuA->text();
     QString capacityStr = ui->lineEdit_capaciteA->text();
     QString ticketsSoldStr = ui->lineEdit_ticketsA->text();
     QDate dateCreation = ui->dateEdit_creationA->date();
-
 
     QRegularExpression regexName("^[a-zA-Z\\s]+$");
     if (!regexName.match(name).hasMatch()) {
@@ -72,20 +75,17 @@ void MainWindow::on_addStadiumbutton_clicked()
         return;
     }
 
-
     QRegularExpression regexNumber("^[0-9]+$");
     if (!regexNumber.match(capacityStr).hasMatch()) {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre valide.");
         return;
     }
 
-
     int capacity = capacityStr.toInt();
     if (capacity <= 0) {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre supérieur à zéro.");
         return;
     }
-
 
     bool ticketsOk;
     int ticketsSold = ticketsSoldStr.toInt(&ticketsOk);
@@ -102,11 +102,16 @@ void MainWindow::on_addStadiumbutton_clicked()
         return;
     }
 
+
+    Stade stadeInstance;
+    if (stadeInstance.idExisteParNom(name)) {
+        QMessageBox::critical(this, "Erreur de validation", "Le nom du stade existe déjà. Veuillez choisir un autre nom.");
+        return;
+    }
+
     Stade newStade(name, location, capacity, ticketsSold, dateCreation);
 
-
     bool success = newStade.ajouter();
-
 
     if (success) {
         QMessageBox::information(this, "Succès", "Stade ajouté avec succès !");
@@ -115,9 +120,7 @@ void MainWindow::on_addStadiumbutton_clicked()
         QMessageBox::critical(this, "Erreur", "Échec de l'ajout du stade : " + QSqlDatabase::database().lastError().text());
     }
 }
-void MainWindow::on_pushbuttonmodifieR_clicked()
-{
-
+void MainWindow::on_pushbuttonmodifieR_clicked() {
     QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
 
     if (selection.isEmpty()) {
@@ -126,17 +129,16 @@ void MainWindow::on_pushbuttonmodifieR_clicked()
     }
 
     int row = selection.first().row();
-    int id = ui->tableView->model()->data(ui->tableView->model()->index(row, 0)).toInt();
+    QString name = ui->tableView->model()->data(ui->tableView->model()->index(row, 0)).toString();
 
-    QString name = ui->lineEdit_nom2->text();
+    QString newName = ui->lineEdit_nom2->text();
     QString location = ui->lineEdit_lieu2->text();
     QString capacityStr = ui->lineEdit_capacite2->text();
     QString ticketsSoldStr = ui->lineEdit_tickets2->text();
     QDate dateCreation = ui->dateEdit_creation2->date();
 
-
     QRegularExpression regexName("^[a-zA-Z\\s]+$");
-    if (!regexName.match(name).hasMatch()) {
+    if (!regexName.match(newName).hasMatch()) {
         QMessageBox::critical(this, "Erreur de validation", "Le nom du stade doit contenir uniquement des lettres et des espaces.");
         return;
     }
@@ -170,10 +172,16 @@ void MainWindow::on_pushbuttonmodifieR_clicked()
         return;
     }
 
-    Stade stade(name, location, capacity, ticketsSold, dateCreation);
+    // Vérifier si le nouveau nom du stade existe déjà (sauf si c'est le même stade)
+    Stade stadeInstance;
+    if (newName != name && stadeInstance.idExisteParNom(newName)) {
+        QMessageBox::critical(this, "Erreur de validation", "Le nouveau nom du stade existe déjà. Veuillez choisir un autre nom.");
+        return;
+    }
 
+    Stade stade(newName, location, capacity, ticketsSold, dateCreation);
 
-    bool success = stade.modifier(id);
+    bool success = stade.modifierParNom(name);
 
     if (success) {
         QMessageBox::information(this, "Succès", "Stade modifié avec succès !");
@@ -182,41 +190,40 @@ void MainWindow::on_pushbuttonmodifieR_clicked()
         QMessageBox::critical(this, "Erreur", "Échec de la modification du stade.");
     }
 }
-
 void MainWindow::on_pushButton_supprimer_clicked()
 {
 
-    QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
+        QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
 
-    if (selection.isEmpty()) {
-        QMessageBox::critical(this, "Erreur", "Veuillez sélectionner un stade à supprimer.");
-        return;
-    }
+        if (selection.isEmpty()) {
+            QMessageBox::critical(this, "Erreur", "Veuillez sélectionner un stade à supprimer.");
+            return;
+        }
 
-    int row = selection.first().row();
-    int id = ui->tableView->model()->data(ui->tableView->model()->index(row, 0)).toInt();
+        int row = selection.first().row();
+        QString name = ui->tableView->model()->data(ui->tableView->model()->index(row, 0)).toString();
 
-    Stade stadeInstance;
-    if(!stadeInstance.idExiste(id)){
-        QMessageBox::critical(this, "Erreur", "L'ID du stade n'existe pas.");
-        return;
-    }
+        Stade stadeInstance;
+        if (!stadeInstance.idExisteParNom(name)) {
+            QMessageBox::critical(this, "Erreur", "Le nom du stade n'existe pas.");
+            return;
+        }
 
-    QMessageBox::StandardButton confirmation = QMessageBox::question(this, "Confirmation de suppression",
-                                                                     "Êtes-vous sûr de vouloir supprimer ce stade ?",
-                                                                     QMessageBox::Yes | QMessageBox::No);
+        QMessageBox::StandardButton confirmation = QMessageBox::question(this, "Confirmation de suppression",
+                                                                         "Êtes-vous sûr de vouloir supprimer ce stade ?",
+                                                                         QMessageBox::Yes | QMessageBox::No);
 
-    if (confirmation == QMessageBox::Yes) {
-        bool test = stadeInstance.supprimer(id);
+        if (confirmation == QMessageBox::Yes) {
+            bool test = stadeInstance.supprimer(name);
 
-        if (test) {
-            QMessageBox::information(this, "Succès", "Suppression effectuée avec succès.", QMessageBox::Ok);
-            ui->tableView->setModel(stadeInstance.afficher());
-        } else {
-            QMessageBox::critical(this, "Erreur", "Échec de la suppression du stade.");
+            if (test) {
+                QMessageBox::information(this, "Succès", "Suppression effectuée avec succès.", QMessageBox::Ok);
+                ui->tableView->setModel(stadeInstance.afficher());
+            } else {
+                QMessageBox::critical(this, "Erreur", "Échec de la suppression du stade.");
+            }
         }
     }
-}
 void MainWindow::on_pushButton_rechercherNom_clicked()
 {
     QString nomRecherche = ui->lineEdit_rechercheNom->text();
@@ -420,11 +427,63 @@ void MainWindow::on_pushButton_generer_clicked()
     QString selectedFormat = ui->comboBox_format->currentText();
 
     if (selectedFormat == "PDF") {
-        on_pushButton_genererPDF_clicked(); // Appelle la fonction pour générer le PDF
+        on_pushButton_genererPDF_clicked();
     } else if (selectedFormat == "Excel") {
-        on_pushButton_genererExcel_clicked(); // Appelle la fonction pour générer l'Excel
+        on_pushButton_genererExcel_clicked();
     } else {
         QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un format valide.");
     }
 }
+void MainWindow::on_pushButton_afficherStats_clicked() {
+    QSqlQueryModel* model = Stade().afficher();
 
+    QBarSet *setTicketsVendus = new QBarSet("Tickets Vendus");
+    QBarSet *setCapacite = new QBarSet("Capacité");
+    QStringList categories;
+
+    int maxTicketsVendus = 0;
+    int maxCapacite = 0;
+
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QString nom = model->record(i).value("nom").toString();
+        int ticketsVendus = model->record(i).value("nbr_tickets_vd").toInt();
+        int capacite = model->record(i).value("capacite").toInt();
+        *setTicketsVendus << ticketsVendus;
+        *setCapacite << capacite;
+        categories << nom;
+
+        if (ticketsVendus > maxTicketsVendus) {
+            maxTicketsVendus = ticketsVendus;
+        }
+        if (capacite > maxCapacite) {
+            maxCapacite = capacite;
+        }
+    }
+
+    QBarSeries *series = new QBarSeries();
+    series->append(setTicketsVendus);
+    series->append(setCapacite);
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Comparaison des Tickets Vendus et Capacité par Stade");
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setRange(0, std::max(maxTicketsVendus, maxCapacite));
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    QMainWindow *statsWindow = new QMainWindow(this);
+    statsWindow->setCentralWidget(chartView);
+    statsWindow->resize(800, 600);
+    statsWindow->show();
+}

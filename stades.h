@@ -20,10 +20,8 @@ private:
     QDate date_creation;
 
 public:
-
     Stade() {}
     Stade(QString, QString, int, int, QDate);
-
 
     int getID() { return ID_stade; }
     QString getNom() { return nom; }
@@ -32,20 +30,18 @@ public:
     int getNbrTicketsVd() { return nbr_tickets_vd; }
     QDate getDateCreation() { return date_creation; }
 
-
     void setNom(QString name) { nom = name; }
     void setLieu(QString location) { lieu = location; }
     void setCapacite(int capacity) { capacite = capacity; }
     void setNbrTicketsVd(int tickets) { nbr_tickets_vd = tickets; }
     void setDateCreation(QDate date) { date_creation = date; }
 
-
     bool ajouter();
     QSqlQueryModel* afficher();
-    bool modifier(int id);
-    bool supprimer(int id);
-    bool idExiste(int id);
-    Stade getStade(int id);
+    bool modifierParNom(QString oldName);
+    bool supprimer(QString name);
+    bool idExisteParNom(QString name);
+    Stade getStadeByName(QString name);
     QSqlQueryModel* rechercherParNom(QString nomRecherche);
     QSqlQueryModel* rechercherParCapacite(int capaciteMin, int capaciteMax);
     QSqlQueryModel* trier(QString critere, QString ordre);

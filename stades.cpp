@@ -24,57 +24,52 @@ bool Stade::ajouter() {
     return false;
 }
 
-QSqlQueryModel* Stade::afficher()
-{
+QSqlQueryModel* Stade::afficher() {
     QSqlQueryModel* model = new QSqlQueryModel();
-    model->setQuery("SELECT * FROM Stades");
+    model->setQuery("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades");
 
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Lieu"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Date Creation"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("capacite"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("tickets vendus"));
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Capacité"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tickets vendus"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Date de création"));
 
     return model;
 }
 
-bool Stade::modifier(int id)
-{
+bool Stade::modifierParNom(QString oldName) {
     QSqlQuery query;
-
     query.prepare("UPDATE Stades SET nom = :nom, lieu = :lieu, capacite = :capacite, "
                   "nbr_tickets_vd = :nbr_tickets_vd, date_creation = :date_creation "
-                  "WHERE ID_stade = :id");
+                  "WHERE nom = :oldName");
     query.bindValue(":nom", nom);
     query.bindValue(":lieu", lieu);
     query.bindValue(":capacite", capacite);
     query.bindValue(":nbr_tickets_vd", nbr_tickets_vd);
     query.bindValue(":date_creation", date_creation);
-    query.bindValue(":id", id);
+    query.bindValue(":oldName", oldName);
 
     return query.exec();
 }
 
-bool Stade::supprimer(int id)
-{
+bool Stade::supprimer(QString name) {
     QSqlQuery query;
-    query.prepare("DELETE FROM Stades WHERE ID_stade = :id");
-    query.bindValue(":id", id);
+    query.prepare("DELETE FROM Stades WHERE nom = :nom");
+    query.bindValue(":nom", name);
 
     return query.exec();
 }
-bool Stade::idExiste(int id) {
+bool Stade::idExisteParNom(QString name) {
     QSqlQuery query;
-    query.prepare("SELECT 1 FROM Stades WHERE ID_stade = :id");
-    query.bindValue(":id", id);
+    query.prepare("SELECT 1 FROM Stades WHERE nom = :nom");
+    query.bindValue(":nom", name);
     return query.exec() && query.next();
 }
 
-Stade Stade::getStade(int id) {
+Stade Stade::getStadeByName(QString name) {
     QSqlQuery query;
-    query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades WHERE ID_stade = :id");
-    query.bindValue(":id", id);
+    query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades WHERE nom = :nom");
+    query.bindValue(":nom", name);
 
     Stade stade;
 
@@ -87,64 +82,57 @@ Stade Stade::getStade(int id) {
     }
     return stade;
 }
-QSqlQueryModel* Stade::rechercherParNom(QString nomRecherche)
-{
+QSqlQueryModel* Stade::rechercherParNom(QString nomRecherche) {
     QSqlQueryModel* model = new QSqlQueryModel();
     QSqlQuery query;
 
-    query.prepare("SELECT * FROM Stades WHERE LOWER(nom) LIKE LOWER(:nom)");
+    query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades WHERE LOWER(nom) LIKE LOWER(:nom)");
     query.bindValue(":nom", "%" + nomRecherche.toLower() + "%");
     query.exec();
 
     model->setQuery(query);
 
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Lieu"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Date Creation"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Capacité"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Tickets vendus"));
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Capacité"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tickets vendus"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Date de création"));
 
     return model;
 }
-
-QSqlQueryModel* Stade::rechercherParCapacite(int capaciteMin, int capaciteMax)
-{
+QSqlQueryModel* Stade::rechercherParCapacite(int capaciteMin, int capaciteMax) {
     QSqlQueryModel* model = new QSqlQueryModel();
     QSqlQuery query;
 
-    query.prepare("SELECT * FROM Stades WHERE capacite BETWEEN :min AND :max");
+    query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades WHERE capacite BETWEEN :min AND :max");
     query.bindValue(":min", capaciteMin);
     query.bindValue(":max", capaciteMax);
     query.exec();
 
     model->setQuery(query);
 
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Lieu"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Date Creation"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Capacité"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Tickets vendus"));
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Capacité"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tickets vendus"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Date de création"));
 
     return model;
 }
-QSqlQueryModel* Stade::trier(QString critere, QString ordre)
-{
+QSqlQueryModel* Stade::trier(QString critere, QString ordre) {
     QSqlQueryModel* model = new QSqlQueryModel();
     QSqlQuery query;
 
-    query.prepare("SELECT * FROM Stades ORDER BY " + critere + " " + ordre);
+    query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades ORDER BY " + critere + " " + ordre);
     query.exec();
 
     model->setQuery(query);
 
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Lieu"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Date Creation"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Capacité"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Tickets vendus"));
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("Capacité"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tickets vendus"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Date de création"));
 
     return model;
 }

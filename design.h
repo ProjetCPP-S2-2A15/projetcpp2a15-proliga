@@ -1,8 +1,10 @@
 #ifndef DESIGN_H
 #define DESIGN_H
 
-#include <QPushButton>
 #include "ui_mainwindow.h"
+#include <QProxyStyle>
+#include <QPainter>
+#include <QStyleOptionViewItem>
 
 void applyDesign(Ui::MainWindow *ui);
 
