@@ -41,10 +41,15 @@ private slots:
     bool isTeamNameUnique(const QString& teamName, int excludedId = -1);
     bool validateContractDates();
     bool validateTypeSelection();
+    void trieEquipe() ;
+    void rechercheEquipe() ;
+    void afficherStatistiques() ;
+
+
 private:
     Ui::MainWindow *ui;
-
-  Equipe *Eq;
+ QTimer *searchTimer;
+    Equipe *Eq;
 
 };
 #endif // MAINWINDOW_H

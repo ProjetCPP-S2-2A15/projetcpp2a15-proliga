@@ -714,6 +714,65 @@ height: 30px;</string>
              <normaloff>:/interface_icons/pdf-file.png</normaloff>:/interface_icons/pdf-file.png</iconset>
            </property>
           </widget>
+          <widget class="QLineEdit" name="lineEditRecherche">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>5</y>
+             <width>201</width>
+             <height>21</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="sortFieldComboBox">
+           <property name="geometry">
+            <rect>
+             <x>490</x>
+             <y>2</y>
+             <width>76</width>
+             <height>26</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="sortOrderComboBox">
+           <property name="geometry">
+            <rect>
+             <x>610</x>
+             <y>2</y>
+             <width>76</width>
+             <height>26</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="triButton">
+           <property name="geometry">
+            <rect>
+             <x>576</x>
+             <y>4</y>
+             <width>22</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border-image: url(:/interface_icons/tri.png);</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="statistiquesButton">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>200</y>
+             <width>93</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>statistiques</string>
+           </property>
+          </widget>
          </widget>
          <widget class="QWidget" name="IA">
           <attribute name="title">
@@ -1064,17 +1123,17 @@ font: 700 10pt &quot;Times New Roman&quot;;</string>
         <widget class="QGraphicsView" name="graphicsView">
          <property name="geometry">
           <rect>
-           <x>410</x>
-           <y>1</y>
-           <width>725</width>
-           <height>291</height>
+           <x>400</x>
+           <y>0</y>
+           <width>281</width>
+           <height>281</height>
           </rect>
          </property>
         </widget>
         <widget class="QLabel" name="label_3">
          <property name="geometry">
           <rect>
-           <x>190</x>
+           <x>180</x>
            <y>220</y>
            <width>131</width>
            <height>20</height>
@@ -1091,7 +1150,7 @@ color: rgb(0, 0, 0);</string>
         <widget class="QSpinBox" name="nbj">
          <property name="geometry">
           <rect>
-           <x>320</x>
+           <x>310</x>
            <y>215</y>
            <width>16</width>
            <height>26</height>

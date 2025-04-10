@@ -38,5 +38,6 @@
         <file>interface_icons/login.png</file>
         <file>interface_icons/faceid.png</file>
         <file>interface_icons/micro1.png</file>
+        <file>interface_icons/tri.png</file>
     </qresource>
 </RCC>
