@@ -42,6 +42,14 @@ void applyDesign(Ui::MainWindow *ui)
         "} "
         "QPushButton:hover { background-color: #56657380; }"
         );
+    ui->exporter_excel_match->setStyleSheet(
+        "QPushButton { "
+        "    border: none; "
+        "    background-color: transparent; "
+        "    padding: 5px;"  // Ensure some padding for better appearance
+        "} "
+        "QPushButton:hover { background-color: #56657380; }"
+        );
 
 
     ui->sidebar_2->setStyleSheet(
@@ -98,7 +106,7 @@ void applyDesign(Ui::MainWindow *ui)
         );
 
     // Style for tri_options (dropdown)
-    ui->tri_options->setStyleSheet(
+    ui->tri_prog_match->setStyleSheet(
         "QComboBox {"
         "    background-color: #444;"
         "    color: white;"

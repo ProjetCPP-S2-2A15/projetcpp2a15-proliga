@@ -6,8 +6,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QMessageBox>
-#include <QHBoxLayout> // Pour mieux aligner les images et le texte
-; // Initialize static member
+#include <QHBoxLayout>
 #include <QPixmap>
 #include <QLabel>
 #include <QTimer>
@@ -15,7 +14,7 @@
 Match::Match(const QDate& date, const QString& type, const QString& equipe1, const QString& equipe2, const QString& score)
     : m_dateMatch(date), m_typeMatch(type), m_equipe1(equipe1), m_equipe2(equipe2), m_scoreMatch(score)
 {
-    // No need to manually set m_idMatch
+
 }
 // Getters
 int Match::idMatch() const {
@@ -80,21 +79,20 @@ ChatBotWidget::ChatBotWidget(QWidget *parent)
 
     // Create a timer to remove the image after a few seconds (e.g., 3 seconds)
     QTimer::singleShot(5000, [startImage, this] {
-        startImage->hide();  // Hide the start image
-        // Now initialize the rest of the chat interface
-        initChatInterface();  // Call a method to initialize the chat interface
+        startImage->hide();
+
+        initChatInterface();
     });
 
-    // Make sure to resize the widget here (this could be set dynamically as needed)
-    resize(400, 400);  // Example size, adjust to your needs
+
+    resize(400, 400);
 }
 
 void ChatBotWidget::resizeEvent(QResizeEvent *event)
 {
-    QWidget::resizeEvent(event);  // Ensure the base class resize event is called
+    QWidget::resizeEvent(event);
 
-    // Now reposition the start image in the center
-    QLabel* startImage = findChild<QLabel*>();  // Find the image label
+    QLabel* startImage = findChild<QLabel*>();
     if (startImage) {
         QPixmap pixmap(":/interface_icons/start.png");
         QPixmap scaledPixmap = pixmap.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);

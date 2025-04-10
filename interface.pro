@@ -50,10 +50,11 @@ RESOURCES += \
 QT += sql
 
 QT += widgets sql
+QT += core gui charts
+QT += printsupport
 
-QT += network
-QT += core gui sql widgets
-QT += charts
-QT += core gui sql charts
+QT += axcontainer
+
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

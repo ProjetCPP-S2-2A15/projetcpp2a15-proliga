@@ -17,52 +17,73 @@
 #include <QFileDialog>
 #include <QPdfWriter>
 #include <QPainter>
-#include <QMessageBox>
+#include <QSqlRecord>
+#include <QFileDialog>
+#include <QMap>
+#include <QDebug>
+#include <QResizeEvent>
+#include <QChartView>
+#include <QPieSeries>
+#include <QChart>
+#include <QToolTip>
+#include <QCursor>
+#include <QDate>
+#include <QPieSlice>
+#include <QToolTip>
+#include <QStringList>
+#include <QtPrintSupport/QPrinter>
+#include <QPainter>
+#include <QPropertyAnimation>
+#include <QPieSlice>
+#include <QGraphicsOpacityEffect>
+#include <QAxObject>
+#include <QDir>
 
 
-void MainWindow::on_logoutButton_clicked()
-{
-    // Close the current MainWindow
-    this->close();
 
-    // Create and show the login window
-    LoginWindow *loginWindow = new LoginWindow(this);  // Assuming you have a LoginWindow class
-    loginWindow->show();
-}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+
 {
     ui->setupUi(this);
+    //---------------------------------------------------------------------------------------------------------------------------
     loadMatchesIntoTable();
     loadRefereesIntoComboBox();
     loadEquipes();
     checkForNullScoreEdit();
+    showMonthlyMatchStatistics();
+    programmation_2 = ui->programmation_2;
+    historique_table=ui->historique_table;
     originalTabWidth = ui->tabWidget->geometry().width();
     originalTableWidth = ui->programmation_2->geometry().width();
     originalWidget6Width = ui->widget_6->geometry().width();
     originalDeleteMatchX = ui->delete_match->geometry().x();
     originalChercherWidth = ui->chercher->geometry().width();
-    isExpanded = false; // Initially, widgets are not expanded
-    // Apply design
-    applyDesign(ui);
+    isExpanded = false;
 
-    // Create and add the ChatBotWidget to widget_8
+
+
+
+
+    //-----------------------------------------------------------------------------------------------------------------------
+    applyDesign(ui);
+    //---------------------------------------------------------------------------------------------------------------------
     ChatBotWidget *chatBot = new ChatBotWidget(this);
-    ui->programmation_2->setEditTriggers(QAbstractItemView::DoubleClicked); // This enables editing on double-click
+    ui->programmation_2->setEditTriggers(QAbstractItemView::DoubleClicked);
     ui->historique_table->setEditTriggers(QAbstractItemView::DoubleClicked);
 
-    // Ensure widget_8 has a layout and then add the ChatBotWidget to it
     if (ui->widget_8->layout() == nullptr) {
         ui->widget_8->setLayout(new QVBoxLayout());
     }
     ui->widget_8->layout()->addWidget(chatBot);
 
-    // Set up the timer to check for changes in the database every 5 seconds
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::checkForNullScoreEdit);
-    timer->start(5000);  // Check every 5 seconds
+    timer->start(5000);
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // Connect other signals and slots
     connect(ui->competition1, &QPushButton::toggled, [this](bool checked) { on_competition1_toggled(ui, checked); });
@@ -78,19 +99,22 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->stade1, &QPushButton::toggled, [this](bool checked) { on_stade1_toggled(ui, checked); });
     connect(ui->stade2, &QPushButton::toggled, [this](bool checked) { on_stade2_toggled(ui, checked); });
     connect(ui->sidebar_2, &QPushButton::clicked, this, &MainWindow::toggleIconOnlySidebar);
-    connect(ui->add_match, &QPushButton::clicked, this, &MainWindow::on_addMatchButton_clicked);
 
+    //--------------------------------------------------BOUTONS INTERFACE SHIRAZ------------------------------------------------------------------------------------------------------------------------------------------
+    connect(ui->add_match, &QPushButton::clicked, this, &MainWindow::on_addMatchButton_clicked);
     connect(ui->delete_match, &QPushButton::clicked, this, &MainWindow::deleteMatch);
     connect(ui->refresh, &QPushButton::clicked, this, &MainWindow::loadMatchesIntoTable);
-
     connect(ui->random_arbitre, &QCheckBox::stateChanged, this, &MainWindow::handleRandomReferees);
     connect(ui->chercher, &QLineEdit::textChanged, this, &MainWindow::filterTable);
-
+    connect(ui->chercher_histo, &QLineEdit::textChanged, this, &MainWindow::filterTable);
     connect(ui->programmation_2, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(onCellDoubleClicked(int, int)));
     connect(ui->historique_table, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(onHistoriqueCellDoubleClicked(int, int)));
     connect(ui->historique_table, &QTableWidget::itemChanged, this, &MainWindow::onItemChanged);
-
-     connect(ui->show_2, &QPushButton::clicked, this, &MainWindow::onShowButtonClicked);
+    connect(ui->show_2, &QPushButton::clicked, this, &MainWindow::onShowButtonClicked);
+     connect(ui->show_3, &QPushButton::clicked, this, &MainWindow::onShow3ButtonClicked);
+    connect(ui->tri_prog, SIGNAL(clicked()), this, SLOT(on_tri_prog_clicked()));
+    connect(ui->tri_histo, SIGNAL(clicked()), this, SLOT(on_tri_histo_clicked()));
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 }
 
@@ -101,19 +125,16 @@ MainWindow::~MainWindow()
 }
 
 
+//------------------------------------------------SIDE_BAR_ANIMATION----------------------------------------------------------------------------------
 
 void MainWindow::toggleIconOnlySidebar()
 {
     if (ui->iconOnlySidebar->isVisible()) {
-        // Switch to full sidebar mode (restore original sizes)
         ui->iconOnlySidebar->hide();
         ui->iconTextSidebar->show();
 
-        // Restore the original size of widgets
         ui->stackedWidget->setMinimumWidth(1000);
         ui->stackedWidget->setMaximumWidth(1000);
-
-
 
         ui->widget_6->setMinimumWidth(200);
         ui->widget_6->setMaximumWidth(340);
@@ -125,14 +146,12 @@ void MainWindow::toggleIconOnlySidebar()
         ui->widget_8->setMaximumWidth(340);
     }
     else {
-        // Switch to icon-only sidebar mode (expand widgets)
+
         ui->iconOnlySidebar->show();
         ui->iconTextSidebar->hide();
 
-        // Expand widgets
         ui->stackedWidget->setMinimumWidth(1500);
         ui->stackedWidget->setMaximumWidth(1500);
-
 
         ui->widget_6->setMinimumWidth(400);
         ui->widget_6->setMaximumWidth(800);
@@ -144,15 +163,20 @@ void MainWindow::toggleIconOnlySidebar()
         ui->widget_8->setMaximumWidth(800);
     }
 
-    // Force UI refresh
-    ui->stackedWidget->update();
+    // Update chartView's size to follow widget_6 size
+    chartView->resize(ui->widget_6->size());
 
+    // Update widget and chart views
+    ui->stackedWidget->update();
     ui->widget_6->update();
     ui->widget_7->update();
     ui->widget_8->update();
 }
-bool isInsertingMatch = false;  // Flag to prevent double insertion
 
+//------------------------------------------------AJOUT MATCH-------------------------------------------------------------------------------
+
+
+bool isInsertingMatch = false;
 void MainWindow::on_addMatchButton_clicked() {
     qDebug() << "Add Match Button Clicked";
 
@@ -164,25 +188,22 @@ void MainWindow::on_addMatchButton_clicked() {
     isInsertingMatch = true;
     ui->pushButton->setEnabled(false);
 
-    // Get date and time from QDateTimeEdit
-    QDateTime dateTime = ui->dateTimeEdit_2->dateTime();  // Use dateTimeEdit_2 for date and time
+    QDateTime dateTime = ui->dateTimeEdit_2->dateTime();
     QString type = ui->comboBox->currentText();
     QString equipe1 = ui->comboBox_2->currentText();
     QString equipe2 = ui->comboBox_3->currentText();
 
-    // Check if the teams are different
+    // controle saisie equipe
     if (equipe1 == equipe2) {
-        QMessageBox::warning(this, "Error", "The two teams cannot be the same.");
+        QMessageBox::warning(this, "Erreur", "Les deux équipes ne peuvent pas être les mêmes !");
         ui->pushButton->setEnabled(true);
         isInsertingMatch = false;
         return;
     }
 
-    // Select referees
     QStringList arbitreNames;
 
     if (ui->random_arbitre->isChecked()) {
-        // Retrieve all referees from the database
         QSqlQuery query("SELECT NOM FROM ARBITRES");
         QStringList allArbitres;
 
@@ -191,20 +212,17 @@ void MainWindow::on_addMatchButton_clicked() {
         }
 
         if (allArbitres.size() < 4) {
-            QMessageBox::warning(this, "Error", "Not enough referees for random selection.");
+            QMessageBox::warning(this, "Erreur", "Pas assez d'arbitres pour une sélection aléatoire ");
             ui->pushButton->setEnabled(true);
             isInsertingMatch = false;
             return;
         }
 
-        // Shuffle and select 4 random referees
         std::random_device rd;
         std::mt19937 g(rd());
         std::shuffle(allArbitres.begin(), allArbitres.end(), g);
-
-        arbitreNames = allArbitres.mid(0, 4); // Select 4 random referees
+        arbitreNames = allArbitres.mid(0, 4);
     } else {
-        // Manual selection
         arbitreNames = {
             ui->comboBox_arbitre1->currentText(),
             ui->comboBox_arbitre2->currentText(),
@@ -213,71 +231,53 @@ void MainWindow::on_addMatchButton_clicked() {
         };
     }
 
-    // Check if all referees are unique
+    // controle saisie arbitre
     QSet<QString> uniqueReferees(arbitreNames.begin(), arbitreNames.end());
     if (uniqueReferees.size() < 4) {
-        QMessageBox::warning(this, "Error", "Referees must be unique.");
+        QMessageBox::warning(this, "Erreur", "Les arbitres doivent être uniques !");
         ui->pushButton->setEnabled(true);
         isInsertingMatch = false;
         return;
     }
 
-    // Retrieve referee IDs
-    QList<int> arbitreIds;
-    QSqlQuery refereeQuery;
-
-    for (const QString& name : arbitreNames) {
-        if (!name.isEmpty()) {
-            refereeQuery.prepare("SELECT ID_ARBITRE FROM ARBITRES WHERE NOM = :nom");
-            refereeQuery.bindValue(":nom", name);
-
-            if (refereeQuery.exec() && refereeQuery.next()) {
-                arbitreIds.append(refereeQuery.value(0).toInt());
-            } else {
-                QMessageBox::critical(this, "Error", "Error retrieving referee ID: " + name);
-                ui->pushButton->setEnabled(true);
-                isInsertingMatch = false;
-                return;
-            }
-        } else {
-            arbitreIds.append(QVariant().toInt());  // Add NULL if no referee selected
-        }
+    // fill with empty strings if needed
+    while (arbitreNames.size() < 4) {
+        arbitreNames.append("");
     }
 
-    // Ensure exactly 4 referee IDs
-    while (arbitreIds.size() < 4) {
-        arbitreIds.append(QVariant().toInt());
-    }
-
-    // Insert the match into the database with both date and time
     QSqlQuery query;
     query.prepare("INSERT INTO MATCHES (DATE_MATCH, TYPE_MATCH, EQUIPE1, EQUIPE2, SCORE, ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4) "
-                  "VALUES (TO_TIMESTAMP(:date, 'YYYY-MM-DD HH24:MI:SS'), :type, :equipe1, :equipe2, :score, :id_arbitre1, :id_arbitre2, :id_arbitre3, :id_arbitre4)");
-    query.bindValue(":date", dateTime.toString("yyyy-MM-dd HH:mm:ss"));  // Format date and time
+                  "VALUES (TO_TIMESTAMP(:date, 'YYYY-MM-DD HH24:MI:SS'), :type, :equipe1, :equipe2, :score, :arbitre1, :arbitre2, :arbitre3, :arbitre4)");
+    query.bindValue(":date", dateTime.toString("yyyy-MM-dd HH:mm:ss"));
     query.bindValue(":type", type);
     query.bindValue(":equipe1", equipe1);
     query.bindValue(":equipe2", equipe2);
     query.bindValue(":score", "0-0");
-    query.bindValue(":id_arbitre1", arbitreIds[0]);
-    query.bindValue(":id_arbitre2", arbitreIds[1]);
-    query.bindValue(":id_arbitre3", arbitreIds[2]);
-    query.bindValue(":id_arbitre4", arbitreIds[3]);
+    query.bindValue(":arbitre1", arbitreNames[0]);
+    query.bindValue(":arbitre2", arbitreNames[1]);
+    query.bindValue(":arbitre3", arbitreNames[2]);
+    query.bindValue(":arbitre4", arbitreNames[3]);
 
     if (query.exec()) {
-        QMessageBox::information(this, "Success", "Match successfully added with 4 referees!");
+        QMessageBox::information(this, "Succès", "Match ajouté avec succès !");
     } else {
-        QMessageBox::critical(this, "Error", "Failed to add match: " + query.lastError().text());
+        QMessageBox::critical(this, "Erreur", "Echec dans l'ajout: " + query.lastError().text());
     }
 
     ui->pushButton->setEnabled(true);
     isInsertingMatch = false;
 }
+
+
+
+
+//------------------------------------------AFFICHAGE PROG ET HISTORIQUE DES MATCHES-------------------------------------------------------------------------------------------------
+
+
 void MainWindow::loadMatchesIntoTable()
 {
-    // Modify the query to select SCORE and SCOREEDIT
     QSqlQuery query("SELECT ID_MATCH, TYPE_MATCH, EQUIPE1, EQUIPE2, SCORE, DATE_MATCH, ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4, SCOREEDIT FROM MATCHES");
 
-    // Clear existing tables
     ui->programmation_2->setRowCount(0);
     ui->historique_table->setRowCount(0);
 
@@ -285,181 +285,172 @@ void MainWindow::loadMatchesIntoTable()
     int progRow = 0, histRow = 0;
 
     while (query.next()) {
-        QDate matchDate = query.value(5).toDate(); // DATE_MATCH is now at index 5 (6th column)
-        int scoreEdit = query.value(10).toInt(); // Fetch the SCOREEDIT value (index 10)
-        QString score = query.value(4).toString(); // SCORE is at index 4
+        QDate matchDate = query.value(5).toDate();
+        int scoreEdit = query.value(10).toInt();
+        QString score = query.value(4).toString();
 
         QColor rowColor;
-        // Check the score and SCOREEDIT value to determine row color
         if (scoreEdit ==0 ) {
-            rowColor = QColor(255, 200, 200);  // Light red color
-        } else if (score != "0-0") {
-            rowColor = QColor(197, 255, 217);  // Light green color
+            rowColor = QColor(255, 200, 200);
         } else {
-            rowColor = QColor(197, 255, 217);  // White color if not modified
+            rowColor = QColor(197, 255, 217);
         }
 
+
+        //table histo
         if (matchDate < today) {
-            // Insert match into the historical table
             ui->historique_table->insertRow(histRow);
-            for (int col = 0; col < 10; col++) { // Now we have 10 columns (including SCORE before DATE_MATCH)
+            for (int col = 0; col < 10; col++) {
                 QTableWidgetItem *item = new QTableWidgetItem;
 
                 if (col == 4) {
-                    // Add the SCORE value in the 5th column (index 4)
                     item->setText(score);
                 } else if (col == 5) {
-                    // Add the DATE_MATCH value in the 6th column (index 5)
                     item->setText(query.value(5).toString());
                 } else if (col == 6) {
-                    // Add the ID_ARBITRE1 value in the 7th column (index 6)
                     item->setText(query.value(6).toString());
                 } else if (col == 7) {
-                    // Add the ID_ARBITRE2 value in the 8th column (index 7)
                     item->setText(query.value(7).toString());
                 } else if (col == 8) {
-                    // Add the ID_ARBITRE3 value in the 9th column (index 8)
                     item->setText(query.value(8).toString());
                 } else if (col == 9) {
-                    // Add the ID_ARBITRE4 value in the 10th column (index 9)
                     item->setText(query.value(9).toString());
                 } else {
-                    // Insert other columns, shifting them correctly
                     item->setText(query.value(col < 4 ? col : col + 2).toString());
                 }
 
-                // Apply the color to the entire row
+
                 item->setBackground(rowColor);
                 ui->historique_table->setItem(histRow, col, item);
             }
             histRow++;
-        } else {
-            // Insert match into the programming table, but without the SCORE column
+        }
+
+        //table prog
+        else {
             ui->programmation_2->insertRow(progRow);
-            for (int col = 0; col < 9; col++) { // Now only 9 columns (excluding SCORE)
+
+            for (int col = 0; col < 9; col++) {
                 QTableWidgetItem *item = new QTableWidgetItem;
 
                 if (col == 4) {
-                    // Add the DATE_MATCH value in the 5th column (index 4)
-                    item->setText(query.value(5).toString());
+                    item->setText(query.value(5).toString());  // SCORE column (index 4 in query)
                 } else if (col == 5) {
-                    // Add the ID_ARBITRE1 value in the 6th column (index 5)
-                    item->setText(query.value(6).toString());
+                    item->setText(query.value(6).toString());  // DATE_MATCH column (index 5 in query)
                 } else if (col == 6) {
-                    // Add the ID_ARBITRE2 value in the 7th column (index 6)
-                    item->setText(query.value(7).toString());
+                    item->setText(query.value(7).toString());  // ID_ARBITRE1 column (index 6 in query)
                 } else if (col == 7) {
-                    // Add the ID_ARBITRE3 value in the 8th column (index 7)
-                    item->setText(query.value(8).toString());
+                    item->setText(query.value(8).toString());  // ID_ARBITRE2 column (index 7 in query)
                 } else if (col == 8) {
-                    // Add the ID_ARBITRE4 value in the 9th column (index 8)
-                    item->setText(query.value(9).toString());
+                    item->setText(query.value(9).toString());  // ID_ARBITRE3 column (index 8 in query)
                 } else {
-                    // Insert other columns, shifting them correctly (excluding SCORE)
-                    item->setText(query.value(col < 4 ? col : col + 1).toString());
+                    item->setText(query.value(col < 4 ? col : col + 1).toString());  // EQUIPE1, EQUIPE2, and other columns
                 }
 
                 ui->programmation_2->setItem(progRow, col, item);
             }
+
+            ui->programmation_2->setItem(progRow, 9, new QTableWidgetItem(""));
+
+            predictWinner(progRow);
+
             progRow++;
         }
+
     }
 
 }
 
 
 
+
+//---------------------------------------RECHERCHE MATCHES----------------------------------------------------------------------------------------------
+
 void MainWindow::filterTable()
 {
     QString filterText = ui->chercher->text().trimmed();
-    QString filterOption = ui->tri_options->currentText();
+    QString filterOption = ui->tri_prog_match->currentText();
 
     for (int i = 0; i < ui->programmation_2->rowCount(); i++) {
         bool match = false;
 
         if (filterOption == "date") {
-            QString dateValue = ui->programmation_2->item(i, 4)->text();  // Colonne date
+            QString dateValue = ui->programmation_2->item(i, 4)->text();
             match = dateValue.contains(filterText, Qt::CaseInsensitive);
         } else if (filterOption == "équipe") {
-            QString equipe1 = ui->programmation_2->item(i, 2)->text();  // Colonne équipe 1
-            QString equipe2 = ui->programmation_2->item(i, 3)->text();  // Colonne équipe 2
+            QString equipe1 = ui->programmation_2->item(i, 2)->text();
+            QString equipe2 = ui->programmation_2->item(i, 3)->text();
             match = equipe1.contains(filterText, Qt::CaseInsensitive) || equipe2.contains(filterText, Qt::CaseInsensitive);
         }
 
         ui->programmation_2->setRowHidden(i, !match);
     }
+
+
+    QString filterText2 = ui->chercher_histo->text().trimmed();
+    QString filterOption2 = ui->tri_histo_match->currentText();
+
+    for (int i = 0; i < ui->historique_table->rowCount(); i++) {
+        bool match = false;
+
+        if (filterOption2 == "date") {
+            QString dateValue = ui->historique_table->item(i, 5)->text(); // Indice 5 pour la date
+            match = dateValue.contains(filterText2, Qt::CaseInsensitive);
+        } else if (filterOption2 == "équipe") {
+            QString equipe1 = ui->historique_table->item(i, 2)->text();
+            QString equipe2 = ui->historique_table->item(i, 3)->text();
+            match = equipe1.contains(filterText2, Qt::CaseInsensitive) || equipe2.contains(filterText2, Qt::CaseInsensitive);
+        }
+
+        ui->historique_table->setRowHidden(i, !match);
+    }
+
 }
+
+
+
+
+
+//-----------------------------------------SUPPRIMER MATCH---------------------------------------------------------------------------------------------------
 void MainWindow::deleteMatch()
 {
-    int row = ui->programmation_2->currentRow(); // Get the selected row
+    int row = ui->programmation_2->currentRow();
     if (row < 0) {
         QMessageBox::warning(this, "Aucune sélection", "Veuillez sélectionner un match à supprimer.");
         return;
     }
 
-    // Retrieve ID of the match from the first column (ID_MATCH)
     QString id = ui->programmation_2->item(row, 0)->text();
+    QString equipe1 = ui->programmation_2->item(row, 2)->text();
+    QString equipe2 = ui->programmation_2->item(row, 3)->text();
+    QString dateMatch = ui->programmation_2->item(row, 4)->text();
 
-    // Ask for confirmation before deletion
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Confirmation", "Êtes-vous sûr de vouloir supprimer ce match ?",
+    reply = QMessageBox::question(this, "Confirmation", "Êtes-vous sûr de vouloir supprimer le match de " + equipe1 +
+                                                            " et " + equipe2 + " prévu le " + dateMatch + " ?",
                                   QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::No) {
-        return; // If No is selected, abort the deletion
+        return;
     }
 
-    // Prepare SQL query to delete the match by ID
     QSqlQuery query;
     query.prepare("DELETE FROM MATCHES WHERE ID_MATCH = :id");
     query.bindValue(":id", id);
 
-    // Execute the query
     if (query.exec()) {
-        QMessageBox::information(this, "Suppression réussie", "Le match a été supprimé avec succès de la base de données !");
-
-        // Remove the row from the table view
-        ui->programmation_2->removeRow(row); // This will remove the selected row from the view
+        QMessageBox::information(this, "Suppression réussie", "Le match de " + equipe1 + " et " + equipe2 +
+                                                                  " prévu le " + dateMatch + " a été supprimé avec succès !");
+        ui->programmation_2->removeRow(row);
     } else {
-        // Print error for debugging
         QString error = query.lastError().text();
         qDebug() << "SQL Error: " << error;
         QMessageBox::critical(this, "Erreur", "Erreur lors de la suppression du match dans la base de données : " + error);
     }
 }
 
-void MainWindow::refreshTable()
-{
-    // Clear existing rows in the table
-    ui->programmation_2->setRowCount(0);
-
-    // Create a query to select all data from the database
-    QSqlQuery query;
-    query.prepare("SELECT ID_MATCH, TYPE_MATCH, EQUIPE1, EQUIPE2, DATE_MATCH FROM MATCHES");
-
-    if (query.exec()) {
-        // Loop through the query results and insert them into the table
-        while (query.next()) {
-            int row = ui->programmation_2->rowCount();
-            ui->programmation_2->insertRow(row);
-
-            // Set the values from the database into the table cells
-            ui->programmation_2->setItem(row, 0, new QTableWidgetItem(query.value(0).toString())); // ID_MATCH
-            ui->programmation_2->setItem(row, 1, new QTableWidgetItem(query.value(1).toString())); // TYPE
-
-            ui->programmation_2->setItem(row, 2, new QTableWidgetItem(query.value(2).toString())); // EQUIPE1
-            ui->programmation_2->setItem(row, 3, new QTableWidgetItem(query.value(3).toString())); // EQUIPE2
-            ui->programmation_2->setItem(row, 4, new QTableWidgetItem(query.value(4).toString())); // SCORE
-            ui->programmation_2->setItem(row, 5, new QTableWidgetItem(query.value(5).toString()));
-                // DATE_MATCH
-        }
-    } else {
-        // Handle query error if there is one
-        QMessageBox::critical(this, "Erreur", "Erreur lors de la récupération des données : " + query.lastError().text());
-    }
-}
 
 
-
+//------------------------------------GESTION ARBITRES DANS MATCHES --------------------------------------------------------------------------------------
 void MainWindow::loadRefereesIntoComboBox() {
     QSqlQuery query("SELECT NOM FROM ARBITRES");
 
@@ -474,14 +465,12 @@ void MainWindow::loadRefereesIntoComboBox() {
 void MainWindow::handleRandomReferees(int state) {
     bool randomMode = (state == Qt::Checked);
 
-    // Disable/Enable manual selection
     ui->comboBox_arbitre1->setEnabled(!randomMode);
     ui->comboBox_arbitre2->setEnabled(!randomMode);
     ui->comboBox_arbitre3->setEnabled(!randomMode);
     ui->comboBox_arbitre4->setEnabled(!randomMode);
 
     if (randomMode) {
-        // Fetch all referees from the database
         QSqlQuery query("SELECT NOM FROM ARBITRES");
         QStringList allArbitres;
 
@@ -499,7 +488,6 @@ void MainWindow::handleRandomReferees(int state) {
             return;
         }
 
-        // Shuffle and pick 4 unique referees
         std::random_device rd;
         std::mt19937 g(rd());
         std::shuffle(allArbitres.begin(), allArbitres.end(), g);
@@ -513,6 +501,10 @@ void MainWindow::handleRandomReferees(int state) {
 }
 
 
+
+
+//---------------------------------GESTION EQUIPES DANS MATCHES-----------------------------------------------------------------------------------------------------
+
 void MainWindow::loadEquipes() {
     QSqlQuery query("SELECT NOM_EQUIPE FROM EQUIPES");
 
@@ -525,30 +517,59 @@ void MainWindow::loadEquipes() {
         ui->comboBox_3->addItem(equipe);
     }
 }
-//---------------------------------------------------------------------------------
+
+
+
+//------------------------------------MODIFICATION PROGRAMMATION MATCHES-------------------------------------------------------------------------------
+
+
+
+//----------
+QString MainWindow::getColumnName(int column)
+{
+    // This function maps column indices to the actual column names in the database
+    switch (column) {
+    case 0: return "ID_MATCH";
+    case 1: return "TYPE_MATCH";
+    case 2: return "EQUIPE1";
+    case 3: return "EQUIPE2";
+    case 4: return "DATE_MATCH";
+    case 5: return "ID_ARBITRE1";
+    case 6: return "ID_ARBITRE2";
+    case 7: return "ID_ARBITRE3";
+    case 8: return "ID_ARBITRE4";
+    case 9: return "ATTENTES";
+    default: return "";
+    }
+}
+//------------
+
 
 void MainWindow::onCellDoubleClicked(int row, int column)
 {
-    // Ensure the clicked cell has a valid item
     if (!ui->programmation_2->item(row, column)) {
         qDebug() << "Cell at row " << row << ", column " << column << " is null!";
         return;
     }
 
-    // Get current value and column name
     QString oldValue = ui->programmation_2->item(row, column)->text();
-    QString columnName = getColumnName(column); // Function to get the actual column name from index
+    QString columnName = getColumnName(column);
 
-    // Prevent modification of ID_MATCH
     if (columnName == "ID_MATCH") {
         QMessageBox::warning(this, "Modification Interdite", "Vous ne pouvez pas modifier l'ID du match.");
         return;
     }
 
-    // Debugging output
     qDebug() << "Clicked column: " << column << ", Column Name: " << columnName << ", Current Value: " << oldValue;
 
-    // Ask for confirmation before editing
+
+    if (columnName == "ATTENTES") {
+        QMessageBox::warning(this, "Modification Interdite", "La prédiction est générée automatiquement en se basant sur l'historique des résultats");
+        return;
+    }
+
+    qDebug() << "Clicked column: " << column << ", Column Name: " << columnName << ", Current Value: " << oldValue;
+
     QMessageBox::StandardButton reply = QMessageBox::question(
         this, "Confirmation :", "Êtes-vous sûr de vouloir modifier cette valeur ?", QMessageBox::Yes | QMessageBox::No);
 
@@ -556,15 +577,14 @@ void MainWindow::onCellDoubleClicked(int row, int column)
         return;
     }
 
-    bool ok;
+    bool ok = false;
     QString newValue;
 
-    // Handle TYPE_MATCH dropdown
     if (columnName == "TYPE_MATCH") {
         QStringList typeOptions = { "Amical", "Groupe", "Championnat", "Coupe", "Qualification", "PlayOff" };
         newValue = QInputDialog::getItem(this, "Modification :", "Sélectionnez un nouveau type:", typeOptions, 0, false, &ok);
     }
-    // Handle EQUIPE1 and EQUIPE2 dropdown
+
     else if (columnName == "EQUIPE1" || columnName == "EQUIPE2") {
         QStringList teamOptions;
         QSqlQuery query("SELECT NOM_EQUIPE FROM EQUIPES");
@@ -579,18 +599,24 @@ void MainWindow::onCellDoubleClicked(int row, int column)
         }
 
         newValue = QInputDialog::getItem(this, "Modification :", "Sélectionnez une nouvelle équipe :", teamOptions, 0, false, &ok);
+
+        if (ok && !newValue.isEmpty()) {
+            QString equipe1 = (columnName == "EQUIPE1") ? newValue : ui->programmation_2->item(row, 2)->text();
+            QString equipe2 = (columnName == "EQUIPE2") ? newValue : ui->programmation_2->item(row, 3)->text();
+
+            if (equipe1 == equipe2) {
+                QMessageBox::warning(this, "Erreur", "Les deux équipes ne peuvent pas être les mêmes !");
+                return;
+            }
+        }
     }
-    // Handle Referee Selection for ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4
+
     else if (columnName.toUpper().contains("ID_ARBITRE")) {
-        QMap<QString, QString> refereeMap; // Map NOM to ID_ARBITRE
         QStringList refereeNames;
-        QSqlQuery query("SELECT ID_ARBITRE, NOM FROM ARBITRES");
+        QSqlQuery query("SELECT NOM FROM ARBITRES");
 
         while (query.next()) {
-            QString idArbitre = query.value(0).toString();
-            QString nomArbitre = query.value(1).toString();
-            refereeNames << nomArbitre;
-            refereeMap[nomArbitre] = idArbitre;
+            refereeNames << query.value(0).toString();
         }
 
         if (refereeNames.isEmpty()) {
@@ -600,12 +626,10 @@ void MainWindow::onCellDoubleClicked(int row, int column)
 
         QString selectedNom = QInputDialog::getItem(this, "Modification :", "Sélectionnez un arbitre :", refereeNames, 0, false, &ok);
         if (ok && !selectedNom.isEmpty()) {
-            newValue = refereeMap[selectedNom]; // Get the corresponding ID_ARBITRE
-            qDebug() << "Selected referee: " << selectedNom << " with ID: " << newValue;
+            newValue = selectedNom;
 
-            // Check if the referee is already assigned in another column
-            for (int i = 5; i <= 8; ++i) { // Columns for ID_ARBITRE1 to ID_ARBITRE4
-                if (i != column) { // Skip the current column being modified
+            for (int i = 5; i <= 8; ++i) {
+                if (i != column) {
                     QTableWidgetItem* item = ui->programmation_2->item(row, i);
                     if (item && item->text() == newValue) {
                         QMessageBox::warning(this, "Erreur", "Cet arbitre est déjà assigné à ce match. Veuillez en choisir un autre.");
@@ -615,16 +639,14 @@ void MainWindow::onCellDoubleClicked(int row, int column)
             }
         }
     }
-    // Handle Date column (DATE_MATCH)
+
     else if (columnName == "DATE_MATCH") {
-        // Create a DateTime edit dialog
         QDateTime currentDateTime = QDateTime::fromString(oldValue, "yyyy-MM-dd HH:mm:ss");
         QDateTimeEdit *dateTimeEdit = new QDateTimeEdit(currentDateTime);
         dateTimeEdit->setDisplayFormat("yyyy-MM-dd HH:mm:ss");
         dateTimeEdit->setCalendarPopup(true);
         dateTimeEdit->setDateTime(currentDateTime);
 
-        // Create a custom dialog to show the QDateTimeEdit
         QDialog *dateDialog = new QDialog(this);
         QVBoxLayout *layout = new QVBoxLayout(dateDialog);
         layout->addWidget(dateTimeEdit);
@@ -636,100 +658,108 @@ void MainWindow::onCellDoubleClicked(int row, int column)
 
         if (dateDialog->exec() == QDialog::Accepted) {
             newValue = dateTimeEdit->dateTime().toString("yyyy-MM-dd HH:mm:ss");
-        }
-
-        delete dateDialog; // Clean up the dialog
-    }
-
-    // Update the table item with the new value
-    if (!newValue.isEmpty()) {
-        ui->programmation_2->item(row, column)->setText(newValue);
-
-        // Update the match in the database with the new value
-        QSqlQuery query;
-        if (columnName == "DATE_MATCH") {
-            query.prepare("UPDATE MATCHES SET DATE_MATCH = TO_TIMESTAMP(:date, 'YYYY-MM-DD HH24:MI:SS') WHERE ID_MATCH = :id_match");
-            query.bindValue(":date", newValue);
-        } else if (columnName == "TYPE_MATCH" || columnName == "EQUIPE1" || columnName == "EQUIPE2" || columnName.contains("ID_ARBITRE")) {
-            query.prepare("UPDATE MATCHES SET " + columnName + " = :value WHERE ID_MATCH = :id_match");
-            query.bindValue(":value", newValue);
-        }
-
-        query.bindValue(":id_match", ui->programmation_2->item(row, 0)->text()); // Assuming ID_MATCH is in column 0
-
-        if (query.exec()) {
-            QMessageBox::information(this, "Success", "La valeur a été modifiée avec succès.");
+            ok = true;
         } else {
-            QMessageBox::critical(this, "Erreur", "Erreur lors de la modification de la valeur : " + query.lastError().text());
+            delete dateDialog;
+            return;
         }
+
+        delete dateDialog;
+    }
+
+    if (!ok || newValue.isEmpty()) {
+        return;
+    }
+
+    ui->programmation_2->item(row, column)->setText(newValue);
+
+    QSqlQuery query;
+    if (columnName == "DATE_MATCH") {
+        query.prepare("UPDATE MATCHES SET DATE_MATCH = TO_TIMESTAMP(:date, 'YYYY-MM-DD HH24:MI:SS') WHERE ID_MATCH = :id_match");
+        query.bindValue(":date", newValue);
+    } else {
+        query.prepare("UPDATE MATCHES SET " + columnName + " = :value WHERE ID_MATCH = :id_match");
+        query.bindValue(":value", newValue);
+    }
+
+    query.bindValue(":id_match", ui->programmation_2->item(row, 0)->text());
+
+    if (query.exec()) {
+        QMessageBox::information(this, "Succès", "La valeur a été modifiée avec succès.");
+    } else {
+        QMessageBox::critical(this, "Erreur", "Erreur lors de la modification de la valeur : " + query.lastError().text());
     }
 }
 
 
-//-----------------------------------------------------------------------------------------------------------
 
-QString MainWindow::getColumnName(int column)
-{
-    // This function maps column indices to the actual column names in the database
-    switch (column) {
-    case 0: return "ID_MATCH";
-    case 1: return "TYPE_MATCH";
-    case 2: return "EQUIPE1";
-    case 3: return "EQUIPE2";
-    case 4: return "DATE_MATCH";
-    case 5: return "ID_ARBITRE1";
-    case 6: return "ID_ARBITRE2";
-    case 7: return "ID_ARBITRE3";
-    case 8: return "ID_ARBITRE4";
-    default: return "";
-    }
-}
+
+
+
+
+//-------------------------------------MODIFICATION HISTORIQUE MATCHES---------------------------------------------------------------------------------------
 void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
 {
-    // Assuming score is in the 4th column (index 4) in historique_table
     if (col == 4) {
-        // Ask for confirmation before editing the score
+
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Confirm Edit", "Are you sure you want to edit the score?",
+        reply = QMessageBox::question(this, "Confirm Modification", "Do you want to modify the score?",
                                       QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
-            // Get the current value in the score cell
+
             QString oldScore = ui->historique_table->item(row, col)->text();
 
-            // Create a QRegularExpression to validate the X-Y format
-            QRegularExpression regExp("^\\d+-\\d+$"); // Regular expression to ensure X-Y format with positive integers
-            QRegularExpressionValidator *validator = new QRegularExpressionValidator(regExp, this);
+            // Score validation (format X-Y)
+            QRegularExpression regExp("^\\d+-\\d+$");
+            QRegularExpressionValidator validator(regExp, this);
 
-            // Create an input dialog with the old score prefilled and the placeholder set to "X-Y"
             bool ok;
-            QString newScore = QInputDialog::getText(this, "Edit Score", "New Score:", QLineEdit::Normal,
+            QString newScore = QInputDialog::getText(this, "Modify Score", "New Score:", QLineEdit::Normal,
                                                      oldScore, &ok);
 
             if (ok && !newScore.isEmpty()) {
-                // Validate the entered score
                 int pos = 0;
-                if (validator->validate(newScore, pos) == QValidator::Acceptable) {
+                if (validator.validate(newScore, pos) == QValidator::Acceptable) {
                     // Update the score in the table
                     ui->historique_table->item(row, col)->setText(newScore);
 
-                    // Now update the database
+                    // Extract scores
+                    QStringList scores = newScore.split("-");
+                    int scoreTeam1 = scores[0].toInt();
+                    int scoreTeam2 = scores[1].toInt();
+
+                    // Determine the winner
+                    QString winner;
+                    if (scoreTeam1 > scoreTeam2) {
+                        winner = ui->historique_table->item(row, 2)->text(); // Team 1 name
+                    } else if (scoreTeam1 < scoreTeam2) {
+                        winner = ui->historique_table->item(row, 3)->text(); // Team 2 name
+                    } else {
+                        winner = "ta3adol";
+                    }
+
+                    // Update database
                     QSqlQuery query;
-                    query.prepare("UPDATE MATCHES SET SCORE = :score, SCOREEDIT = 1 WHERE ID_MATCH = :id_match");
+                    query.prepare("UPDATE MATCHES SET SCORE = :score, WINNER = :winner, SCOREEDIT = 1 WHERE ID_MATCH = :id_match");
                     query.bindValue(":score", newScore);
-                    query.bindValue(":id_match", ui->historique_table->item(row, 0)->text()); // Assuming the ID_MATCH is in column 0
+                    query.bindValue(":winner", winner);
+                    query.bindValue(":id_match", ui->historique_table->item(row, 0)->text());
 
                     if (query.exec()) {
-                        QMessageBox::information(this, "Success", "Change successful!");
+                        QMessageBox::information(this, "Succès", "Score mis à jour avec succès !");
                     } else {
-                        QMessageBox::warning(this, "Error", "Failed to update score in the database.");
+                        QMessageBox::warning(this, "Erreur", "Échec de la mise à jour du score dans la base de données.");
                     }
                 } else {
-                    QMessageBox::warning(this, "Invalid Format", "Please enter a valid score in the format X-Y.");
+                    QMessageBox::warning(this, "Format invalide", "Veuillez saisir un score valide au format X-Y.");
                 }
             }
         }
     }
 }
+
+
+//--------------------------------------------DESIGN HISTORIQUE-----------------------------------------------------------------------------------------
 
 void MainWindow::onItemChanged(QTableWidgetItem *item)
 {
@@ -751,14 +781,11 @@ void MainWindow::onItemChanged(QTableWidgetItem *item)
             QColor rowColor;
             if (newScore == "0-0") {
                 if (scoreEditValue == 1) {
-                    // If SCOREEDIT is 1 (score already modified), apply white background to the entire row
                     rowColor = QColor(197, 255, 217);
                 } else {
-                    // If SCOREEDIT is not 1 (score has not been modified), apply red color to the entire row
-                    rowColor = QColor(255, 200, 200);  // Light red color
+                    rowColor = QColor(255, 200, 200);
                 }
             } else {
-                // If the score is not 0-0, apply green color to the entire row
                 rowColor = QColor(197, 255, 217);  // Light green color
             }
 
@@ -769,135 +796,120 @@ void MainWindow::onItemChanged(QTableWidgetItem *item)
                     rowItem->setBackground(rowColor);
                 }
             }
-        } else {
-            // Handle query failure, if needed
         }
     }
 
-    // You can add your database update logic here to save the new score to the database
 }
+
+
+
+
 void MainWindow::checkForNullScoreEdit()
 {
-    // Get today's date
+
     QDate today = QDate::currentDate();
-
-    // Query to check for any NULL values in the SCOREEDIT column and compare the date
     QSqlQuery query("SELECT SCOREEDIT, DATE_MATCH FROM MATCHES WHERE SCOREEDIT IS NULL OR SCOREEDIT = '0'");
-
-    // Clear any previous "!" label if it exists, except label_21
     QList<QLabel*> existingLabels = ui->widget_7->findChildren<QLabel*>();
     for (QLabel* label : existingLabels) {
-        if (label != ui->label_21) {  // Make sure not to remove label_21
-            label->deleteLater();  // Remove the previous label
+        if (label != ui->label_21) {
+            label->deleteLater();
         }
     }
 
-    // Check if any result is returned (i.e., there are NULL or "0" values in the SCOREEDIT column)
-    bool labelDisplayed = false;  // To ensure only one label is shown
+    bool labelDisplayed = false;
     while (query.next()) {
         QString scoreEdit = query.value(0).toString();
         QDateTime dateTimeMatch = query.value(1).toDateTime();
-
-        // Extract the date from the QDateTime
         QDate matchDate = dateTimeMatch.date();
-
-        // Debug output to check the score and match date
         qDebug() << "ScoreEdit: " << scoreEdit << ", Match Date: " << matchDate.toString() << ", Today: " << today.toString();
 
-        // Check if the score is "0" or NULL and the match date is before today
         if ((scoreEdit.isEmpty() || scoreEdit == "0") && matchDate.isValid() && matchDate < today) {
-            // Display the "!" emoji on the top left of widget_7
+
             QLabel *label = new QLabel("❗", ui->widget_7);
             label->setStyleSheet("font-size: 15px; color: red;");
-            label->move(10, 10);  // Position it at the top left
+            label->move(10, 10);
             label->show();
             labelDisplayed = true;
-            break;  // Exit the loop after displaying the label
+            break;
         }
     }
 
-    // If no label was displayed, debug output
     if (!labelDisplayed) {
         qDebug() << "No matching conditions found.";
     }
 }
+
+
+
+//-------------------------------------ELARGIR WIDGETS-------------------------------------------------------------------------------
+
+// Flag for show_2 expansion state
+bool isExpandedShow2 = false;
+
+// Flag for show_3 expansion state
+bool isExpandedShow3 = false;
+
 void MainWindow::onShowButtonClicked()
 {
-    // Get current widths and positions of the widgets
+    // Save current dimensions of the widgets
     int currentTabWidth = ui->tabWidget->geometry().width();
     int currentTableWidth = ui->programmation_2->geometry().width();
     int currentWidget6Width = ui->widget_6->geometry().width();
     int currentDeleteMatchX = ui->delete_match->geometry().x();
     int currentChercherWidth = ui->chercher->geometry().width();
-
     int currentShow2X = ui->show_2->geometry().x();
+    int currentTriProgX = ui->tri_prog->geometry().x();
 
-    // Start animations for the tabWidget, tableWidget, and widget_6 (expand/contract)
+    // Define the animation duration and the shift amount for all widgets
+    int duration = 500;
+    int shiftAmount = 280;
+
+    // Create and configure the animation for tabWidget resizing
     QPropertyAnimation *tabWidgetAnimation = new QPropertyAnimation(ui->tabWidget, "geometry");
-    tabWidgetAnimation->setDuration(500);
+    tabWidgetAnimation->setDuration(duration);
     QRect tabWidgetNewRect = ui->tabWidget->geometry();
-    if (isExpanded) {
-        tabWidgetNewRect.setWidth(currentTabWidth - 300);
-    } else {
-        tabWidgetNewRect.setWidth(currentTabWidth + 300);
-    }
+    tabWidgetNewRect.setWidth(isExpandedShow2 ? currentTabWidth - shiftAmount : currentTabWidth + shiftAmount);
     tabWidgetAnimation->setEndValue(tabWidgetNewRect);
 
+    // Animation for the tableWidget resizing
     QPropertyAnimation *tableWidgetAnimation = new QPropertyAnimation(ui->programmation_2, "geometry");
-    tableWidgetAnimation->setDuration(500);
+    tableWidgetAnimation->setDuration(duration);
     QRect tableWidgetNewRect = ui->programmation_2->geometry();
-    if (isExpanded) {
-        tableWidgetNewRect.setWidth(currentTableWidth - 400);
-    } else {
-        tableWidgetNewRect.setWidth(currentTableWidth + 400);
-    }
+    tableWidgetNewRect.setWidth(isExpandedShow2 ? currentTableWidth - shiftAmount : currentTableWidth + shiftAmount);
     tableWidgetAnimation->setEndValue(tableWidgetNewRect);
 
+    // Animation for widget6 resizing and moving
     QPropertyAnimation *widget6Animation = new QPropertyAnimation(ui->widget_6, "geometry");
-    widget6Animation->setDuration(500);
+    widget6Animation->setDuration(duration);
     QRect widget6NewRect = ui->widget_6->geometry();
-    if (isExpanded) {
-        widget6NewRect.setWidth(currentWidget6Width - 100);
-        widget6NewRect.moveLeft(widget6NewRect.left() - 300);
-    } else {
-        widget6NewRect.setWidth(currentWidget6Width + 100);
-        widget6NewRect.moveLeft(widget6NewRect.left() + 300);
-    }
+    widget6NewRect.setWidth(isExpandedShow2 ? currentWidget6Width - shiftAmount : currentWidget6Width + shiftAmount);
+    widget6NewRect.moveLeft(isExpandedShow2 ? widget6NewRect.left() - shiftAmount : widget6NewRect.left() + shiftAmount);
     widget6Animation->setEndValue(widget6NewRect);
 
-    // Animation for moving the delete_match button to the left
+    // Animations for other widgets (delete_match, chercher, show_2, tri_prog)
     QPropertyAnimation *deleteMatchAnimation = new QPropertyAnimation(ui->delete_match, "geometry");
-    deleteMatchAnimation->setDuration(500);
+    deleteMatchAnimation->setDuration(duration);
     QRect deleteMatchNewRect = ui->delete_match->geometry();
-    if (isExpanded) {
-        deleteMatchNewRect.moveLeft(currentDeleteMatchX - 290);
-    } else {
-        deleteMatchNewRect.moveLeft(currentDeleteMatchX + 290);
-    }
+    deleteMatchNewRect.moveLeft(isExpandedShow2 ? currentDeleteMatchX - shiftAmount : currentDeleteMatchX + shiftAmount);
     deleteMatchAnimation->setEndValue(deleteMatchNewRect);
 
-    // Animation for expanding the chercher QLineEdit
     QPropertyAnimation *chercherAnimation = new QPropertyAnimation(ui->chercher, "geometry");
-    chercherAnimation->setDuration(500);
+    chercherAnimation->setDuration(duration);
     QRect chercherNewRect = ui->chercher->geometry();
-    if (isExpanded) {
-        chercherNewRect.setWidth(currentChercherWidth - 290);
-    } else {
-        chercherNewRect.setWidth(currentChercherWidth + 290);
-    }
+    chercherNewRect.setWidth(isExpandedShow2 ? currentChercherWidth - shiftAmount : currentChercherWidth + shiftAmount);
     chercherAnimation->setEndValue(chercherNewRect);
 
-
-    // Animation for moving the show_2 button to the left
     QPropertyAnimation *show2ButtonAnimation = new QPropertyAnimation(ui->show_2, "geometry");
-    show2ButtonAnimation->setDuration(500);
+    show2ButtonAnimation->setDuration(duration);
     QRect show2ButtonNewRect = ui->show_2->geometry();
-    if (isExpanded) {
-        show2ButtonNewRect.moveLeft(currentShow2X - 290);  // Move button left by 290px
-    } else {
-        show2ButtonNewRect.moveLeft(currentShow2X + 290);  // Move button back to original position
-    }
+    show2ButtonNewRect.moveLeft(isExpandedShow2 ? currentShow2X - shiftAmount : currentShow2X + shiftAmount);
     show2ButtonAnimation->setEndValue(show2ButtonNewRect);
+
+    QPropertyAnimation *triProgAnimation = new QPropertyAnimation(ui->tri_prog, "geometry");
+    triProgAnimation->setDuration(duration);
+    QRect triProgNewRect = ui->tri_prog->geometry();
+    triProgNewRect.moveLeft(isExpandedShow2 ? currentTriProgX - shiftAmount : currentTriProgX + shiftAmount);
+    triProgAnimation->setEndValue(triProgNewRect);
 
     // Start all animations
     tabWidgetAnimation->start();
@@ -905,19 +917,91 @@ void MainWindow::onShowButtonClicked()
     widget6Animation->start();
     deleteMatchAnimation->start();
     chercherAnimation->start();
-
     show2ButtonAnimation->start();
+    triProgAnimation->start();
+
+    // Toggle the expanded state for show_2 only
+    isExpandedShow2 = !isExpandedShow2;
+}
+void MainWindow::onShow3ButtonClicked()
+{
+    // Save the current dimensions and positions of the widgets
+    int currentWidget7Width = ui->widget_7->geometry().width();
+    int currentWidget8X = ui->widget_8->geometry().x();
+    int currentHistoriqueTableWidth = ui->historique_table->geometry().width();
+    int currentShow3X = ui->show_3->geometry().x();
+    int currentTriHistoX = ui->tri_histo->geometry().x();
+    int currentChercherHistoWidth = ui->chercher_histo->geometry().width();
+
+    // Define the animation duration and the shift amount for all widgets
+    int duration = 500;
+    int shiftAmount = 280;
+
+    // Create and configure the animation for widget_7 resizing
+    QPropertyAnimation *widget7Animation = new QPropertyAnimation(ui->widget_7, "geometry");
+    widget7Animation->setDuration(duration);
+    QRect widget7NewRect = ui->widget_7->geometry();
+    widget7NewRect.setWidth(isExpanded ? currentWidget7Width - shiftAmount : currentWidget7Width + shiftAmount);
+    widget7Animation->setEndValue(widget7NewRect);
+
+    // Create and configure the animation for widget_8 moving to the left (opposite direction)
+    QPropertyAnimation *widget8Animation = new QPropertyAnimation(ui->widget_8, "geometry");
+    widget8Animation->setDuration(duration);
+    QRect widget8NewRect = ui->widget_8->geometry();
+    widget8NewRect.moveLeft(isExpanded ? currentWidget8X - shiftAmount : currentWidget8X + shiftAmount); // Move widget_8
+    widget8Animation->setEndValue(widget8NewRect);
+
+    // Create and configure the animation for historique_table resizing
+    QPropertyAnimation *historiqueTableAnimation = new QPropertyAnimation(ui->historique_table, "geometry");
+    historiqueTableAnimation->setDuration(duration);
+    QRect historiqueTableNewRect = ui->historique_table->geometry();
+    historiqueTableNewRect.setWidth(isExpanded ? currentHistoriqueTableWidth - shiftAmount : currentHistoriqueTableWidth + shiftAmount);
+    historiqueTableAnimation->setEndValue(historiqueTableNewRect);
+
+    // Create and configure the animation for show_3 moving to the left
+    QPropertyAnimation *show3ButtonAnimation = new QPropertyAnimation(ui->show_3, "geometry");
+    show3ButtonAnimation->setDuration(duration);
+    QRect show3ButtonNewRect = ui->show_3->geometry();
+    show3ButtonNewRect.moveLeft(isExpanded ? currentShow3X - shiftAmount : currentShow3X + shiftAmount);
+    show3ButtonAnimation->setEndValue(show3ButtonNewRect);
+
+    // Create and configure the animation for tri_histo moving to the left
+    QPropertyAnimation *triHistoAnimation = new QPropertyAnimation(ui->tri_histo, "geometry");
+    triHistoAnimation->setDuration(duration);
+    QRect triHistoNewRect = ui->tri_histo->geometry();
+    triHistoNewRect.moveLeft(isExpanded ? currentTriHistoX - shiftAmount : currentTriHistoX + shiftAmount);
+    triHistoAnimation->setEndValue(triHistoNewRect);
+
+    // Create and configure the animation for chercher_histo resizing (making it larger)
+    QPropertyAnimation *chercherHistoAnimation = new QPropertyAnimation(ui->chercher_histo, "geometry");
+    chercherHistoAnimation->setDuration(duration);
+    QRect chercherHistoNewRect = ui->chercher_histo->geometry();
+    chercherHistoNewRect.setWidth(isExpanded ? currentChercherHistoWidth - shiftAmount : currentChercherHistoWidth + shiftAmount);
+    chercherHistoAnimation->setEndValue(chercherHistoNewRect);
+
+
+
+    // Start all animations
+    widget7Animation->start();
+    widget8Animation->start();
+    historiqueTableAnimation->start();
+    show3ButtonAnimation->start();
+    triHistoAnimation->start();
+    chercherHistoAnimation->start();
+
 
     // Toggle the expanded state
     isExpanded = !isExpanded;
 }
 
-void MainWindow::on_exporter_match_clicked()
-{
-    // Demander à l'utilisateur quoi exporter
+
+
+
+//--------------------------------------EXPORTER PDF ---------------------------------------------------------------------------------------
+void MainWindow::on_exporter_match_clicked() {
     QMessageBox msgBox;
-    msgBox.setWindowTitle("Exporter");
-    msgBox.setText("Choisissez ce que vous voulez exporter :");
+    msgBox.setWindowTitle("Export");
+    msgBox.setText("Choisissez ce que vous souhaitez exporter:");
 
     QPushButton *btnProgrammation = msgBox.addButton("Programmation", QMessageBox::AcceptRole);
     QPushButton *btnHistorique = msgBox.addButton("Historique", QMessageBox::AcceptRole);
@@ -937,10 +1021,14 @@ void MainWindow::on_exporter_match_clicked()
     else if (msgBox.clickedButton() == btnHistorique) {
         exportTableToPDF(ui->historique_table, filePath);
     }
+    else if (msgBox.clickedButton() == btnStatistics) {
+        exportStatisticsToPDF(filePath);  // Pass the file path to avoid asking twice
+    }
     else {
-        QMessageBox::information(this, "Export annulé", "Vous avez annulé l'exportation.");
+        QMessageBox::information(this, "Exportation annulée", ".");
     }
 }
+
 
 void MainWindow::exportTableToPDF(QTableWidget *table, const QString &filename)
 {
@@ -951,34 +1039,52 @@ void MainWindow::exportTableToPDF(QTableWidget *table, const QString &filename)
     pdfWriter.setResolution(300);
 
     QPainter painter(&pdfWriter);
-    QFont font("Arial", 14); // Plus grand pour occuper l'espace
+    QFont font("Arial", 7);
     painter.setFont(font);
 
     int leftMargin = 20;
     int topMargin = 50;
-    int rowHeight = 80; // Encore plus d'espace !
-    int textPadding = 10; // Marge interne pour éviter que le texte touche les bords
-
+    int rowHeight = 80;
+    int textPadding = 10;
     int columnCount = table->columnCount();
     int pageWidth = pdfWriter.width() - 2 * leftMargin;
     int columnWidth = pageWidth / columnCount;
 
     int y = topMargin;
 
-    // **Dessiner l'en-tête de la table**
+    // Load logo from resources
+    QPixmap logo(":/interface_icons/log.png");
+
+    if (logo.isNull()) {
+        qDebug() << "Error loading logo image!";
+    }
+
+    // Increase logo size
+    int logoWidth = 80;
+    int logoHeight = 80;
+    int logoX = pdfWriter.width() - logoWidth - 20;
+    int logoY = 20;
+
+    // Draw the logo
+    painter.drawPixmap(logoX, logoY, logoWidth, logoHeight, logo);
+
+    // Move the table lower by adjusting the top margin
+    y += logoHeight + 20;
+
+    // Draw table header
     painter.setPen(Qt::black);
-    painter.setBrush(Qt::lightGray);
+    painter.setBrush(Qt::green);
     painter.drawRect(leftMargin, y, pageWidth, rowHeight);
 
     for (int col = 0; col < columnCount; ++col) {
         QString headerText = table->horizontalHeaderItem(col) ? table->horizontalHeaderItem(col)->text() : "";
         QRect headerRect(leftMargin + col * columnWidth + textPadding, y, columnWidth - 2 * textPadding, rowHeight);
-        painter.drawText(headerRect, Qt::AlignCenter, headerText); // Centré dans la cellule
+        painter.drawText(headerRect, Qt::AlignCenter, headerText);
     }
 
     y += rowHeight;
 
-    // **Dessiner les données de la table**
+    // Draw table rows
     painter.setBrush(Qt::NoBrush);
     for (int row = 0; row < table->rowCount(); ++row) {
         painter.drawRect(leftMargin, y, pageWidth, rowHeight);
@@ -986,7 +1092,7 @@ void MainWindow::exportTableToPDF(QTableWidget *table, const QString &filename)
         for (int col = 0; col < columnCount; ++col) {
             QString cellText = table->item(row, col) ? table->item(row, col)->text() : "";
             QRect cellRect(leftMargin + col * columnWidth + textPadding, y, columnWidth - 2 * textPadding, rowHeight);
-            painter.drawText(cellRect, Qt::AlignCenter, cellText); // Centré dans la cellule
+            painter.drawText(cellRect, Qt::AlignCenter, cellText);
         }
         y += rowHeight;
     }
@@ -994,3 +1100,494 @@ void MainWindow::exportTableToPDF(QTableWidget *table, const QString &filename)
     painter.end();
     QMessageBox::information(this, "Exportation réussie", "Le fichier PDF a été enregistré avec succès !");
 }
+void MainWindow::exportStatisticsToPDF(const QString &filePath) {
+    if (!chartView) {
+        QMessageBox::warning(this, "Erreur", "Aucun graphique à exporter !");
+        return;
+    }
+
+    if (filePath.isEmpty()) {
+        QMessageBox::warning(this, "Export Canceled", "No file selected.");
+        return;
+    }
+
+    QPdfWriter writer(filePath);
+    writer.setPageSize(QPageSize(QPageSize::A4));
+    writer.setResolution(300);
+
+    QPainter painter(&writer);
+
+    // Load logo image
+    QImage logo(":/interface_icons/log.png");  // Use resource path or full path to logo
+    if (logo.isNull()) {
+        QMessageBox::warning(this, "Erreur", "pas d' image.");
+    } else {
+        // Scale the logo to a bigger size
+        int scaledWidth = 80;  // Desired width for the logo
+        int scaledHeight = 80; // Desired height for the logo
+        QImage scaledLogo = logo.scaled(scaledWidth, scaledHeight, Qt::KeepAspectRatio);
+
+        // Calculate the top-right position based on the page width and logo width
+        int xPos = writer.width() - scaledLogo.width() - 10;  // 10px margin from the right edge
+        int yPos = 10; // 10px margin from the top
+
+        // Draw the scaled logo at the top-right corner
+        painter.drawImage(xPos, yPos, scaledLogo);
+    }
+
+    // Render the pie chart after drawing the logo
+    chartView->render(&painter);
+
+    // Retrieve data for the legend (month names and number of matches)
+    QPieSeries *series = qobject_cast<QPieSeries *>(chartView->chart()->series().first());
+    if (!series) {
+        QMessageBox::warning(this, "erreur", "pas de data.");
+        return;
+    }
+
+    // Set font for text (make it bigger)
+    QFont font = painter.font();
+    font.setPointSize(8); // Increase font size
+    painter.setFont(font);
+
+    // Draw the legend below the pie chart
+    int x = 100; // X position for the legend
+    int y = chartView->height() + 450; // Y position for the legend
+    int rectangleSize = 15;  // Size of the color rectangle
+    int rowHeight = rectangleSize + 50; // Spacing between rows
+
+    // Month names
+    QStringList monthNames = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+
+    // Draw statistics (month name and match count)
+    int i = 0;
+    foreach (QPieSlice *slice, series->slices()) {
+        QString monthName = monthNames[i];
+        int matchCount = static_cast<int>(slice->value());
+        QString matchText = (matchCount > 1) ? "matches" : "match";
+
+        // Draw text with singular/plural form
+        painter.setPen(Qt::black);
+        painter.drawText(x + rectangleSize + 5, y + rectangleSize - 5,
+                         QString("%1: %2 %3").arg(monthName).arg(matchCount).arg(matchText));
+
+        y += rowHeight;
+        i++;
+    }
+
+    painter.end();
+
+    QMessageBox::information(this, "Exportation réussie", "Le graphique et les statistiques ont été exportés avec succès !");
+}
+
+
+
+//-----------------------------EXPORTER EXCEL ---------------------------------------------------------------------------------------------
+void MainWindow::on_exporter_excel_match_clicked()
+{
+    // Ask the user whether they want to export "programmation" or "historique"
+    bool ok;
+    QString option = QInputDialog::getItem(this, "Choisir l'option d'export",
+                                           "Voulez-vous exporter 'programmation' ou 'historique' ?",
+                                           {"programmation", "historique"}, 0, false, &ok);
+    if (!ok || option.isEmpty()) {
+        // User canceled or entered an invalid option
+        return;
+    }
+
+    // Ask for the file save location
+    QString fileName = QFileDialog::getSaveFileName(this, "Enregistrer le fichier Excel", "", "*.xlsx");
+    if (fileName.isEmpty())
+        return;
+
+    QAxObject *excel = new QAxObject("Excel.Application", this);
+    if (!excel) {
+        QMessageBox::critical(this, "Erreur", "Impossible d'initialiser Excel.");
+        return;
+    }
+
+    excel->dynamicCall("SetVisible(bool)", false); // Keep Excel hidden
+    QAxObject *workbook = excel->querySubObject("Workbooks")->querySubObject("Add()");
+    QAxObject *sheet = workbook->querySubObject("Sheets(int)", 1);
+    sheet->dynamicCall("SetName(const QString&)", "Liste des Matchs");
+
+    // Decide which table to export based on the user's choice
+    QTableWidget *tableToExport = (option == "programmation") ? programmation_2 : historique_table;
+
+    // Access the chosen table widget (either programmation_2 or historique_table)
+    int rowCount = tableToExport->rowCount();
+    int columnCount = tableToExport->columnCount();
+
+    // Dynamically add column headers from the table
+    for (int col = 0; col < columnCount; col++) {
+        QString headerText = tableToExport->horizontalHeaderItem(col)->text();
+        sheet->querySubObject("Cells(int,int)", 1, col + 1)->setProperty("Value", headerText);
+    }
+
+    // Iterate through the rows and columns to fill the Excel sheet with data
+    for (int row = 0; row < rowCount; row++) {
+        for (int col = 0; col < columnCount; col++) {
+            QTableWidgetItem *item = tableToExport->item(row, col);
+            if (item) {
+                QString cellText = item->text();
+
+                // Get the cell object
+                QAxObject *excelCell = sheet->querySubObject("Cells(int,int)", row + 2, col + 1);
+
+                // Check if the content looks like a score (e.g., "1-0" or "0-1")
+                if (cellText.contains("-")) {
+                    // Set the value for the score cell as text
+                    excelCell->setProperty("Value", QVariant(cellText));
+                    // Force Excel to treat it as text (this is more explicit)
+                    excelCell->setProperty("NumberFormat", "@"); // Ensure it's formatted as text
+                    excelCell->dynamicCall("SetValue(const QString&)", cellText); // Ensure it's treated as a string
+                } else {
+                    // For non-score cells, set value normally
+                    excelCell->setProperty("Value", QVariant(cellText));
+                }
+            }
+        }
+    }
+
+    // Save and close the Excel file
+    workbook->dynamicCall("SaveAs(const QString&)", QDir::toNativeSeparators(fileName));
+    workbook->dynamicCall("Close()");
+    excel->dynamicCall("Quit()");
+    delete excel;
+
+    QMessageBox::information(this, "Succès", "Le fichier Excel a été généré avec succès !");
+}
+
+//-----------------------------------------TRI MATCHES---------------------------------------------------------------------
+
+void MainWindow::on_tri_prog_clicked()
+{
+    QSqlQuery query;
+    query.prepare("SELECT ID_MATCH, TYPE_MATCH, EQUIPE1, EQUIPE2, DATE_MATCH, ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4 FROM MATCHES WHERE DATE_MATCH > CURRENT_DATE ORDER BY DATE_MATCH ASC");
+
+    if (query.exec()) {
+        ui->programmation_2->setRowCount(0);
+
+        int row = 0;
+        while (query.next()) {
+            ui->programmation_2->insertRow(row);
+
+            // Insert data from the query to each column
+            for (int col = 0; col < query.record().count(); col++) {
+                ui->programmation_2->setItem(row, col, new QTableWidgetItem(query.value(col).toString()));
+            }
+
+            // Now calculate and set the predicted winner for this row
+            predictWinner(row); // You can directly call predictWinner here
+            row++;
+        }
+    } else {
+        QMessageBox::warning(this, "Erreur", "Impossible de trier les matchs !");
+    }
+}
+
+void MainWindow::on_tri_histo_clicked()
+{
+    QSqlQuery query;
+    query.prepare("SELECT ID_MATCH, TYPE_MATCH, EQUIPE1, EQUIPE2, SCORE, DATE_MATCH, ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4, SCOREEDIT FROM MATCHES WHERE DATE_MATCH < CURRENT_DATE ORDER BY DATE_MATCH DESC");
+
+    if (query.exec()) {
+        ui->historique_table->setRowCount(0);
+
+        int row = 0;
+        QDate today = QDate::currentDate();
+
+        while (query.next()) {
+            QDate matchDate = query.value(5).toDate();
+            int scoreEdit = query.value(10).toInt();
+            QString score = query.value(4).toString();
+
+            QColor rowColor;
+            if (scoreEdit == 0) {
+                rowColor = QColor(255, 200, 200);
+            } else {
+                rowColor = QColor(197, 255, 217);
+            }
+
+            ui->historique_table->insertRow(row);
+            for (int col = 0; col < 10; col++) {
+                QTableWidgetItem *item = new QTableWidgetItem;
+
+                if (col == 4) {
+                    item->setText(score);
+                } else {
+                    item->setText(query.value(col).toString());
+                }
+                item->setBackground(rowColor);
+                ui->historique_table->setItem(row, col, item);
+            }
+            row++;
+        }
+    } else {
+        QMessageBox::warning(this, "Erreur", "Impossible de trier les matchs !");
+    }
+}
+
+
+
+
+//------------------------PREDICTION RESULTAT MATCH-----------------------------------------------------------------------------------------------
+
+void MainWindow::predictWinner(int row)
+{
+    // Ensure the row has valid data
+    if (!ui->programmation_2->item(row, 2) || !ui->programmation_2->item(row, 3)) {
+        qDebug() << "Error: Missing team names in row" << row;
+        return;
+    }
+
+    QString equipe1 = ui->programmation_2->item(row, 2)->text().trimmed();
+    QString equipe2 = ui->programmation_2->item(row, 3)->text().trimmed();
+
+    if (equipe1.isEmpty() || equipe2.isEmpty()) {
+        qDebug() << "Error: One of the team names is empty in row" << row;
+        return;
+    }
+
+    QSqlQuery query;
+    int countEquipe1 = 0, countEquipe2 = 0;
+
+    // Count how many times each team has won
+    query.prepare("SELECT COUNT(*) FROM MATCHES WHERE WINNER = :equipe");
+    query.bindValue(":equipe", equipe1);
+    if (query.exec() && query.next()) {
+        countEquipe1 = query.value(0).toInt();
+    } else {
+        qDebug() << "Query Error for equipe1:" << query.lastError().text();
+    }
+
+    query.prepare("SELECT COUNT(*) FROM MATCHES WHERE WINNER = :equipe");
+    query.bindValue(":equipe", equipe2);
+    if (query.exec() && query.next()) {
+        countEquipe2 = query.value(0).toInt();
+    } else {
+        qDebug() << "Query Error for equipe2:" << query.lastError().text();
+    }
+
+    // Determine predicted winner
+    QString predictedWinner;
+    if (countEquipe1 > countEquipe2)
+        predictedWinner = equipe1;
+    else if (countEquipe1 < countEquipe2)
+        predictedWinner = equipe2;
+    else
+        predictedWinner = "ta3adol"; // Draw
+
+    // Set predicted winner in column 9
+    QTableWidgetItem *item = ui->programmation_2->item(row, 9);
+    if (!item) {
+        item = new QTableWidgetItem();
+        ui->programmation_2->setItem(row, 9, item);
+    }
+    item->setText(predictedWinner);
+
+    // Force UI update
+    ui->programmation_2->viewport()->update();
+
+    qDebug() << "Predicted winner for row" << row << ":" << predictedWinner;
+}
+
+
+//----------------------------------------STATS MATCH --------------------------------------------------------------------
+void MainWindow::showMonthlyMatchStatistics() {
+    // Create a map to store the number of matches per month
+    QMap<int, int> monthCount;
+
+    // Execute the query to get match dates
+    QSqlQuery query("SELECT DATE_MATCH FROM MATCHES WHERE EXTRACT(YEAR FROM DATE_MATCH) = 2025");
+
+    // Populate the map with match counts per month
+    while (query.next()) {
+        QDate matchDate = query.value(0).toDate();
+        int month = matchDate.month();
+        monthCount[month]++;
+    }
+
+    // Create a pie series for the pie chart
+    QPieSeries *series = new QPieSeries();
+
+    // Names of the months in French
+    QStringList monthNames = {
+        "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+        "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    };
+
+    // Define a set of green shades
+    QVector<QColor> greenShades = {
+        QColor(0, 100, 0), QColor(34, 139, 34), QColor(50, 205, 50), QColor(60, 179, 113),
+        QColor(46, 139, 87), QColor(107, 142, 35), QColor(154, 205, 50), QColor(85, 107, 47),
+        QColor(144, 238, 144), QColor(173, 255, 47), QColor(0, 255, 127), QColor(0, 250, 154)
+    };
+
+    // Create slices for each month
+    QVector<QColor> sliceColors;
+    QVector<QString> sliceLabels;
+
+    int colorIndex = 0;
+    for (int month = 1; month <= 12; month++) {
+        int matchCount = monthCount.value(month, 0);
+        if (matchCount > 0) {  // Only add if the month has matches
+            QPieSlice *slice = series->append(monthNames[month - 1] + " - " + QString::number(matchCount), matchCount);
+
+            // Apply a different green color to each slice
+            QColor sliceColor = greenShades[colorIndex % greenShades.size()];
+            slice->setBrush(sliceColor);
+            colorIndex++;
+
+            // Save the color and name for the legend
+            sliceColors.append(sliceColor);
+            sliceLabels.append(monthNames[month - 1]);
+
+            // Set label visibility and color
+            slice->setLabelVisible(true);
+            slice->setLabelColor(Qt::white);
+
+            // Add hover effect
+            // Add hover effect
+            connect(slice, &QPieSlice::hovered, [slice, monthNames, month, matchCount, monthCount](bool hovered) {
+                if (hovered) {
+                    // Calculate the total number of matches for all months
+                    int totalMatches = 0;
+                    for (int i = 1; i <= 12; i++) {
+                        totalMatches += monthCount.value(i, 0);
+                    }
+
+                    // Calculate the percentage of matches for the current month
+                    double percentage = (matchCount / double(totalMatches)) * 100;
+
+                    // Set the slice exploded effect
+                    slice->setExploded(true);
+
+                    // Show the tooltip with the formatted percentage value
+                    QToolTip::showText(QCursor::pos(),
+                                       QString("Mois: %1\nNombre de matchs: %2\nPourcentage: %3%")
+                                           .arg(monthNames[month - 1])
+                                           .arg(matchCount)
+                                           .arg(QString::number(percentage, 'f', 0)));  // Format the percentage with 2 decimal places
+                } else {
+                    slice->setExploded(false);
+                }
+            });
+
+        }
+    }
+
+    // Create a chart and add the series
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+
+    // Improve the title with a more attractive style
+    QFont titleFont = chart->titleFont();
+    titleFont.setPointSize(10);  // Font size
+    titleFont.setBold(true);     // Bold
+    titleFont.setFamily("System"); // Font family
+    chart->setTitle("Statistiques des matches pour 2025");
+    chart->setTitleFont(titleFont);
+    chart->setTitleBrush(QBrush(Qt::black)); // Title text color
+
+    // Hide the legend
+    chart->legend()->hide();
+
+    // Add the chart to the view
+    chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setParent(ui->widget_6);
+    chartView->resize(ui->widget_6->size());
+
+    // Create opacity effect for the chartView
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect(chartView);
+    chartView->setGraphicsEffect(opacityEffect);
+
+    // Initialize opacity to 0 (invisible)
+    opacityEffect->setOpacity(0);
+
+    // Use QTimer to delay the animation after display
+    QTimer::singleShot(0, [opacityEffect]() {
+        // Animation to gradually show the chart
+        QPropertyAnimation *animation = new QPropertyAnimation(opacityEffect, "opacity");
+        animation->setDuration(5000);  // 5-second animation
+        animation->setStartValue(0);   // Start with opacity 0
+        animation->setEndValue(1);     // End with opacity 1
+        animation->setEasingCurve(QEasingCurve::OutCubic);  // Smooth animation
+        animation->start(QAbstractAnimation::DeleteWhenStopped);  // Start and delete when done
+    });
+
+    // Create a scene for the chart
+    QGraphicsScene *scene = chartView->scene();
+    int xOffset = 20;  // Initial horizontal position
+    int yOffset = chart->boundingRect().bottom() + 213;  // Position below the pie chart
+
+    // Use a QGridLayout for grid layout management
+    QGridLayout *legendLayout = new QGridLayout();
+    legendLayout->setSpacing(5); // Reduce the space between elements
+
+    // Create a widget for the legend
+    QWidget *legendWidget = new QWidget();
+    legendWidget->setLayout(legendLayout);
+    legendWidget->setStyleSheet("background-color: transparent;"); // White background for the legend
+
+    // Add the legend to the scene
+    scene->addWidget(legendWidget);
+
+    // Add legend items with line breaks after 4 items
+    int columns = 4; // Maximum number of items per row
+    for (int i = 0; i < sliceColors.size(); ++i) {
+        int row = i / columns;
+        int col = i % columns;
+
+        // Create a layout for each row
+        QHBoxLayout *rowLayout = new QHBoxLayout();
+
+        QFrame *colorBox = new QFrame();
+        colorBox->setFrameShape(QFrame::Box);
+        colorBox->setFixedSize(10, 10); // Small color box size initially
+        colorBox->setStyleSheet(QString("background-color: %1").arg(sliceColors[i].name()));
+
+        QLabel *textItem = new QLabel(sliceLabels[i]);
+        textItem->setStyleSheet("font-size: 8px;"); // Very small text
+
+        // Install event filter for hover effect
+        colorBox->installEventFilter(this);
+
+        // Align the color box and text properly
+        rowLayout->addWidget(colorBox);
+        rowLayout->addWidget(textItem);
+
+        // Add the row layout to the legend layout
+        legendLayout->addLayout(rowLayout, row, col);
+    }
+
+    // Set the legend widget geometry
+    legendWidget->setGeometry(xOffset, yOffset, 300, 10);  // Position the legend below the pie chart
+}
+
+
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
+    if (event->type() == QEvent::Enter) {
+        // Increase the size of the color box on hover
+        if (QFrame *frame = qobject_cast<QFrame *>(watched)) {
+            frame->setFixedSize(20, 20);  // Increase size when hovered
+        }
+    } else if (event->type() == QEvent::Leave) {
+        // Reset the size when hover ends
+        if (QFrame *frame = qobject_cast<QFrame *>(watched)) {
+            frame->setFixedSize(10, 10);  // Reset size when mouse leaves
+        }
+    }
+    return QObject::eventFilter(watched, event);
+}
+
+
+
+
+
+

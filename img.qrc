@@ -44,5 +44,9 @@
         <file>interface_icons/more.png</file>
         <file>interface_icons/start.png</file>
         <file>interface_icons/logb.png</file>
+        <file>interface_icons/tri.png</file>
+        <file>interface_icons/excel.png</file>
+        <file>interface_icons/next.png</file>
+        <file>interface_icons/prv.png</file>
     </qresource>
 </RCC>
