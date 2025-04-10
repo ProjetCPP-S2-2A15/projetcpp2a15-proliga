@@ -1,5 +1,3 @@
-
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -37,6 +35,7 @@ private slots:
     void on_pushButton_genererExcel_clicked();
     void on_pushButton_generer_clicked();
     void on_pushButton_afficherStats_clicked();
+    void refreshMap();
 
 };
 

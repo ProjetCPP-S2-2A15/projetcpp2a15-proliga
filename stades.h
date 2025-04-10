@@ -9,7 +9,6 @@
 #include <QPdfWriter>
 #include <QFileDialog>
 
-
 class Stade {
 private:
     int ID_stade;
@@ -46,6 +45,7 @@ public:
     QSqlQueryModel* rechercherParCapacite(int capaciteMin, int capaciteMax);
     QSqlQueryModel* trier(QString critere, QString ordre);
 
+    bool getCoordinatesFromLieu(double &latitude, double &longitude) const;
 };
 
 #endif // STADES_H

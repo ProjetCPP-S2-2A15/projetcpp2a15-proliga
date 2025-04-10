@@ -16,6 +16,12 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QChart>
+#include <QQuickView>
+#include <QQmlContext>
+#include <QVariantMap>
+#include <QQuickView>
+#include <QWidget>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -25,6 +31,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     applyDesign(ui);
+
+    QQuickWidget *mapWidget = new QQuickWidget(this);
+    mapWidget->setObjectName("mapWidget");
+    mapWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    mapWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->verticalLayout_5->addWidget(mapWidget);
+    refreshMap();
+
     connect(ui->competition1, &QPushButton::toggled, [this](bool checked) { on_competition1_toggled(ui, checked); });
     connect(ui->competition2, &QPushButton::toggled, [this](bool checked) { on_competition2_toggled(ui, checked); });
     connect(ui->match1, &QPushButton::toggled, [this](bool checked) { on_match1_toggled(ui, checked); });
@@ -37,9 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->arbitre2, &QPushButton::toggled, [this](bool checked) { on_arbitre2_toggled(ui, checked); });
     connect(ui->stade1, &QPushButton::toggled, [this](bool checked) { on_stade1_toggled(ui, checked); });
     connect(ui->stade2, &QPushButton::toggled, [this](bool checked) { on_stade2_toggled(ui, checked); });
-
+    connect(ui->refreshButton, &QPushButton::clicked, this, &MainWindow::refreshMap);
 }
-
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -55,7 +68,6 @@ void MainWindow::on_tableView_clicked(const QModelIndex &index) {
     ui->lineEdit_tickets2->setText(QString::number(stade.getNbrTicketsVd()));
     ui->dateEdit_creation2->setDate(stade.getDateCreation());
 }
-
 void MainWindow::on_addStadiumbutton_clicked() {
     QString name = ui->lineEdit_nomA->text();
     QString location = ui->lineEdit_lieuA->text();
@@ -69,11 +81,6 @@ void MainWindow::on_addStadiumbutton_clicked() {
         return;
     }
 
-    QRegularExpression regexlocation("^[a-zA-Z\\s]+$");
-    if (!regexlocation.match(location).hasMatch()) {
-        QMessageBox::critical(this, "Erreur de validation", "La location du stade doit contenir uniquement des lettres et des espaces.");
-        return;
-    }
 
     QRegularExpression regexNumber("^[0-9]+$");
     if (!regexNumber.match(capacityStr).hasMatch()) {
@@ -147,11 +154,7 @@ void MainWindow::on_pushbuttonmodifieR_clicked() {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre valide.");
         return;
     }
-    QRegularExpression regexlocation("^[a-zA-Z\\s]+$");
-    if (!regexlocation.match(location).hasMatch()) {
-        QMessageBox::critical(this, "Erreur de validation", "La location du stade doit contenir uniquement des lettres et des espaces.");
-        return;
-    }
+
     int capacity = capacityStr.toInt();
     if (capacity <= 0) {
         QMessageBox::critical(this, "Erreur de validation", "La capacité doit être un nombre supérieur à zéro.");
@@ -392,7 +395,7 @@ void MainWindow::on_pushButton_genererExcel_clicked()
         return;
     }
 
-    excel->dynamicCall("SetVisible(bool)", false); // Keep Excel hidden
+    excel->dynamicCall("SetVisible(bool)", false);
     QAxObject *workbook = excel->querySubObject("Workbooks")->querySubObject("Add()");
     QAxObject *sheet = workbook->querySubObject("Sheets(int)", 1);
     sheet->dynamicCall("SetName(const QString&)", "Liste des Stades");
@@ -486,4 +489,40 @@ void MainWindow::on_pushButton_afficherStats_clicked() {
     statsWindow->setCentralWidget(chartView);
     statsWindow->resize(800, 600);
     statsWindow->show();
+}
+void MainWindow::refreshMap() {
+    QQuickWidget *mapWidget = findChild<QQuickWidget*>("mapWidget");
+    if (!mapWidget) {
+        qDebug() << "Erreur : mapWidget n'est pas défini.";
+        return;
+    }
+
+    Stade stadeInstance;
+    QSqlQueryModel *model = stadeInstance.afficher();
+    QVariantList stadiumList;
+
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QVariantMap stadium;
+        QString name = model->data(model->index(i, 0)).toString();
+        QString lieu = model->data(model->index(i, 1)).toString();
+        qDebug() << "Stade:" << name << "Lieu:" << lieu;
+
+        Stade tempStade;
+        tempStade.setLieu(lieu);
+        double latitude, longitude;
+        if (tempStade.getCoordinatesFromLieu(latitude, longitude)) {
+            stadium["name"] = name;
+            stadium["latitude"] = latitude;
+            stadium["longitude"] = longitude;
+            stadiumList.append(stadium);
+            qDebug() << "Ajouté: name=" << name << "lat=" << latitude << "lon=" << longitude;
+        } else {
+            qDebug() << "Erreur: Coordonnées invalides pour" << name << "lieu=" << lieu;
+        }
+    }
+
+    qDebug() << "stadiumList:" << stadiumList;
+    mapWidget->rootContext()->setContextProperty("stadiumModel", stadiumList);
+    mapWidget->setSource(QUrl(QStringLiteral("qrc:/MapView.qml")));
+    mapWidget->show();
 }

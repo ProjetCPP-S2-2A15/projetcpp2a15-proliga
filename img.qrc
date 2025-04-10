@@ -37,5 +37,9 @@
         <file>interface_icons/koura.png</file>
         <file>interface_icons/login.png</file>
         <file>interface_icons/faceid.png</file>
+        <file>../../../map.png</file>
+        <file>interface_icons/map.png</file>
+        <file>MapView.qml</file>
+        <file>interface_icons/marker.png</file>
     </qresource>
 </RCC>

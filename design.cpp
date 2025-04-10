@@ -107,7 +107,30 @@ void applyDesign(Ui::MainWindow *ui)
         "    background: none; "
         "}"
         );
+    // Style for tabs and their content
+    ui->tabWidget_2->setStyleSheet(
+        "QTabWidget::pane {"
+        "    background-color: white; "  // Ensure content area inside the tabs is white
+        "    border: none; "
+        "} "
+        "QTabBar::tab {"
+        "    background-color: transparent; "  // Transparent background for tabs
+        "    color: black; " // Always black text
+        "    padding: 10px; "
+        "    margin-right: 2px; "
 
+        "} "
+        "QTabBar::tab:selected {"
+        "  background-color: rgb(144,238,144);"  // Green when selected
+        "    color: black; "  // Ensure selected tab text remains black
+        "} "
+        "QTabBar::tab:hover {"
+        "    background-color: #56657380; "  // Hover effect
+        "} "
+        "QTabWidget QWidget {"
+        "   background-color: rgb(210, 247, 221); "  // Set content background to white explicitly
+        "} "
+        );
     ui->logo_text->setStyleSheet(
         "QPushButton {"
         "    min-width: 120px; "

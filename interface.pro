@@ -4,6 +4,10 @@ QT += widgets sql
 QT += printsupport
 QT += axcontainer
 QT += charts
+QT += quick location positioning
+QT += quickwidgets
+QT += positioning location
+QT += quick positioning location
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

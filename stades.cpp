@@ -26,7 +26,11 @@ bool Stade::ajouter() {
 
 QSqlQueryModel* Stade::afficher() {
     QSqlQueryModel* model = new QSqlQueryModel();
-    model->setQuery("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades");
+    QSqlQuery query;
+    query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades");
+    query.exec();
+
+    model->setQuery(std::move(query));
 
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
@@ -90,7 +94,7 @@ QSqlQueryModel* Stade::rechercherParNom(QString nomRecherche) {
     query.bindValue(":nom", "%" + nomRecherche.toLower() + "%");
     query.exec();
 
-    model->setQuery(query);
+    model->setQuery(std::move(query));
 
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
@@ -109,7 +113,7 @@ QSqlQueryModel* Stade::rechercherParCapacite(int capaciteMin, int capaciteMax) {
     query.bindValue(":max", capaciteMax);
     query.exec();
 
-    model->setQuery(query);
+    model->setQuery(std::move(query));
 
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
@@ -126,7 +130,7 @@ QSqlQueryModel* Stade::trier(QString critere, QString ordre) {
     query.prepare("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades ORDER BY " + critere + " " + ordre);
     query.exec();
 
-    model->setQuery(query);
+    model->setQuery(std::move(query));
 
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Lieu"));
@@ -136,4 +140,13 @@ QSqlQueryModel* Stade::trier(QString critere, QString ordre) {
 
     return model;
 }
-
+bool Stade::getCoordinatesFromLieu(double &latitude, double &longitude) const {
+    QStringList coords = lieu.split(",");
+    if (coords.size() == 2) {
+        bool latOk, lonOk;
+        latitude = coords[0].toDouble(&latOk);
+        longitude = coords[1].toDouble(&lonOk);
+        return latOk && lonOk;
+    }
+    return false;
+}
