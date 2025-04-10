@@ -21,6 +21,8 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QChart>
+#include "statistique.h" // Include the Statistique header
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -36,8 +38,12 @@ MainWindow::MainWindow(QWidget *parent)
     searchTimer = new QTimer(this);
     searchTimer->setSingleShot(true);
     ui->lineEditRecherche->setPlaceholderText("Rechercher par ville ou entraîneur...");
-
-    // Connections
+ chartView = nullptr;
+    // Create an instance of Statistique
+ if (!ui->widget_6->layout()) {
+     ui->widget_6->setLayout(new QVBoxLayout());
+     ui->widget_6->layout()->setContentsMargins(0, 0, 0, 0);
+ } // Connections
     connect(ui->lineEditRecherche, &QLineEdit::textChanged, [this]() {
         searchTimer->start(300); // Delay of 300ms
     });
@@ -57,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->stade1, &QPushButton::toggled, [this](bool checked) { on_stade1_toggled(ui, checked); });
     connect(ui->stade2, &QPushButton::toggled, [this](bool checked) { on_stade2_toggled(ui, checked); });
     connect(ui->Ajouter, &QPushButton::clicked, this, &MainWindow::Ajouter_clicked);
+    connect(ui->statistiquesButton, &QPushButton::clicked, this, &MainWindow::afficherStatistiques); // Connect statistics button
 
     // Connect QLineEdit fields to validation methods
     connect(ui->nome, &QLineEdit::textChanged, this, &MainWindow::checkInput);
@@ -72,21 +79,46 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Connect sorting button
     connect(ui->triButton, &QPushButton::clicked, this, &MainWindow::trieEquipe);
-    connect(ui->statistiquesButton, &QPushButton::clicked, this, &MainWindow::afficherStatistiques);
 }
 
 MainWindow::~MainWindow()
 {
+    delete chartView;  // Clean up the chart view
+    delete statistique;
     delete ui;
 }
 
+void MainWindow::afficherStatistiques() {
+    // Clear previous chart if it exists
+    if (chartView) {
+        ui->widget_6->layout()->removeWidget(chartView);
+        delete chartView;
+        chartView = nullptr;
+    }
+
+    // Create new chart view
+    chartView = statistique->creerGraphiqueJoueursEtButs();
+
+    // Style the chart view
+    chartView->setStyleSheet("background: transparent; border: none;");
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    // Add to layout
+    ui->widget_6->layout()->addWidget(chartView);
+
+    // Ensure the widget is visible
+    ui->widget_6->show();
+}
+
+// Other methods remain unchanged...
 void MainWindow::refreshTable() {
     QSqlQueryModel *model = new QSqlQueryModel(this);
     QSqlQuery query;
     query.prepare("SELECT * FROM equipe");
 
     if (query.exec()) {
-        model->setQuery(std::move(query));
+        // Remove std::move and pass the query directly
+model->setQuery(std::move(query));
         model->setHeaderData(0, Qt::Horizontal, QObject::tr("Id_equipe"));
         model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom_equipe"));
         model->setHeaderData(2, Qt::Horizontal, QObject::tr("Nom_ville"));
@@ -400,7 +432,7 @@ void MainWindow::rechercheEquipe() {
 
     QString queryStr = "SELECT * FROM equipe WHERE 1=1";
     if (!keyword.isEmpty()) {
-        queryStr += " AND (NOMEQUIPE LIKE :keyword OR NOMENTRAINEUR LIKE :keyword)";
+        queryStr += " AND (NOMVILLE LIKE :keyword OR NOMENTRAINEUR LIKE :keyword)";
     }
 
     QSqlQuery query;
@@ -443,37 +475,3 @@ void MainWindow::trieEquipe() {
     }
 }
 //statistiques
-void MainWindow::afficherStatistiques() {
-    // Récupérer les données
-    int totalButs = 0;
-    int totalJoueurs = 0;
-
-    QSqlQuery query;
-    query.prepare("SELECT SUM(NOMBREBUTSMARQUES) AS totalButs, SUM(NOMBREJOUEURS) AS totalJoueurs FROM equipe");
-
-    if (query.exec() && query.next()) {
-        totalButs = query.value("totalButs").toInt();
-        totalJoueurs = query.value("totalJoueurs").toInt();
-    } else {
-        QMessageBox::critical(this, "Erreur", "Erreur lors de la récupération des statistiques : " + query.lastError().text());
-        return;
-    }
-
-    // Créer le graphique circulaire
-    QPieSeries *series = new QPieSeries();
-    series->append("Buts Marqués", totalButs);
-    series->append("Nombre de Joueurs", totalJoueurs);
-
-    // Créer le graphique
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    chart->setTitle("Statistiques des Équipes");
-    chart->legend()->setVisible(true);
-    chart->legend()->setAlignment(Qt::AlignBottom);
-
-    // Afficher le graphique dans QGraphicsView
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    scene->addItem(chart);
-    ui->graphicsView->setScene(scene);
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-}

@@ -4,7 +4,7 @@ QT += widgets sql
 QT += core gui printsupport
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT += charts
-
+QT += sql charts
 TARGET = interface
 TEMPLATE = app
 
@@ -27,7 +27,8 @@ SOURCES += \
     equipe.cpp \
     loginwindow.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    statistique.cpp
 
 HEADERS += \
     changeWidget.h \
@@ -35,7 +36,8 @@ HEADERS += \
       loginwindow.h \
      connexion.h\
     design.h \
-    mainwindow.h
+    mainwindow.h \
+    statistique.h
 
 FORMS += \
     mainwindow.ui

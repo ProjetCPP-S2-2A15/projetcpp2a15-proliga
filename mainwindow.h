@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include "connexion.h"
 #include"equipe.h"
+#include"statistique.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -48,8 +49,11 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    Statistique *statistique; // Declare the Statistique pointer
+ QChartView *chartView;
  QTimer *searchTimer;
     Equipe *Eq;
+     bool isModifying;
 
 };
 #endif // MAINWINDOW_H
