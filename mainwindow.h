@@ -9,6 +9,7 @@
 #include <QSqlDatabase>
 #include "arbitre.h"
 #include "connexion.h"
+#include "ui_mainwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,10 +31,18 @@ private slots:
     void on_pushButton_delete_clicked();
     void on_pushButton_update_clicked();
     void on_pushButton_show_clicked();
+    void on_pushButton_exporter_clicked();
+    void on_pushButton_tri_clicked();
 
-private:
+public:
     Ui::MainWindow *ui;
     Arbitre A; // Instance of Arbitre class for handling CRUD
+    bool validerDonnees(QString& erreur);
+
+public:
+    void remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email);
+    void setCurrentArbitreId(int id);
+    int currentArbitreId;
 };
 
 #endif // MAINWINDOW_H

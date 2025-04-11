@@ -588,8 +588,8 @@ height: 30px;</string>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>40</y>
+         <x>20</x>
+         <y>50</y>
          <width>681</width>
          <height>461</height>
         </rect>
@@ -673,604 +673,459 @@ height: 30px;</string>
         </widget>
        </widget>
        <widget class="QWidget" name="arbitrePage">
-        <widget class="QLineEdit" name="lineEdit_nom">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>40</y>
-           <width>113</width>
-           <height>26</height>
-          </rect>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <property name="spacing">
+          <number>15</number>
          </property>
-         <property name="styleSheet">
-          <string notr="true">QLineEdit {
-    background-color: #2C2F33;
-    color: #FFFFFF;
-    border: 2px solid #7289DA;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 14px;
-    selection-background-color: rgba(0, 122, 204, 0.5);
-}
-
-QLineEdit:hover {
-    border: 2px solid #5DADE2;
-}
-
-QLineEdit:focus {
-    border: 2px solid #00A8E8;
-    background-color: #1E2125;
-    color: white;
-}
-</string>
+         <property name="leftMargin">
+          <number>20</number>
          </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_email">
-         <property name="geometry">
-          <rect>
-           <x>310</x>
-           <y>80</y>
-           <width>113</width>
-           <height>26</height>
-          </rect>
+         <property name="topMargin">
+          <number>20</number>
          </property>
-         <property name="styleSheet">
-          <string notr="true">QLineEdit {
-    background-color: #2C2F33;
-    color: #FFFFFF;
-    border: 2px solid #7289DA;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 14px;
-    selection-background-color: rgba(0, 122, 204, 0.5);
-}
-
-QLineEdit:hover {
-    border: 2px solid #5DADE2;
-}
-
-QLineEdit:focus {
-    border: 2px solid #00A8E8;
-    background-color: #1E2125;
-    color: white;
-}
-</string>
+         <property name="rightMargin">
+          <number>20</number>
          </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_prenom">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>80</y>
-           <width>113</width>
-           <height>26</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLineEdit {
-    background-color: #2C2F33;
-    color: #FFFFFF;
-    border: 2px solid #7289DA;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 14px;
-    selection-background-color: rgba(0, 122, 204, 0.5);
-}
-
-QLineEdit:hover {
-    border: 2px solid #5DADE2;
-}
-
-QLineEdit:focus {
-    border: 2px solid #00A8E8;
-    background-color: #1E2125;
-    color: white;
-}
-</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>40</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Nom:</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_2">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>80</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Prenom:</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_3">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>120</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Age:</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_9">
-         <property name="geometry">
-          <rect>
-           <x>222</x>
-           <y>40</y>
-           <width>81</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Experience:</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_11">
-         <property name="geometry">
-          <rect>
-           <x>240</x>
-           <y>80</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Email:</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_12">
-         <property name="geometry">
-          <rect>
-           <x>240</x>
-           <y>120</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Sexe:</string>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_sexe">
-         <property name="geometry">
-          <rect>
-           <x>315</x>
-           <y>120</y>
-           <width>111</width>
-           <height>26</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">ui-&gt;comboBox_type-&gt;setStyleSheet(
-    &quot;QComboBox {&quot;
-    &quot;    border: 2px solid #4CAF50;&quot; /* Green border */
-    &quot;    border-radius: 8px;&quot; /* Rounded corners */
-    &quot;    padding: 4px;&quot;
-    &quot;    font: 10pt 'Segoe UI';&quot;
-    &quot;    background-color: #e0f7fa;&quot; /* Light cyan */
-    &quot;    color: #333333;&quot; /* Dark text */
-    &quot;    min-height: 25px;&quot;
-    &quot;    min-width: 150px;&quot;
-    &quot;} &quot;
-    &quot;QComboBox::drop-down {&quot;
-    &quot;    border: none;&quot;
-    &quot;    background: #4CAF50;&quot; /* Green background */
-    &quot;    width: 20px;&quot;
-    &quot;}&quot;
-
-    &quot;QComboBox::down-arrow {&quot;
-    &quot;    image: url(:/icons/down-arrow.png);&quot; /* Correct path */
-    &quot;    width: 12px;&quot;
-    &quot;    height: 12px;&quot;
-    &quot;    margin-right: 5px;&quot;
-    &quot;}&quot;
-
-    &quot;QComboBox QAbstractItemView {&quot;
-    &quot;    border: 2px solid #4CAF50;&quot; /* Green border */
-    &quot;    selection-background-color: #4CAF50;&quot;
-    &quot;    selection-color: white;&quot;
-    &quot;    background: #ffffff;&quot; /* White background */
-    &quot;}&quot;
-    &quot;QComboBox::drop-down:hover {&quot;
-    &quot;    background: #388E3C;&quot; /* Darker green on hover */
-    &quot;}&quot;
- );
-</string>
+         <property name="bottomMargin">
+          <number>20</number>
          </property>
          <item>
-          <property name="text">
-           <string>Homme</string>
-          </property>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="styleSheet">
+            <string notr="true">QGroupBox {
+           border: 2px solid #4CAF50;
+           border-radius: 8px;
+           margin-top: 10px;
+           padding-top: 15px;
+           font: bold 12pt 'Segoe UI';
+           color: #2C3E50;
+       }
+
+       QGroupBox::title {
+           subcontrol-origin: margin;
+           left: 10px;
+           padding: 0 5px;
+       }</string>
+           </property>
+           <property name="title">
+            <string>Arbitre Information</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <property name="horizontalSpacing">
+             <number>15</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>10</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Nom:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="lineEdit_nom">
+              <property name="styleSheet">
+               <string notr="true">QLineEdit {
+           background-color: #FFFFFF;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           padding: 6px 12px;
+           font: 10pt 'Segoe UI';
+           selection-background-color: #4CAF50;
+       }
+
+       QLineEdit:focus {
+           border: 1px solid #4CAF50;
+       }</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_9">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Experience:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QSpinBox" name="lineEdit_experience">
+              <property name="styleSheet">
+               <string notr="true">QSpinBox {
+           background-color: #FFFFFF;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           padding: 6px 12px;
+           font: 10pt 'Segoe UI';
+       }
+
+       QSpinBox:focus {
+           border: 1px solid #4CAF50;
+       }</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Prenom:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="lineEdit_prenom">
+              <property name="styleSheet">
+               <string notr="true">QLineEdit {
+           background-color: #FFFFFF;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           padding: 6px 12px;
+           font: 10pt 'Segoe UI';
+           selection-background-color: #4CAF50;
+       }
+
+       QLineEdit:focus {
+           border: 1px solid #4CAF50;
+       }</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="label_11">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Email:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QLineEdit" name="lineEdit_email">
+              <property name="styleSheet">
+               <string notr="true">QLineEdit {
+           background-color: #FFFFFF;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           padding: 6px 12px;
+           font: 10pt 'Segoe UI';
+           selection-background-color: #4CAF50;
+       }
+
+       QLineEdit:focus {
+           border: 1px solid #4CAF50;
+       }</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Age:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="lineEdit_age">
+              <property name="styleSheet">
+               <string notr="true">QSpinBox {
+           background-color: #FFFFFF;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           padding: 6px 12px;
+           font: 10pt 'Segoe UI';
+       }
+
+       QSpinBox:focus {
+           border: 1px solid #4CAF50;
+       }</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLabel" name="label_12">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Sexe:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QComboBox" name="comboBox_sexe">
+              <property name="styleSheet">
+               <string notr="true">QComboBox {
+           background-color: #FFFFFF;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           padding: 6px 12px;
+           font: 10pt 'Segoe UI';
+           min-width: 100px;
+       }
+
+       QComboBox:focus {
+           border: 1px solid #4CAF50;
+       }
+
+       QComboBox QAbstractItemView {
+           border: 1px solid #BDC3C7;
+           selection-background-color: #4CAF50;
+           selection-color: white;
+       }</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>Homme</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Femme</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>ID:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="lineEdit_id">
+              <property name="styleSheet">
+               <string notr="true">QLineEdit {
+           background-color: #F5F5F5;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           padding: 6px 12px;
+           font: 10pt 'Segoe UI';
+           color: #7F8C8D;
+       }</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
          <item>
-          <property name="text">
-           <string>Femme</string>
-          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="pushButton_add">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+           background-color: #4CAF50;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           padding: 8px 16px;
+           font: bold 10pt 'Segoe UI';
+           min-width: 100px;
+       }
+
+       QPushButton:hover {
+           background-color: #45A049;
+       }
+
+       QPushButton:pressed {
+           background-color: #3D8B40;
+       }</string>
+             </property>
+             <property name="text">
+              <string>Ajouter</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_update">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+           background-color: #3498DB;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           padding: 8px 16px;
+           font: bold 10pt 'Segoe UI';
+           min-width: 100px;
+       }
+
+       QPushButton:hover {
+           background-color: #2980B9;
+       }
+
+       QPushButton:pressed {
+           background-color: #2472A4;
+       }</string>
+             </property>
+             <property name="text">
+              <string>Modifier</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_exporter">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+           background-color: #E74C3C;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           padding: 8px 16px;
+           font: bold 10pt 'Segoe UI';
+           min-width: 100px;
+       }
+
+       QPushButton:hover {
+           background-color: #C0392B;
+       }
+
+       QPushButton:pressed {
+           background-color: #A93226;
+       }</string>
+             </property>
+             <property name="text">
+              <string>Exporter</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_tri">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+           background-color: #606060;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           padding: 8px 16px;
+           font: bold 10pt 'Segoe UI';
+           min-width: 100px;
+       }
+
+       QPushButton:hover {
+           background-color: #C0392B;
+       }
+
+       QPushButton:pressed {
+           background-color: #A93226;
+       }</string>
+             </property>
+             <property name="text">
+              <string>Tri</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
-        </widget>
-        <widget class="QPushButton" name="pushButton_add">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>170</y>
-           <width>351</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    background-color: #4CAF50; /* Match the green theme */
-    color: #ffffff; /* White text */
-    border-radius: 12px; /* Rounded corners */
-    padding: 6px 12px;
-    font: bold 10pt &quot;Segoe UI&quot;;
-    border: 2px solid #2E7D32; /* Darker green border */
-}
+         <item>
+          <widget class="QTableWidget" name="tableWidget_arbitres">
+           <property name="styleSheet">
+            <string notr="true">QTableWidget {
+           background-color: white;
+           border: 1px solid #BDC3C7;
+           border-radius: 4px;
+           font: 9pt 'Segoe UI';
+           gridline-color: #ECF0F1;
+       }
 
-QPushButton:hover {
-    background-color: #45A049; /* Slightly darker green when hovered */
-}
+       QTableWidget::item {
+           padding: 6px;
+       }
 
-QPushButton:pressed {
-    background-color: #388E3C; /* Even darker green for click effect */
-    border-style: inset; /* Makes the button appear pressed */
-}
+       QTableWidget::item:selected {
+           background-color: #4CAF50;
+           color: white;
+       }
 
-QPushButton:disabled {
-    background-color: #BDBDBD; /* Gray out when disabled */
-    color: #757575;
-    border: 2px solid #9E9E9E;
-}
-</string>
-         </property>
-         <property name="text">
-          <string>Ajouter</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_update">
-         <property name="geometry">
-          <rect>
-           <x>510</x>
-           <y>90</y>
-           <width>81</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    background-color: #4CAF50; /* Match the green theme */
-    color: #ffffff; /* White text */
-    border-radius: 12px; /* Rounded corners */
-    padding: 6px 12px;
-    font: bold 8pt &quot;Segoe UI&quot;;
-    border: 2px solid #2E7D32; /* Darker green border */
-}
+       QHeaderView::section {
+           background-color: #4CAF50;
+           color: white;
+           padding: 6px;
+           border: none;
+           font: bold 9pt 'Segoe UI';
+       }
 
-QPushButton:hover {
-    background-color: #45A049; /* Slightly darker green when hovered */
-}
-
-QPushButton:pressed {
-    background-color: #388E3C; /* Even darker green for click effect */
-    border-style: inset; /* Makes the button appear pressed */
-}
-
-QPushButton:disabled {
-    background-color: #BDBDBD; /* Gray out when disabled */
-    color: #757575;
-    border: 2px solid #9E9E9E;
-}
-</string>
-         </property>
-         <property name="text">
-          <string>Modifier</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_delete">
-         <property name="geometry">
-          <rect>
-           <x>600</x>
-           <y>90</y>
-           <width>81</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    background-color: #4CAF50; /* Match the green theme */
-    color: #ffffff; /* White text */
-    border-radius: 12px; /* Rounded corners */
-    padding: 6px 12px;
-    font: bold 8pt &quot;Segoe UI&quot;;
-    border: 2px solid #2E7D32; /* Darker green border */
-}
-
-QPushButton:hover {
-    background-color: #45A049; /* Slightly darker green when hovered */
-}
-
-QPushButton:pressed {
-    background-color: #388E3C; /* Even darker green for click effect */
-    border-style: inset; /* Makes the button appear pressed */
-}
-
-QPushButton:disabled {
-    background-color: #BDBDBD; /* Gray out when disabled */
-    color: #757575;
-    border: 2px solid #9E9E9E;
-}
-</string>
-         </property>
-         <property name="text">
-          <string>Effacer</string>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_id">
-         <property name="geometry">
-          <rect>
-           <x>560</x>
-           <y>50</y>
-           <width>113</width>
-           <height>26</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLineEdit {
-    background-color: #2C2F33;
-    color: #FFFFFF;
-    border: 2px solid #7289DA;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 14px;
-    selection-background-color: rgba(0, 122, 204, 0.5);
-}
-
-QLineEdit:hover {
-    border: 2px solid #5DADE2;
-}
-
-QLineEdit:focus {
-    border: 2px solid #00A8E8;
-    background-color: #1E2125;
-    color: white;
-}
-</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_8">
-         <property name="geometry">
-          <rect>
-           <x>490</x>
-           <y>50</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Enter ID:</string>
-         </property>
-        </widget>
-        <widget class="QTableWidget" name="tableWidget_arbitres">
-         <property name="geometry">
-          <rect>
-           <x>-10</x>
-           <y>250</y>
-           <width>701</width>
-           <height>192</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QTableWidget {
-    background-color: #2C2F33; /* Dark gray background */
-    color: #FFFFFF; /* White text */
-    border: 2px solid #4CAF50; /* Green border */
-    border-radius: 10px;
-    gridline-color: #4CAF50; /* Green grid lines */
-    font: 08pt &quot;Segoe UI&quot;;
-}
-
-QTableWidget::item {
-    background-color: #2C2F33; /* Dark background */
-    padding: 6px;
-    border: none;
-    color: #FFFFFF; /* White text */
-}
-
-QTableWidget::item:selected {
-    background-color: #4CAF50; /* Green when selected */
-    color: #000000; /* Black text on selection */
-}
-
-QHeaderView::section {
-    background-color: #4CAF50; /* Green header */
-    color: white;
-    padding: 6px;
-    border: 1px solid #2E7D32; /* Darker green border */
-    font: bold 8pt &quot;Segoe UI&quot;;
-}
-
-QTableWidget QTableCornerButton::section {
-    background-color: #4CAF50; /* Match header color */
-    border: 2px solid #2E7D32;
-}
-
-QHeaderView::section:hover {
-    background-color: #45A049; /* Slightly darker green on hover */
-}
-
-QTableWidget::item:hover {
-    background-color: #388E3C; /* Dark green on hover */
-}
-</string>
-         </property>
-         <column>
-          <property name="text">
-           <string>ID</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Nom</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Prenom</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Age</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Experience</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Sexe</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Email</string>
-          </property>
-         </column>
-        </widget>
-        <widget class="QSpinBox" name="lineEdit_age">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>120</y>
-           <width>111</width>
-           <height>26</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QSpinBox {
-    background-color: #2C2F33; /* Dark background */
-    color: #FFFFFF; /* White text */
-    border: 2px solid #7289DA; /* Blue border */
-    border-radius: 8px; /* Rounded corners */
-    padding: 3px 12px;
-    font-size: 12px;
-    selection-background-color: rgba(0, 122, 204, 0.5); /* Blue highlight */
-}
-
-QSpinBox:hover {
-    border: 2px solid #5DADE2; /* Lighter blue on hover */
-}
-
-QSpinBox:focus {
-    border: 2px solid #00A8E8; /* Bright blue focus border */
-    background-color: #1E2125; /* Slightly darker background */
-    color: white;
-}
-
-/* Customize the up/down arrows */
-QSpinBox::up-button, QSpinBox::down-button {
-    background-color: #2C2F33; /* Dark background */
-    border: none;
-    width: 18px; /* Adjust button size */
-    height: 14px;
-}
-
-QSpinBox::up-button:hover, QSpinBox::down-button:hover {
-    background-color: #3B4E58; /* Slightly lighter hover effect */
-}
-
-QSpinBox::up-button:pressed, QSpinBox::down-button:pressed {
-    background-color: #1E4C79; /* Deep blue when pressed */
-}
-
-QSpinBox::up-arrow, QSpinBox::down-arrow {
-    width: 10px;
-    height: 10px;
-    image: url(:/icons/up-arrow.png); /* Replace with an actual arrow icon */
-}
-
-QSpinBox::down-arrow {
-    image: url(:/icons/down-arrow.png); /* Replace with actual icon */
-}
-</string>
-         </property>
-        </widget>
-        <widget class="QSpinBox" name="lineEdit_experience">
-         <property name="geometry">
-          <rect>
-           <x>310</x>
-           <y>40</y>
-           <width>111</width>
-           <height>26</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QSpinBox {
-    background-color: #2C2F33; /* Dark background */
-    color: #FFFFFF; /* White text */
-    border: 2px solid #7289DA; /* Blue border */
-    border-radius: 8px; /* Rounded corners */
-    padding: 3px 12px;
-    font-size: 12px;
-    selection-background-color: rgba(0, 122, 204, 0.5); /* Blue highlight */
-}
-
-QSpinBox:hover {
-    border: 2px solid #5DADE2; /* Lighter blue on hover */
-}
-
-QSpinBox:focus {
-    border: 2px solid #00A8E8; /* Bright blue focus border */
-    background-color: #1E2125; /* Slightly darker background */
-    color: white;
-}
-
-/* Customize the up/down arrows */
-QSpinBox::up-button, QSpinBox::down-button {
-    background-color: #2C2F33; /* Dark background */
-    border: none;
-    width: 18px; /* Adjust button size */
-    height: 14px;
-}
-
-QSpinBox::up-button:hover, QSpinBox::down-button:hover {
-    background-color: #3B4E58; /* Slightly lighter hover effect */
-}
-
-QSpinBox::up-button:pressed, QSpinBox::down-button:pressed {
-    background-color: #1E4C79; /* Deep blue when pressed */
-}
-
-QSpinBox::up-arrow, QSpinBox::down-arrow {
-    width: 10px;
-    height: 10px;
-    image: url(:/icons/up-arrow.png); /* Replace with an actual arrow icon */
-}
-
-QSpinBox::down-arrow {
-    image: url(:/icons/down-arrow.png); /* Replace with actual icon */
-}
-</string>
-         </property>
-        </widget>
+       QTableCornerButton::section {
+           background-color: #4CAF50;
+           border: none;
+       }</string>
+           </property>
+           <column>
+            <property name="text">
+             <string>ID</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Nom</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Prenom</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Age</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Experience</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Sexe</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Email</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Actions</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="joueurPage2">
         <property name="styleSheet">
