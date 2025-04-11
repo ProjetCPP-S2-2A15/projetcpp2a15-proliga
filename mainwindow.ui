@@ -643,8 +643,8 @@ height: 30px;</string>
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>681</width>
-           <height>451</height>
+           <width>691</width>
+           <height>441</height>
           </rect>
          </property>
          <property name="currentIndex">
@@ -1138,6 +1138,85 @@ QPushButton:pressed {
             <string>Rechercher</string>
            </property>
           </widget>
+          <widget class="QPushButton" name="sortBut">
+           <property name="geometry">
+            <rect>
+             <x>350</x>
+             <y>10</y>
+             <width>81</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+           </property>
+           <property name="text">
+            <string>Tri</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="sortTP">
+           <property name="geometry">
+            <rect>
+             <x>450</x>
+             <y>10</y>
+             <width>81</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <item>
+            <property name="text">
+             <string>Ascendant</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Descendant</string>
+            </property>
+           </item>
+          </widget>
+          <widget class="QComboBox" name="sortCC">
+           <property name="geometry">
+            <rect>
+             <x>540</x>
+             <y>10</y>
+             <width>101</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <item>
+            <property name="text">
+             <string>Pool de gains</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Nombre d'équipes</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Alphabétique</string>
+            </property>
+           </item>
+          </widget>
          </widget>
          <widget class="QWidget" name="Other">
           <attribute name="title">
@@ -1146,11 +1225,14 @@ QPushButton:pressed {
           <widget class="QStackedWidget" name="stackedWidget_2">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>261</width>
-             <height>181</height>
+             <x>0</x>
+             <y>0</y>
+             <width>661</width>
+             <height>401</height>
             </rect>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page">
             <widget class="QPushButton" name="exp_b">
@@ -1214,6 +1296,40 @@ QPushButton:pressed {
                <string>PDF</string>
               </property>
              </item>
+            </widget>
+            <widget class="QPushButton" name="statGEN">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>60</y>
+               <width>201</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+             </property>
+             <property name="text">
+              <string>Generer statistiques</string>
+             </property>
             </widget>
            </widget>
            <widget class="QWidget" name="page_2"/>

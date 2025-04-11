@@ -3,6 +3,7 @@ QT += sql
 QT += widgets sql
 QT += axcontainer
 QT += printsupport
+QT += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -28,7 +29,8 @@ SOURCES += \
     design.cpp \
     loginwindow.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    statisticscontainer.cpp
 
 HEADERS += \
     championnats.h \
@@ -36,7 +38,8 @@ HEADERS += \
       loginwindow.h \
      connexion.h\
     design.h \
-    mainwindow.h
+    mainwindow.h \
+    statisticscontainer.h
 
 FORMS += \
     mainwindow.ui

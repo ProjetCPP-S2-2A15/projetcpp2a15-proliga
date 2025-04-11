@@ -3,6 +3,7 @@
 #include "design.h"
 #include "changeWidget.h"
 #include "championnats.h"
+#include<statisticscontainer.h>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -11,8 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+
     //design
     applyDesign(ui);
+    StyleTW(ui->tableWidget);
 
     //changeWidget
     connect(ui->competition1, &QPushButton::toggled, [this](bool checked) { on_competition1_toggled(ui, checked); });
@@ -68,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+
 }
 void MainWindow::ajoutChampB_clicked(){
 
@@ -87,7 +91,7 @@ void MainWindow::ajoutChampB_clicked(){
 
     bool success = champ.ajoutChamp();
 
-    // Check for success and show a message box
+
     if (success) {
         QMessageBox::information(this, "Success", "Champs added successfully!");
         freeallfields();
@@ -252,8 +256,80 @@ void MainWindow::loadChampData(const QString &searchTerm) {
         });
 
         row++;
+        StyleTW(ui->tableWidget);
     }
 }
+
+void MainWindow::sortByName()
+{
+    QString sortCriteria = ui->sortCC->currentText();
+    QString sortOrder = ui->sortTP->currentText();
+
+
+    QString order = (sortOrder == "Ascendant") ? "ASC" : "DESC";
+
+
+    QString column;
+    if (sortCriteria == "Pool de gains") {
+        column = "POOL_GAINS";
+    } else if (sortCriteria == "Nombre d'équipes") {
+        column = "NBR_EQUIPE";
+    } else if (sortCriteria == "Alphabétique") {
+        column = "NOM";
+    }
+
+
+
+    QTableWidget *table = ui->tableWidget;
+
+
+    QString sql = "SELECT * FROM CHAMPIONNATS ORDER BY " + column + " " + order;
+
+
+    QSqlQuery query;
+    query.prepare(sql);
+
+    if (query.exec()) {
+
+        table->clearContents();
+        table->setRowCount(0);
+
+
+        while (query.next()) {
+            int row = table->rowCount();
+            table->insertRow(row);
+
+
+            table->setItem(row, 0, new QTableWidgetItem(query.value("ID_CHAMP").toString()));
+            table->setItem(row, 1, new QTableWidgetItem(query.value("NBR_EQUIPE").toString()));
+            table->setItem(row, 2, new QTableWidgetItem(query.value("TYPE").toString()));
+            table->setItem(row, 3, new QTableWidgetItem(query.value("NOM").toString()));
+            table->setItem(row, 4, new QTableWidgetItem(query.value("ORGANIZATEUR").toString()));
+            table->setItem(row, 5, new QTableWidgetItem(query.value("POOL_GAINS").toString()));
+
+            QPushButton* deleteButton = new QPushButton("Delete");
+            QPushButton* updateButton = new QPushButton("update");
+
+            ui->tableWidget->setCellWidget(row, 6, deleteButton);
+            ui->tableWidget->setCellWidget(row, 7, updateButton);
+
+            connect(deleteButton, &QPushButton::clicked, this, [this, row]() {
+                SuppChamp(row);
+            });
+            connect(updateButton, &QPushButton::clicked, this, [this, row]() {
+                loadForUpdate(row);
+            });
+            StyleTW(ui->tableWidget);
+        }
+    }
+    else {
+        qDebug() << "Failed to execute query:" << query.lastError();
+    }
+}
+void MainWindow::on_sortBut_clicked(){
+    sortByName();
+};
+
 
 
 bool MainWindow::validateInputs() {
@@ -527,7 +603,7 @@ void MainWindow::exportToPDF() {
     QString filePath = QFileDialog::getSaveFileName(this, "Save PDF", "", "PDF Files (*.pdf)");
 
     if (filePath.isEmpty()) {
-        return;  // If user cancels, do nothing
+        return;
     }
 
     QPdfWriter writer(filePath);
@@ -543,23 +619,23 @@ void MainWindow::exportToPDF() {
     int margin = 100;
     int titleHeight = 200;
     int rowHeight = 150;
-    int columnWidth =350;  // Reduced width for better fit
+    int columnWidth =350;
     int yPosition = margin;
 
-    // **Set Title**
+
     QFont titleFont("Arial", 14, QFont::Bold);
     painter.setFont(titleFont);
     painter.drawText(margin, yPosition, "Championnats Report");
 
-    // **Set Date**
+
     QFont dateFont("Arial", 10);
     painter.setFont(dateFont);
     QString date = "Date: " + QDate::currentDate().toString("dd/MM/yyyy");
     painter.drawText(writer.width() - margin * 10, yPosition, date);  // Right-aligned date
 
-    yPosition += titleHeight;  // Move down after title
+    yPosition += titleHeight;
 
-    // **Draw Table Headers**
+
     QFont headerFont("Arial", 9, QFont::Bold);
     painter.setFont(headerFont);
 
@@ -605,4 +681,12 @@ void MainWindow::selectExp(){
     else{
        exportToPDF();
     }
+}
+
+void MainWindow::on_statGEN_clicked(){
+    StatisticsContainer *statsWindow = new StatisticsContainer();
+    statsWindow->setAttribute(Qt::WA_DeleteOnClose); // Auto delete on close
+    statsWindow->setWindowTitle("Statistics");
+    statsWindow->resize(800, 600);  // Optional: adjust size
+    statsWindow->show();
 }

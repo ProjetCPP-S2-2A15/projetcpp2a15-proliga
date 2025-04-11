@@ -43,6 +43,7 @@ void setPoolGains(int poolGains);
 
 bool ajoutChamp();
 bool saveUpdates();
+static QSqlQuery getChampionnatsData();
 
 };
 

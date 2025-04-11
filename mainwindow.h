@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "connexion.h"
+#include"championnats.h"
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QPixmap>
@@ -12,6 +13,8 @@
 #include <QDate>
 #include <QFileDialog>
 #include <QDate>
+#include <QtCharts>
+#include <QVBoxLayout>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,12 +31,14 @@ public:
     ~MainWindow();
     Ui::MainWindow* getUi() const { return ui; }
 
+
 private:
     Ui::MainWindow *ui;
     QTimer *validationTimer;
     QTimer *validationTimerUP;
     QString rechercheact;
     QString triact;
+
 
 private slots:
     void ajoutChampB_clicked();
@@ -48,6 +53,9 @@ private slots:
     void exportToExcel();
     void selectExp();
     void exportToPDF();
+    void sortByName();
+    void on_sortBut_clicked();
+    void on_statGEN_clicked();
 
 
 };

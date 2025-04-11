@@ -125,3 +125,8 @@ bool Championnats::saveUpdates() {
         qDebug() << "Update error: " << query.lastError().text();
     }
 }
+
+static QSqlQuery getChampionnatsData() {
+    QSqlQuery query("SELECT NOM, POOL_GAINS, NBR_EQUIPE FROM CHAMPIONNATS");
+    return query;
+}
