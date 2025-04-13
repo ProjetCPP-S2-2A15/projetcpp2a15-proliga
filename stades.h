@@ -37,6 +37,7 @@ public:
 
     bool ajouter();
     QSqlQueryModel* afficher();
+    QSqlQueryModel* afficherCapaciteSuperieure(int capaciteMin);
     bool modifierParNom(QString oldName);
     bool supprimer(QString name);
     bool idExisteParNom(QString name);

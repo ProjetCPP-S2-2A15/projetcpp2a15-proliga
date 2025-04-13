@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include "design.h"
 #include "changeWidget.h"
+#include "championnats.h"
 #include "stades.h"
 #include <QSqlQuery>
 #include <QSqlError>
@@ -21,15 +22,25 @@
 #include <QVariantMap>
 #include <QQuickView>
 #include <QWidget>
-
+#include <QRandomGenerator>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , selectedChamp("")
 {
     ui->setupUi(this);
     ui->tableView->setModel(Stade().afficher());
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tableViewChamps->setModel(Championnats().afficher());
+    ui->tableViewChamps->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableViewChamps->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tableViewStadeLarge->setModel(Stade().afficherCapaciteSuperieure(40000));
+    ui->tableViewStadeLarge->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableViewStadeLarge->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tableViewConsulter->setModel(afficherConsulter());
+    ui->tableViewConsulter->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableViewConsulter->setSelectionMode(QAbstractItemView::SingleSelection);
     applyDesign(ui);
 
     QQuickWidget *mapWidget = new QQuickWidget(this);
@@ -400,7 +411,7 @@ void MainWindow::on_pushButton_genererExcel_clicked()
     QAxObject *sheet = workbook->querySubObject("Sheets(int)", 1);
     sheet->dynamicCall("SetName(const QString&)", "Liste des Stades");
 
-    // Add column headers
+
     sheet->querySubObject("Cells(int,int)", 1, 1)->setProperty("Value", "Nom");
     sheet->querySubObject("Cells(int,int)", 1, 2)->setProperty("Value", "Lieu");
     sheet->querySubObject("Cells(int,int)", 1, 3)->setProperty("Value", "Capacité");
@@ -525,4 +536,114 @@ void MainWindow::refreshMap() {
     mapWidget->rootContext()->setContextProperty("stadiumModel", stadiumList);
     mapWidget->setSource(QUrl(QStringLiteral("qrc:/MapView.qml")));
     mapWidget->show();
+}
+QSqlQueryModel* MainWindow::afficherConsulter() {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    QSqlQuery query;
+    query.prepare("SELECT nom_champ, nom_stade FROM CONSULTER");
+    query.exec();
+
+    model->setQuery(std::move(query));
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Championnat"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Stade"));
+
+    return model;
+}
+
+void MainWindow::on_tableViewChamps_clicked(const QModelIndex &index) {
+    if (!index.isValid()) {
+        selectedChamp = "";
+        return;
+    }
+
+    QSqlQueryModel* model = qobject_cast<QSqlQueryModel*>(ui->tableViewChamps->model());
+    if (!model) {
+        selectedChamp = "";
+        return;
+    }
+
+    selectedChamp = model->data(model->index(index.row(), 0)).toString();
+}
+
+void MainWindow::on_tirageButton_clicked() {
+
+    if (selectedChamp.isEmpty()) {
+        QMessageBox::critical(this, "Erreur", "Veuillez sélectionner un championnat dans la table.");
+        return;
+    }
+
+    QSqlQuery typeQuery;
+    typeQuery.prepare("SELECT type FROM Championnats WHERE nom = :nom");
+    typeQuery.bindValue(":nom", selectedChamp);
+    if (!typeQuery.exec() || !typeQuery.next()) {
+        QMessageBox::critical(this, "Erreur", "Impossible de vérifier le type du championnat.");
+        return;
+    }
+    if (typeQuery.value("type").toString() != "E") {
+        QMessageBox::critical(this, "Erreur", "Le championnat sélectionné doit être de type 'E'.");
+        return;
+    }
+
+    QSqlQuery checkQuery;
+    checkQuery.prepare("SELECT 1 FROM CONSULTER WHERE nom_champ = :nom_champ");
+    checkQuery.bindValue(":nom_champ", selectedChamp);
+    if (checkQuery.exec() && checkQuery.next()) {
+        QMessageBox::critical(this, "Erreur", "Ce championnat a déjà un stade assigné.");
+        return;
+    }
+
+    QStringList stadeNames;
+    QSqlQuery stadeQuery;
+    stadeQuery.prepare("SELECT nom FROM Stades WHERE capacite > :minCapacity "
+                       "AND nom NOT IN (SELECT nom_stade FROM CONSULTER)");
+    stadeQuery.bindValue(":minCapacity", 40000);
+    if (stadeQuery.exec()) {
+        while (stadeQuery.next()) {
+            stadeNames << stadeQuery.value("nom").toString();
+        }
+    } else {
+        QMessageBox::critical(this, "Erreur", "Impossible de récupérer les stades.");
+        return;
+    }
+
+    if (stadeNames.isEmpty()) {
+        QMessageBox::critical(this, "Erreur", "Aucun stade disponible avec une capacité supérieure à 40 000.");
+        return;
+    }
+
+    QRandomGenerator rng(QRandomGenerator::securelySeeded());
+    QString selectedStade = stadeNames[rng.bounded(stadeNames.size())];
+
+    int nextId = 1;
+    QSqlQuery idQuery;
+    idQuery.prepare("SELECT NVL(MAX(ID_CONSULTER), 0) + 1 FROM CONSULTER");
+    if (idQuery.exec() && idQuery.next()) {
+        nextId = idQuery.value(0).toInt();
+    }
+
+    QSqlQuery insertQuery;
+    insertQuery.prepare("INSERT INTO CONSULTER (ID_CONSULTER, nom_champ, nom_stade) "
+                        "VALUES (:id, :nom_champ, :nom_stade)");
+    insertQuery.bindValue(":id", nextId);
+    insertQuery.bindValue(":nom_champ", selectedChamp);
+    insertQuery.bindValue(":nom_stade", selectedStade);
+    if (!insertQuery.exec()) {
+        QMessageBox::critical(this, "Erreur", "Échec de l'ajout au tirage : " + insertQuery.lastError().text());
+        return;
+    }
+
+    QMessageBox::information(this, "Succès", QString("Tirage effectué : %1 assigné à %2 !")
+                                                 .arg(selectedChamp, selectedStade));
+    ui->tableViewConsulter->setModel(afficherConsulter());
+}
+void MainWindow::on_clearConsulterbutton_clicked() {
+    QSqlQuery clearQuery;
+    clearQuery.prepare("DELETE FROM CONSULTER");
+    if (!clearQuery.exec()) {
+        QMessageBox::critical(this, "Erreur", "Impossible de vider CONSULTER : " + clearQuery.lastError().text());
+        return;
+    }
+
+    QMessageBox::information(this, "Succès", "Tableau CONSULTER vidé.");
+    ui->tableViewConsulter->setModel(afficherConsulter());
 }

@@ -41,5 +41,6 @@
         <file>interface_icons/map.png</file>
         <file>MapView.qml</file>
         <file>interface_icons/marker.png</file>
+        <file>interface_icons/trashe.png</file>
     </qresource>
 </RCC>

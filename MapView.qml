@@ -106,7 +106,7 @@ Item {
                 right: parent.right
                 bottom: parent.bottom
                 margins: 10
-                bottomMargin: 60 // Added margin to create distance
+                bottomMargin: 60
             }
             onClicked: {
                 map.zoomLevel += 1

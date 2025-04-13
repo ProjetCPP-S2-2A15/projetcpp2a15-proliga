@@ -3,7 +3,7 @@
 
 #include <QPushButton>
 #include <QMainWindow>
-
+#include <QSqlQueryModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,6 +22,8 @@ public:
 private:
     Ui::MainWindow *ui;
     QPushButton *newButton;
+    QSqlQueryModel* afficherConsulter();
+    QString selectedChamp;
 
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
@@ -36,7 +38,9 @@ private slots:
     void on_pushButton_generer_clicked();
     void on_pushButton_afficherStats_clicked();
     void refreshMap();
-
+    void on_tirageButton_clicked();
+    void on_tableViewChamps_clicked(const QModelIndex &index);
+    void on_clearConsulterbutton_clicked();
 };
 
 #endif // MAINWINDOW_H

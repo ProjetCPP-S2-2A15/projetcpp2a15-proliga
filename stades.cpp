@@ -150,3 +150,17 @@ bool Stade::getCoordinatesFromLieu(double &latitude, double &longitude) const {
     }
     return false;
 }
+QSqlQueryModel* Stade::afficherCapaciteSuperieure(int capaciteMin) {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    QSqlQuery query;
+    query.prepare("SELECT nom, capacite FROM Stades WHERE capacite > :capaciteMin");
+    query.bindValue(":capaciteMin", capaciteMin);
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Capacité"));
+
+    return model;
+}
