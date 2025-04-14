@@ -15,6 +15,7 @@ public:
     void readJoueur(QTableWidget *tableWidget);
     void rechercheJoueur(QTableWidget *tableWidget, const QString &nom);
     void rechercheJoueurFilter(QTableWidget *tableWidget, const QString &arg1);
+    QVector<Joueur> getJoueurs();
 
     // Setters
     void setNom(const QString &nom) { Nom = nom; }

@@ -10,6 +10,7 @@ public:
     Connection();
     bool createconnect();
     QSqlDatabase getDatabase();
+
 private:
     QSqlDatabase db;
 };

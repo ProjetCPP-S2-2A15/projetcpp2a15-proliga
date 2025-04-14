@@ -8,20 +8,19 @@
 #include <QMessageBox>
 #include <QPdfWriter>
 #include <QPainter>
-#include <QFileDialog>
 #include <QTextDocument>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 
     //design
     applyDesign(ui);
@@ -50,17 +49,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->modifierButton, &QPushButton::clicked, this, [this]() {
         if (selected_row == -1) return;
         confirmUpdate(this, selected_row);
+        refreshStats();
         selected_row = -1;
     });
 
     //controle de saisie
     connect(ui->NomInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
     connect(ui->PrenomInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
-    connect(ui->PositionInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    //connect(ui->PositionInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
     connect(ui->NationaliteInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
     connect(ui->dsInput, &QDateEdit::dateChanged, this, &MainWindow::validateInputs);
-
-
+    connect(ui->Img_pathInput, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
 
     //read joueur
     Joueur j;
@@ -72,9 +71,9 @@ MainWindow::MainWindow(QWidget *parent)
     j.readJoueur(tableWidgetPlayers);
     setupTableWithDeleteButtons(tableWidgetPlayers);
 
-
     //export pdf
     connect(ui->pdfButton, &QPushButton::clicked, this, &MainWindow::exportToPDF);
+    refreshStats();
 
 }
 
@@ -83,31 +82,56 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::refreshStats() {
+    int pageIndex = ui->stackedWidget->indexOf(ui->joueurPage);
+    QWidget* joueurWidget = ui->stackedWidget->widget(pageIndex);
+    QTabWidget* tabWidget = joueurWidget->findChild<QTabWidget*>("tabWidget");
+
+    if (tabWidget) {
+        int tabIndex = tabWidget->indexOf(ui->statsTab);  // use tabWidget not ui->tabWidget
+        //tabWidget->setCurrentIndex(tabIndex);
+
+        QWidget* statsTab = tabWidget->widget(tabIndex);
+        QVBoxLayout* statsLayout = statsTab->findChild<QVBoxLayout*>("statsLayout");
+
+        if (statsLayout) {
+            QLayoutItem* item;
+            while ((item = statsLayout->takeAt(0)) != nullptr) {
+                delete item->widget();
+                delete item;
+            }
+
+            QChartView* chartView = createNationalityChart();
+            if (chartView) {
+                statsLayout->addWidget(chartView);
+            }
+
+            QChartView* positionChartView = createPositionChart();
+            if (positionChartView) {
+                statsLayout->addWidget(positionChartView);
+            }
+        } else {
+            qDebug() << "Stats layout not found!";
+        }
+    } else {
+        qDebug() << "joueurTabWidget not found!";
+    }
+}
+
+
 void MainWindow::onAjouterButtonClicked() {
     createJoueurFromUI(this);
+    refreshStats();
 }
 
 void MainWindow::onrechercherButtonClicked(){
     rechercheJoueurFromUI(this);
 }
 
-
 void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
 {
-    //j.readJoueur(ui->tableWidgetPlayers);
     this->setupTableWithDeleteButtons3(ui->tableWidgetPlayers, arg1);
 }
-/*
-void MainWindow::uploadImage() {
-    // Open file dialog to select an image
-    QString filePath = QFileDialog::getOpenFileName(this, "Choose an Image", "", "Images (*.png *.jpg *.jpeg *.bmp)");
-
-    if (!filePath.isEmpty()) {
-        QPixmap pixmap(filePath);
-        ui->imgUploaded->setPixmap(pixmap.scaled(ui->imgUploaded->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    }
-}
-*/
 
 
 void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
@@ -133,6 +157,7 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
 
         connect(deleteButton, &QPushButton::clicked, this, [this, nom]() {
             deleteJoueurFromUI(this, nom);
+            refreshStats();
         });
 
         // Connect Update button
@@ -152,7 +177,6 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
         tableWidgetPlayers->setCellWidget(row, 5, buttonContainer);
     }
 }
-
 
 void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, const QString nom) {
     // First, call rechercheJoueur to refresh the table with the search results
@@ -189,6 +213,7 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
         // Connect Delete button
         connect(deleteButton, &QPushButton::clicked, this, [this, playerName]() {
             deleteJoueurFromUI(this, playerName); // Delete player
+            refreshStats();
         });
 
         // Connect Update button
@@ -240,6 +265,7 @@ void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, 
 
         connect(deleteButton, &QPushButton::clicked, this, [this, nom]() {
             deleteJoueurFromUI(this, nom);
+            refreshStats();
         });
 
         // Connect Update button
@@ -304,10 +330,33 @@ void MainWindow::validateInputs() {
             "padding: 2px; ");
     }
 
+    /*
     // Validate Position
     QStringList validPositions = {"GK", "LB", "RB", "CB", "CMD", "CM", "CAM", "LW", "RW", "ST"};
     if (ui->PositionInput->text().trimmed().isEmpty() ||
         !alphaRegex.match(ui->PositionInput->text().trimmed()).hasMatch() || !validPositions.contains(ui->PositionInput->text().trimmed().toUpper())) {
+        ui->PositionError->setText("invalide !");
+        ui->PositionError->setStyleSheet(
+            "color: #D32F2F; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; "
+            );
+        allValid = false;
+    } else {
+        ui->PositionError->setText("valide");
+        ui->PositionError->setStyleSheet(
+            "color: #2E7D32; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; "
+            );
+    }*/
+    // Validate Position
+    QStringList validPositions = {"GK", "LB", "RB", "CB", "CMD", "CM", "CAM", "LW", "RW", "ST"};
+    QString selectedPosition = ui->PositionInput2->currentText().trimmed().toUpper();
+
+    if (selectedPosition.isEmpty() || !validPositions.contains(selectedPosition)) {
         ui->PositionError->setText("invalide !");
         ui->PositionError->setStyleSheet(
             "color: #D32F2F; "
@@ -345,6 +394,25 @@ void MainWindow::validateInputs() {
             "padding: 2px; ");
     }
 
+    //validate image path
+    if (ui->Img_pathInput->text().trimmed().isEmpty() ||
+        !alphaRegex.match(ui->Img_pathInput->text().trimmed()).hasMatch() || ui->Img_pathInput->text().length() > 10 || ui->Img_pathInput->text().length() <3) {
+        ui->ImgError->setText("invalide !");
+        ui->ImgError->setStyleSheet(
+            "color: #D32F2F; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
+        allValid = false;
+    } else {
+        ui->ImgError->setText("valide");
+        ui->ImgError->setStyleSheet(
+            "color: #2E7D32; "
+            "font-size: 10px; "
+            "font-weight: bold; "
+            "padding: 2px; ");
+    }
+
     // Validate Date of Birth (minimum age 10)
     QDate birthDate = ui->dsInput->date();
     QDate currentDate = QDate::currentDate();
@@ -371,8 +439,6 @@ void MainWindow::validateInputs() {
     ui->AjouterButton->setEnabled(allValid);
     ui->modifierButton->setEnabled(allValid);
 }
-
-
 
 void MainWindow::exportToPDF() {
     // Step 1: Select file to save
@@ -407,37 +473,57 @@ void MainWindow::exportToPDF() {
     pdfWriter.setResolution(300);
 
     QPainter painter(&pdfWriter);
+    painter.setRenderHint(QPainter::Antialiasing);
     painter.setFont(QFont("Arial", 10));
 
-    int y = 50;
+    int margin = 100;  // Margins for left and top
+    int y = margin;
 
     // Title
-    painter.setFont(QFont("Arial", 16, QFont::Bold));
-    painter.drawText(200, y, "Players List");
-    painter.setFont(QFont("Arial", 10));
-    y += 350;
+    painter.setFont(QFont("Arial", 18, QFont::Bold));
+    painter.drawText(margin + 400, y, "Players List");
+    painter.setFont(QFont("Arial", 12));
+    y += 300;
 
-    // Column Headers
-    painter.drawText(250, y, "Nom");
-    painter.drawText(500, y, "Prenom");
-    painter.drawText(750, y, "Position");
-    painter.drawText(1100, y, "Nationalite");
-    painter.drawText(1500, y, "Date Naissance");
+    // Table Column Headers
+    int x[] = {margin, margin + 250, margin + 500, margin + 800, margin + 1100};
+
+    painter.setFont(QFont("Arial", 11, QFont::Bold));
+    painter.drawText(x[0], y, "Nom");
+    painter.drawText(x[1], y, "Prenom");
+    painter.drawText(x[2], y, "Position");
+    painter.drawText(x[3], y, "Nationalite");
+    painter.drawText(x[4], y, "Date Naissance");
+
+    y += 50;
+    painter.drawLine(margin, y, 1900, y);
     y += 100;
 
-    painter.drawLine(250, y, 1900, y);
-    y += 200;
-
     // Step 5: Write player data
+    painter.setFont(QFont("Arial", 10));
     while (query.next()) {
-        painter.drawText(250, y, query.value(0).toString());
-        painter.drawText(500, y, query.value(1).toString());
-        painter.drawText(750, y, query.value(3).toString());
-        painter.drawText(1100, y, query.value(2).toString());
-        painter.drawText(1500, y, query.value(4).toDate().toString("yyyy-MM-dd"));
-        y += 100;
+        painter.drawText(x[0], y, query.value(0).toString());
+        painter.drawText(x[1], y, query.value(1).toString());
+        painter.drawText(x[2], y, query.value(3).toString());
+        painter.drawText(x[3], y, query.value(2).toString());
+        painter.drawText(x[4], y, query.value(4).toDate().toString("yyyy-MM-dd"));
+
+        // Draw row separator
+        y += 50;
+        painter.drawLine(margin, y, 1900, y);
+        y += 50;
     }
 
+    // Footer
+    y += 200;
+    QFont footerFont("Arial", 9);
+    footerFont.setItalic(true);
+    painter.setFont(footerFont);
+
+    painter.drawText(margin, y, "Generated on: " + QDate::currentDate().toString("dd MMM yyyy"));
+    painter.drawText(1800, y, "Page 1");
+
+    // End PDF
     painter.end();
 
     // Step 6: Success Message
@@ -447,17 +533,9 @@ void MainWindow::exportToPDF() {
 void MainWindow::freeInputs(){
     ui->NomInput->setText("");
     ui->PrenomInput->setText("");
-    ui->PositionInput->setText("");
+    //ui->PositionInput->setText("");
     ui->NationaliteInput->setText("");
 }
-
-
-
-#include <QProcess>
-#include <QFileDialog>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDebug>
 
 void MainWindow::on_deleteButton_clicked()
 {
@@ -466,11 +544,12 @@ void MainWindow::on_deleteButton_clicked()
     if (filePath.isEmpty())
         return; // If no file selected, exit function
 
-    filePath = filePath.replace("\\", "/");
+    filePath = filePath.replace("\\", "/");  // Normalize backslashes to forward slashes
+
     // Create a QProcess to run the Python script
     QProcess process;
     QString pythonPath = "C:/Users/alabe/AppData/Local/Programs/Python/Python312/python.exe";  // Use forward slashes
-    QString scriptPath = "C:/Users/alabe/Pictures/metiers avances/extraction/text.py";  // Use forward slashes
+    QString scriptPath = "C:/Users/alabe/Pictures/metiers avances/face/zouz.py";  // Use forward slashes
 
     // Run Python script with the selected image path
     process.start(pythonPath, QStringList() << scriptPath << filePath);
@@ -485,40 +564,50 @@ void MainWindow::on_deleteButton_clicked()
         return;
     }
 
-    // Parse the JSON output
-    QJsonDocument jsonResponse = QJsonDocument::fromJson(output);
+    // Convert the QByteArray to a QString and clean the output
+    QString outputString = QString::fromUtf8(output).trimmed();
+
+    // Debugging: print raw output
+    qDebug() << "Raw Python Output: " << outputString;
+
+    // Clean the output by removing "Extracted Information:" and "Player's face saved as..."
+    int jsonStartIndex = outputString.indexOf("{");
+    int jsonEndIndex = outputString.lastIndexOf("}");
+
+    if (jsonStartIndex == -1 || jsonEndIndex == -1) {
+        qDebug() << "Invalid JSON format: No JSON found in the output.";
+        return;
+    }
+
+    // Extract valid JSON portion from the string
+    QString jsonString = outputString.mid(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
+
+    // Debugging: check the cleaned-up JSON string
+    qDebug() << "Cleaned JSON String: " << jsonString;
+
+    // Parse the cleaned-up output as JSON
+    QJsonDocument jsonResponse = QJsonDocument::fromJson(jsonString.toUtf8());
     if (jsonResponse.isNull()) {
-        qDebug() << "Error parsing JSON response." << output;
+        qDebug() << "Error parsing JSON response." << jsonString;
         return;
     }
 
     QJsonObject jsonObject = jsonResponse.object();
 
-    // Extract information
-    QString extractedInfo = "Nom: " + jsonObject["Nom"].toString() + "\n";
+    // Extract information from JSON and set the fields
     ui->NomInput->setText(jsonObject["Nom"].toString());
-
-    extractedInfo += "Prénom: " + jsonObject["Prenom"].toString() + "\n";
     ui->PrenomInput->setText(jsonObject["Prenom"].toString());
-
-    extractedInfo += "Date de naissance: " + jsonObject["Date de naissance"].toString() + "\n";
-    QString dateString = jsonObject["Date de naissance"].toString();  // Extract date as string
-
-    // Convert "21/05/2001" to QDate
-    QDate date = QDate::fromString(dateString, "dd/MM/yyyy");  // Adjust format if needed
-
-    // Set date to QDateEdit
-    if (date.isValid()) {
-        ui->dsInput->setDate(date);
-    } else {
-        qDebug() << "Invalid date format:" << dateString;  // Debugging output if conversion fails
-    }
-
-    extractedInfo += "Nationalité: " + jsonObject["Nationalite"].toString();
+    ui->dsInput->setDate(QDate::fromString(jsonObject["Date de naissance"].toString(), "dd/MM/yyyy"));
     ui->NationaliteInput->setText(jsonObject["Nationalite"].toString());
-    // Display extracted information in terminal
-    qDebug() << "Extracted License Info:\n" << extractedInfo;
+
+    // Debugging output
+    qDebug() << "Extracted License Info:\n" << jsonObject;
+
+    // If face image path is provided, fill the input with the image path
+    QString faceImagePath = jsonObject["FaceImagePath"].toString();
+    if (!faceImagePath.isEmpty()) {
+        qDebug() << "Face Image Path: " << faceImagePath;
+        ui->Img_pathInput->setText(faceImagePath); // Fill the input field with the face image path
+    }
 }
-
-
 

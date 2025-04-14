@@ -1,6 +1,7 @@
 #include "joueur.h"
 #include "connexion.h"
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QVariant>
 #include <QDebug>
 #include <QTableWidget>
@@ -39,6 +40,7 @@ void Joueur::addJoueur() {
     } else {
         qDebug() << "Joueur added successfully!";
     }
+
 }
 
 
@@ -71,7 +73,8 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
     }
 
     // Create the query using the constructed query string
-    QSqlQuery query(queryString);
+    //QSqlQuery query(queryString);
+    QSqlQuery query(queryString, db);
 
     tableWidget->setRowCount(0);
     int row = 0;
@@ -94,6 +97,49 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         qDebug() << "Players loaded successfully!";
     }
 }
+
+
+QVector<Joueur> Joueur::getJoueurs() {
+    QVector<Joueur> joueurs;
+
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return joueurs;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return joueurs;
+    }
+
+    QString queryString;
+    queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1";
+
+    QSqlQuery query(queryString, db);
+
+    while (query.next()) {
+        Joueur j;
+        j.setNom(query.value("NOM").toString());
+        j.setPrenom(query.value("PRENOM").toString());
+        j.setPaysOrigine(query.value("PAYS_ORIGINE").toString());
+        j.setPosition(query.value("POSITION").toString());
+        j.setDateDeNaissance(query.value("DATE_DE_NAISSANCE").toDate());
+
+        joueurs.append(j);
+    }
+
+    if (query.lastError().isValid()) {
+        qDebug() << "Error reading players:" << query.lastError().text();
+    } else {
+        qDebug() << "Players loaded successfully!";
+    }
+
+    return joueurs;
+}
+
+
 
 void Joueur::deleteJoueur(const QString &nom) {
     if (nom.isEmpty()) {
@@ -157,7 +203,6 @@ bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate
         return true;
     }
 }
-
 
 void Joueur::rechercheJoueur(QTableWidget *tableWidget, const QString &nom) {
     if (!tableWidget) return;

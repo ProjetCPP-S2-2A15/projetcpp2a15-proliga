@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QDateEdit>
 #include <QMessageBox>
+#include <QtCharts>
+#include <QMap>
 
 void createJoueurFromUI(MainWindow *mainWin) {
     if (!mainWin) return;
@@ -28,12 +30,20 @@ void createJoueurFromUI(MainWindow *mainWin) {
         if (input->objectName()=="PrenomInput") {
             j.setPrenom(input->text());
         }
+        /*
         if (input->objectName()=="PositionInput") {
             j.setPosition(input->text());
-        }
+        }*/
         if (input->objectName()=="NationaliteInput") {
             j.setPaysOrigine(input->text());
         }
+    }
+
+    QComboBox* positionComboBox = joueurWidget->findChild<QComboBox*>("PositionInput2");
+    if (positionComboBox) {
+        j.setPosition(positionComboBox->currentText());
+    } else {
+        qDebug() << "PositionInput not found!";
     }
 
     QDateEdit* dsInput = joueurWidget->findChild<QDateEdit*>("dsInput");
@@ -45,6 +55,8 @@ void createJoueurFromUI(MainWindow *mainWin) {
 
     qDebug() << "Adding Joueur: " << j.getNom() << j.getPrenom()
              << j.getDateDeNaissance().toString() << j.getPaysOrigine();
+
+    qDebug() << "Position Selected: " << j.getPosition();
 
     j.addJoueur();
     QTableWidget* tableWidgetPlayers = joueurWidget->findChild<QTableWidget*>("tableWidgetPlayers");
@@ -63,7 +75,6 @@ void deleteJoueurFromUI(MainWindow *mainWin, const QString &nom) {
 
     Ui::MainWindow *ui = mainWin->getUi();
 
-
     Joueur j;
     j.deleteJoueur(nom);
 
@@ -76,7 +87,6 @@ void updateJoueurFromUI(MainWindow *mainWin, int row){
 
     Ui::MainWindow *ui = mainWin->getUi();
 
-
     QString nom = ui->tableWidgetPlayers->item(row, 0)->text();
     QString prenom = ui->tableWidgetPlayers->item(row, 1)->text();
     QString position = ui->tableWidgetPlayers->item(row, 3)->text();
@@ -86,9 +96,9 @@ void updateJoueurFromUI(MainWindow *mainWin, int row){
     ui->NomInput->setText(nom);
     ui->PrenomInput->setText(prenom);
     ui->dsInput->setDate(date);
-    ui->PositionInput->setText(position);
+    //ui->PositionInput->setText(position);
+    ui->PositionInput2->setCurrentText(position);
     ui->NationaliteInput->setText(pays_origine);
-
 }
 
 void confirmUpdate(MainWindow *mainWin, int row){
@@ -104,7 +114,8 @@ void confirmUpdate(MainWindow *mainWin, int row){
     QString nom = ui->NomInput->text();
     QString prenom = ui->PrenomInput->text();
     QDate date = ui->dsInput->date();
-    QString position = ui->PositionInput->text();
+    //QString position = ui->PositionInput->text();
+    QString position = ui->PositionInput2->currentText();
     QString paysOrigine = ui->NationaliteInput->text();
 
     // Update the table
@@ -123,7 +134,6 @@ void confirmUpdate(MainWindow *mainWin, int row){
     mainWin->freeInputs();
 }
 
-
 void rechercheJoueurFromUI(MainWindow *mainWin){
     if (!mainWin){
         return;
@@ -139,6 +149,69 @@ void rechercheJoueurFromUI(MainWindow *mainWin){
     // Refresh the table to reflect changes
     mainWin->setupTableWithDeleteButtons2(tableWidget, nom_recherche);
 }
+
+QChartView* createNationalityChart() {
+    QMap<QString, int> nationalityCount;
+    Joueur j;
+    QVector<Joueur> playerList = j.getJoueurs(); // Correctly storing the result
+
+    if (playerList.isEmpty()) {
+        qDebug() << "No players found!";
+        return nullptr; // Return null if no data
+    }
+
+    // Count players by nationality
+    for (const Joueur& player : playerList) {
+        nationalityCount[player.getPaysOrigine()]++;
+    }
+
+    // Create the pie chart series
+    QPieSeries *series = new QPieSeries();
+    for (auto it = nationalityCount.begin(); it != nationalityCount.end(); ++it) {
+        series->append(it.key(), it.value());
+    }
+
+    // Set up the chart
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Players by Nationality");
+    chart->legend()->setAlignment(Qt::AlignRight);
+
+    // Create and return the chart view
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    return chartView;
+}
+
+QChartView* createPositionChart() {
+    QMap<QString, int> positionCount;
+    Joueur j;
+    const QVector<Joueur>& playerList = j.getJoueurs();
+
+    // Count players by position
+    for (const Joueur& j : playerList) {
+        positionCount[j.getPosition()]++;
+    }
+
+    // Create the pie chart series
+    QPieSeries* series = new QPieSeries();
+    for (auto it = positionCount.begin(); it != positionCount.end(); ++it) {
+        series->append(it.key(), it.value());
+    }
+
+    // Set up the chart
+    QChart* chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Players by Position");
+    chart->legend()->setAlignment(Qt::AlignRight);
+
+    // Create and return the chart view
+    QChartView* chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    return chartView;
+}
+
+
 
 
 

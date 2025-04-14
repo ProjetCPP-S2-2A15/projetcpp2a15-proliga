@@ -26,6 +26,7 @@ public:
     void setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, const QString arg1);
     void validateInputs();
     void freeInputs();
+    void refreshStats();
 
 private slots:
     void onAjouterButtonClicked();   \
