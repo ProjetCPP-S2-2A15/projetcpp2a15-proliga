@@ -742,36 +742,14 @@ background-color: rgb(210, 247, 221);
          </property>
          <widget class="QWidget" name="CRUD">
           <attribute name="title">
-           <string>CRUD</string>
+           <string>STADES</string>
           </attribute>
-          <widget class="QPushButton" name="pushButton_rechercherNom">
-           <property name="geometry">
-            <rect>
-             <x>640</x>
-             <y>30</y>
-             <width>91</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color:  rgb(173,216,230);</string>
-           </property>
-           <property name="text">
-            <string>recherche</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="autoExclusive">
-            <bool>true</bool>
-           </property>
-          </widget>
           <widget class="QLineEdit" name="lineEdit_rechercheNom">
            <property name="geometry">
             <rect>
              <x>220</x>
              <y>30</y>
-             <width>411</width>
+             <width>361</width>
              <height>30</height>
             </rect>
            </property>
@@ -797,7 +775,7 @@ background-color: rgb(210, 247, 221);
             <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(172, 216, 235, 255), stop:0.468504 rgba(202, 235, 234, 255), stop:0.854331 rgba(184, 216, 194, 255));</string>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="ajouter">
             <attribute name="title">
@@ -1141,7 +1119,7 @@ background-color: rgb(210, 247, 221);
             <rect>
              <x>190</x>
              <y>70</y>
-             <width>541</width>
+             <width>521</width>
              <height>331</height>
             </rect>
            </property>
@@ -1152,43 +1130,21 @@ background-color: rgb(210, 247, 221);
           <widget class="QWidget" name="widget" native="true">
            <property name="geometry">
             <rect>
-             <x>740</x>
+             <x>720</x>
              <y>70</y>
-             <width>231</width>
+             <width>251</width>
              <height>331</height>
             </rect>
            </property>
            <property name="styleSheet">
             <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(172, 216, 235, 255), stop:0.468504 rgba(202, 235, 234, 255), stop:0.854331 rgba(184, 216, 194, 255));</string>
            </property>
-           <widget class="QPushButton" name="pushButton_rechercherCapacite">
-            <property name="geometry">
-             <rect>
-              <x>150</x>
-              <y>40</y>
-              <width>61</width>
-              <height>31</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color:  rgb(173,216,230);</string>
-            </property>
-            <property name="text">
-             <string>filtrer</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>true</bool>
-            </property>
-           </widget>
            <widget class="QLineEdit" name="lineEdit_capaciteMax">
             <property name="geometry">
              <rect>
-              <x>50</x>
-              <y>60</y>
-              <width>81</width>
+              <x>90</x>
+              <y>130</y>
+              <width>121</width>
               <height>30</height>
              </rect>
             </property>
@@ -1204,9 +1160,9 @@ background-color: rgb(210, 247, 221);
            <widget class="QLineEdit" name="lineEdit_capaciteMin">
             <property name="geometry">
              <rect>
-              <x>50</x>
-              <y>20</y>
-              <width>81</width>
+              <x>90</x>
+              <y>80</y>
+              <width>121</width>
               <height>30</height>
              </rect>
             </property>
@@ -1222,8 +1178,8 @@ background-color: rgb(210, 247, 221);
            <widget class="QLabel" name="label_14">
             <property name="geometry">
              <rect>
-              <x>10</x>
-              <y>60</y>
+              <x>50</x>
+              <y>130</y>
               <width>31</width>
               <height>31</height>
              </rect>
@@ -1239,8 +1195,8 @@ color: rgb(58, 135, 58);</string>
            <widget class="QLabel" name="label_13">
             <property name="geometry">
              <rect>
-              <x>10</x>
-              <y>20</y>
+              <x>50</x>
+              <y>80</y>
               <width>31</width>
               <height>31</height>
              </rect>
@@ -1257,13 +1213,13 @@ color: rgb(58, 135, 58);</string>
             <property name="geometry">
              <rect>
               <x>120</x>
-              <y>120</y>
+              <y>30</y>
               <width>91</width>
               <height>31</height>
              </rect>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color:  rgb(173,216,230);</string>
+             <string notr="true">background: rgb(208,240,192);</string>
             </property>
             <property name="text">
              <string>generer</string>
@@ -1278,8 +1234,8 @@ color: rgb(58, 135, 58);</string>
            <widget class="QComboBox" name="comboBox_format">
             <property name="geometry">
              <rect>
-              <x>20</x>
-              <y>120</y>
+              <x>30</x>
+              <y>30</y>
               <width>76</width>
               <height>31</height>
              </rect>
@@ -1302,8 +1258,8 @@ color: rgb(58, 135, 58);</string>
             <property name="geometry">
              <rect>
               <x>70</x>
-              <y>230</y>
-              <width>93</width>
+              <y>190</y>
+              <width>111</width>
               <height>29</height>
              </rect>
             </property>
@@ -1317,8 +1273,8 @@ color: rgb(58, 135, 58);</string>
            <widget class="QPushButton" name="pushButton_supprimer">
             <property name="geometry">
              <rect>
-              <x>100</x>
-              <y>280</y>
+              <x>110</x>
+              <y>240</y>
               <width>31</width>
               <height>31</height>
              </rect>
@@ -1342,45 +1298,45 @@ background-color: rgb(17, 145, 214);
              <bool>true</bool>
             </property>
            </widget>
-           <widget class="QComboBox" name="comboBoxTri">
-            <property name="geometry">
-             <rect>
-              <x>50</x>
-              <y>180</y>
-              <width>131</width>
-              <height>26</height>
-             </rect>
+          </widget>
+          <widget class="QComboBox" name="comboBoxTri">
+           <property name="geometry">
+            <rect>
+             <x>590</x>
+             <y>30</y>
+             <width>121</width>
+             <height>26</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: rgb(208,240,192);</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>capacite &gt;</string>
             </property>
-            <property name="styleSheet">
-             <string notr="true">background: rgb(208,240,192);</string>
+           </item>
+           <item>
+            <property name="text">
+             <string>capacite&lt;</string>
             </property>
-            <item>
-             <property name="text">
-              <string>capacite &gt;</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>capacite&lt;</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>nb tickets vd&gt;</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>nb tickets vd&lt;</string>
-             </property>
-            </item>
-           </widget>
+           </item>
+           <item>
+            <property name="text">
+             <string>nb tickets vd&gt;</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>nb tickets vd&lt;</string>
+            </property>
+           </item>
           </widget>
           <zorder>widget</zorder>
-          <zorder>pushButton_rechercherNom</zorder>
           <zorder>lineEdit_rechercheNom</zorder>
           <zorder>tabWidget</zorder>
           <zorder>tableView</zorder>
+          <zorder>comboBoxTri</zorder>
          </widget>
          <widget class="QWidget" name="fonctionnalites">
           <attribute name="title">

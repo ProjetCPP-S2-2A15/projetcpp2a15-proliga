@@ -30,8 +30,6 @@ private slots:
     void on_addStadiumbutton_clicked();
     void on_pushbuttonmodifieR_clicked();
     void on_pushButton_supprimer_clicked();
-    void on_pushButton_rechercherNom_clicked();
-    void on_pushButton_rechercherCapacite_clicked();
     void on_comboBoxTri_currentIndexChanged(int index);
     void on_pushButton_genererPDF_clicked();
     void on_pushButton_genererExcel_clicked();
@@ -41,6 +39,8 @@ private slots:
     void on_tirageButton_clicked();
     void on_tableViewChamps_clicked(const QModelIndex &index);
     void on_clearConsulterbutton_clicked();
+    void on_rechercheNom_textChanged(const QString &text);
+    void on_capaciteMinMax_textChanged();
 };
 
 #endif // MAINWINDOW_H

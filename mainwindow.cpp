@@ -23,6 +23,7 @@
 #include <QQuickView>
 #include <QWidget>
 #include <QRandomGenerator>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -63,7 +64,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->stade1, &QPushButton::toggled, [this](bool checked) { on_stade1_toggled(ui, checked); });
     connect(ui->stade2, &QPushButton::toggled, [this](bool checked) { on_stade2_toggled(ui, checked); });
     connect(ui->refreshButton, &QPushButton::clicked, this, &MainWindow::refreshMap);
+
+    connect(ui->lineEdit_rechercheNom, &QLineEdit::textChanged, this, &MainWindow::on_rechercheNom_textChanged);
+    connect(ui->lineEdit_capaciteMin, &QLineEdit::textChanged, this, &MainWindow::on_capaciteMinMax_textChanged);
+    connect(ui->lineEdit_capaciteMax, &QLineEdit::textChanged, this, &MainWindow::on_capaciteMinMax_textChanged);
 }
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -79,6 +85,7 @@ void MainWindow::on_tableView_clicked(const QModelIndex &index) {
     ui->lineEdit_tickets2->setText(QString::number(stade.getNbrTicketsVd()));
     ui->dateEdit_creation2->setDate(stade.getDateCreation());
 }
+
 void MainWindow::on_addStadiumbutton_clicked() {
     QString name = ui->lineEdit_nomA->text();
     QString location = ui->lineEdit_lieuA->text();
@@ -91,7 +98,6 @@ void MainWindow::on_addStadiumbutton_clicked() {
         QMessageBox::critical(this, "Erreur de validation", "Le nom du stade doit contenir uniquement des lettres et des espaces.");
         return;
     }
-
 
     QRegularExpression regexNumber("^[0-9]+$");
     if (!regexNumber.match(capacityStr).hasMatch()) {
@@ -120,7 +126,6 @@ void MainWindow::on_addStadiumbutton_clicked() {
         return;
     }
 
-
     Stade stadeInstance;
     if (stadeInstance.idExisteParNom(name)) {
         QMessageBox::critical(this, "Erreur de validation", "Le nom du stade existe déjà. Veuillez choisir un autre nom.");
@@ -134,10 +139,12 @@ void MainWindow::on_addStadiumbutton_clicked() {
     if (success) {
         QMessageBox::information(this, "Succès", "Stade ajouté avec succès !");
         ui->tableView->setModel(Stade().afficher());
+        ui->tableViewStadeLarge->setModel(Stade().afficherCapaciteSuperieure(40000));
     } else {
         QMessageBox::critical(this, "Erreur", "Échec de l'ajout du stade : " + QSqlDatabase::database().lastError().text());
     }
 }
+
 void MainWindow::on_pushbuttonmodifieR_clicked() {
     QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
 
@@ -186,7 +193,6 @@ void MainWindow::on_pushbuttonmodifieR_clicked() {
         return;
     }
 
-    // Vérifier si le nouveau nom du stade existe déjà (sauf si c'est le même stade)
     Stade stadeInstance;
     if (newName != name && stadeInstance.idExisteParNom(newName)) {
         QMessageBox::critical(this, "Erreur de validation", "Le nouveau nom du stade existe déjà. Veuillez choisir un autre nom.");
@@ -200,86 +206,94 @@ void MainWindow::on_pushbuttonmodifieR_clicked() {
     if (success) {
         QMessageBox::information(this, "Succès", "Stade modifié avec succès !");
         ui->tableView->setModel(Stade().afficher());
+        ui->tableViewStadeLarge->setModel(Stade().afficherCapaciteSuperieure(40000));
     } else {
         QMessageBox::critical(this, "Erreur", "Échec de la modification du stade.");
     }
 }
+
 void MainWindow::on_pushButton_supprimer_clicked()
 {
+    QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
 
-        QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
-
-        if (selection.isEmpty()) {
-            QMessageBox::critical(this, "Erreur", "Veuillez sélectionner un stade à supprimer.");
-            return;
-        }
-
-        int row = selection.first().row();
-        QString name = ui->tableView->model()->data(ui->tableView->model()->index(row, 0)).toString();
-
-        Stade stadeInstance;
-        if (!stadeInstance.idExisteParNom(name)) {
-            QMessageBox::critical(this, "Erreur", "Le nom du stade n'existe pas.");
-            return;
-        }
-
-        QMessageBox::StandardButton confirmation = QMessageBox::question(this, "Confirmation de suppression",
-                                                                         "Êtes-vous sûr de vouloir supprimer ce stade ?",
-                                                                         QMessageBox::Yes | QMessageBox::No);
-
-        if (confirmation == QMessageBox::Yes) {
-            bool test = stadeInstance.supprimer(name);
-
-            if (test) {
-                QMessageBox::information(this, "Succès", "Suppression effectuée avec succès.", QMessageBox::Ok);
-                ui->tableView->setModel(stadeInstance.afficher());
-            } else {
-                QMessageBox::critical(this, "Erreur", "Échec de la suppression du stade.");
-            }
-        }
-    }
-void MainWindow::on_pushButton_rechercherNom_clicked()
-{
-    QString nomRecherche = ui->lineEdit_rechercheNom->text();
-
-
-    if (nomRecherche.isEmpty()) {
-        QMessageBox::critical(this, "Erreur", "Veuillez saisir un nom pour la recherche.");
+    if (selection.isEmpty()) {
+        QMessageBox::critical(this, "Erreur", "Veuillez sélectionner un stade à supprimer.");
         return;
     }
 
+    int row = selection.first().row();
+    QString name = ui->tableView->model()->data(ui->tableView->model()->index(row, 0)).toString();
 
-    Stade stade;
-    QSqlQueryModel* model = stade.rechercherParNom(nomRecherche);
+    Stade stadeInstance;
+    if (!stadeInstance.idExisteParNom(name)) {
+        QMessageBox::critical(this, "Erreur", "Le nom du stade n'existe pas.");
+        return;
+    }
 
-    if (model->rowCount() > 0) {
-        ui->tableView->setModel(model);
-    } else {
-        QMessageBox::information(this, "Résultat", "Aucun stade trouvé avec ce nom.");
+    QMessageBox::StandardButton confirmation = QMessageBox::question(this, "Confirmation de suppression",
+                                                                     "Êtes-vous sûr de vouloir supprimer ce stade ?",
+                                                                     QMessageBox::Yes | QMessageBox::No);
+
+    if (confirmation == QMessageBox::Yes) {
+        bool test = stadeInstance.supprimer(name);
+
+        if (test) {
+            QMessageBox::information(this, "Succès", "Suppression effectuée avec succès.", QMessageBox::Ok);
+            ui->tableView->setModel(stadeInstance.afficher());
+            ui->tableViewStadeLarge->setModel(Stade().afficherCapaciteSuperieure(40000));
+        } else {
+            QMessageBox::critical(this, "Erreur", "Échec de la suppression du stade.");
+        }
     }
 }
-void MainWindow::on_pushButton_rechercherCapacite_clicked()
-{
-    int capaciteMin = ui->lineEdit_capaciteMin->text().toInt();
-    int capaciteMax = ui->lineEdit_capaciteMax->text().toInt();
 
+void MainWindow::on_rechercheNom_textChanged(const QString &text)
+{
+    Stade stade;
+    if (text.isEmpty()) {
+        ui->tableView->setModel(stade.afficher());
+    } else {
+        QSqlQueryModel* model = stade.rechercherParNom(text);
+        if (model->rowCount() > 0) {
+            ui->tableView->setModel(model);
+        } else {
+            ui->tableView->setModel(model);
+            QMessageBox::information(this, "Résultat", "Aucun stade trouvé avec ce nom.");
+        }
+    }
+}
+
+void MainWindow::on_capaciteMinMax_textChanged()
+{
+    QString minStr = ui->lineEdit_capaciteMin->text();
+    QString maxStr = ui->lineEdit_capaciteMax->text();
+
+    bool minOk, maxOk;
+    int capaciteMin = minStr.toInt(&minOk);
+    int capaciteMax = maxStr.toInt(&maxOk);
+
+    Stade stade;
+    if (!minOk || !maxOk || minStr.isEmpty() || maxStr.isEmpty()) {
+        ui->tableView->setModel(stade.afficher());
+        return;
+    }
 
     if (capaciteMin <= 0 || capaciteMax <= 0) {
+        ui->tableView->setModel(stade.afficher());
         QMessageBox::critical(this, "Erreur", "Veuillez saisir des valeurs positives pour la capacité.");
         return;
     }
     if (capaciteMin > capaciteMax) {
+        ui->tableView->setModel(stade.afficher());
         QMessageBox::critical(this, "Erreur", "La capacité minimale doit être inférieure ou égale à la capacité maximale.");
         return;
     }
 
-
-    Stade stade;
     QSqlQueryModel* model = stade.rechercherParCapacite(capaciteMin, capaciteMax);
-
     if (model->rowCount() > 0) {
         ui->tableView->setModel(model);
     } else {
+        ui->tableView->setModel(model);
         QMessageBox::information(this, "Résultat", "Aucun stade trouvé dans cette plage de capacité.");
     }
 }
@@ -419,7 +433,7 @@ void MainWindow::on_pushButton_genererExcel_clicked()
     sheet->querySubObject("Cells(int,int)", 1, 5)->setProperty("Value", "Date de Création");
 
     QSqlQuery query("SELECT nom, lieu, capacite, nbr_tickets_vd, date_creation FROM Stades");
-    int row = 2; // Start from the second row for data
+    int row = 2;
     while (query.next()) {
         sheet->querySubObject("Cells(int,int)", row, 1)->setProperty("Value", query.value("nom").toString());
         sheet->querySubObject("Cells(int,int)", row, 2)->setProperty("Value", query.value("lieu").toString());
