@@ -26,6 +26,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , statistique(new Statistique(this)) // Initialize here
+
 {
     ui->setupUi(this);
     ui->programme->setModel(Eq->loadequipeData());
@@ -38,12 +40,12 @@ MainWindow::MainWindow(QWidget *parent)
     searchTimer = new QTimer(this);
     searchTimer->setSingleShot(true);
     ui->lineEditRecherche->setPlaceholderText("Rechercher par ville ou entraîneur...");
- chartView = nullptr;
-    // Create an instance of Statistique
- if (!ui->widget_6->layout()) {
-     ui->widget_6->setLayout(new QVBoxLayout());
-     ui->widget_6->layout()->setContentsMargins(0, 0, 0, 0);
- } // Connections
+    chartView = nullptr;
+        // Create an instance of Statistique
+    if (!ui->widget_6->layout()) {
+        ui->widget_6->setLayout(new QVBoxLayout());
+        ui->widget_6->layout()->setContentsMargins(0, 0, 0, 0);
+    } // Connections
     connect(ui->lineEditRecherche, &QLineEdit::textChanged, [this]() {
         searchTimer->start(300); // Delay of 300ms
     });
@@ -96,8 +98,8 @@ void MainWindow::afficherStatistiques() {
         chartView = nullptr;
     }
 
-    // Create new chart view
-    chartView = statistique->creerGraphiqueJoueursEtButs();
+    // Create new chart view with team goals statistics
+    chartView = statistique->creerGraphiqueButsParEquipe();
 
     // Style the chart view
     chartView->setStyleSheet("background: transparent; border: none;");
@@ -109,7 +111,6 @@ void MainWindow::afficherStatistiques() {
     // Ensure the widget is visible
     ui->widget_6->show();
 }
-
 // Other methods remain unchanged...
 void MainWindow::refreshTable() {
     QSqlQueryModel *model = new QSqlQueryModel(this);
@@ -118,7 +119,7 @@ void MainWindow::refreshTable() {
 
     if (query.exec()) {
         // Remove std::move and pass the query directly
-model->setQuery(std::move(query));
+        model->setQuery(std::move(query));
         model->setHeaderData(0, Qt::Horizontal, QObject::tr("Id_equipe"));
         model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom_equipe"));
         model->setHeaderData(2, Qt::Horizontal, QObject::tr("Nom_ville"));

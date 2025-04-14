@@ -16,12 +16,11 @@ class Statistique : public QObject
 {
     Q_OBJECT
 public:
-    Statistique(QObject *parent = nullptr);
+    explicit Statistique(QObject *parent = nullptr);
     ~Statistique();
 
-    int obtenirNombreJoueurs();
-    int obtenirNombreButsMarques();
-    QChartView* creerGraphiqueJoueursEtButs();
+    QMap<QString, int> obtenirButsParEquipe();
+    QChartView* creerGraphiqueButsParEquipe();
 
 private:
          // Database connection or other members if needed

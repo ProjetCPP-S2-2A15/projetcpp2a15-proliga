@@ -50,10 +50,10 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Statistique *statistique; // Declare the Statistique pointer
- QChartView *chartView;
- QTimer *searchTimer;
+    QChartView *chartView;
+    QTimer *searchTimer;
     Equipe *Eq;
-     bool isModifying;
+    bool isModifying;
 
 };
 #endif // MAINWINDOW_H

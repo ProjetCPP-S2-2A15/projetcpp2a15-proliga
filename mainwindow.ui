@@ -690,9 +690,9 @@ height: 30px;</string>
           <widget class="QTableView" name="programme">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>0</x>
              <y>30</y>
-             <width>681</width>
+             <width>701</width>
              <height>171</height>
             </rect>
            </property>
@@ -959,7 +959,7 @@ color: rgb(0, 0, 0);</string>
         <widget class="QCheckBox" name="Nationnal">
          <property name="geometry">
           <rect>
-           <x>305</x>
+           <x>290</x>
            <y>125</y>
            <width>91</width>
            <height>24</height>
@@ -989,7 +989,7 @@ color: rgb(0, 0, 0);</string>
         <widget class="QCheckBox" name="Normal">
          <property name="geometry">
           <rect>
-           <x>215</x>
+           <x>210</x>
            <y>125</y>
            <width>91</width>
            <height>24</height>
@@ -1123,7 +1123,7 @@ font: 700 10pt &quot;Times New Roman&quot;;</string>
         <widget class="QLabel" name="label_3">
          <property name="geometry">
           <rect>
-           <x>180</x>
+           <x>170</x>
            <y>220</y>
            <width>131</width>
            <height>20</height>
@@ -1140,7 +1140,7 @@ color: rgb(0, 0, 0);</string>
         <widget class="QSpinBox" name="nbj">
          <property name="geometry">
           <rect>
-           <x>310</x>
+           <x>300</x>
            <y>215</y>
            <width>16</width>
            <height>26</height>
@@ -1151,9 +1151,9 @@ color: rgb(0, 0, 0);</string>
          <property name="geometry">
           <rect>
            <x>390</x>
-           <y>-1</y>
+           <y>0</y>
            <width>300</width>
-           <height>300</height>
+           <height>291</height>
           </rect>
          </property>
         </widget>
