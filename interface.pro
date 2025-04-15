@@ -5,6 +5,10 @@ QT += core gui printsupport
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT += charts
 QT += sql charts
+QT += network
+QT += core gui sql network
+QT += concurrent
+QT += multimedia  # Change to your Python version  # Change '3.x' to your Python version
 TARGET = interface
 TEMPLATE = app
 
@@ -12,8 +16,22 @@ TEMPLATE = app
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
 
+# Replace the Python check with:
+win32 {
+    # Check for Python in standard locations
+    PYTHON_PATH = $$system(where python)
+    isEmpty(PYTHON_PATH) {
+        message("Python not found in PATH")
+    } else {
+        message("Python found at: $$PYTHON_PATH")
+    }
+}
+# Change from error to warning
+!system(python --version) {
+    warning("Python 3 not found - speech recognition will be disabled")
+    DEFINES += DISABLE_SPEECH_RECOGNITION
+}
 CONFIG += c++11
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -23,6 +41,7 @@ CONFIG += c++11
 SOURCES += \
     changeWidget.cpp \
      connexion.cpp \
+    contratdialog.cpp \
     design.cpp \
     equipe.cpp \
     loginwindow.cpp \
@@ -32,6 +51,7 @@ SOURCES += \
 
 HEADERS += \
     changeWidget.h \
+    contratdialog.h \
     equipe.h \
       loginwindow.h \
      connexion.h\
@@ -49,3 +69,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     img.qrc
+
+DISTFILES += \
+    speech_to_text.py

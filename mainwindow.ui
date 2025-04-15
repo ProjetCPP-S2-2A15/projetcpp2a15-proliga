@@ -681,7 +681,7 @@ height: 30px;</string>
           </rect>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="affichage">
           <attribute name="title">
@@ -778,6 +778,39 @@ height: 30px;</string>
           <attribute name="title">
            <string>IA generer</string>
           </attribute>
+          <widget class="QComboBox" name="equipeComboBox">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>10</y>
+             <width>91</width>
+             <height>26</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="genererContratButton">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>10</y>
+             <width>131</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Generer contrat</string>
+           </property>
+          </widget>
+          <widget class="QTextEdit" name="contratTextEdit">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>60</y>
+             <width>171</width>
+             <height>151</height>
+            </rect>
+           </property>
+          </widget>
          </widget>
         </widget>
         <widget class="QLabel" name="label_22">
@@ -811,7 +844,7 @@ font: 700 10pt &quot;Times New Roman&quot;;</string>
           <string notr="true">background-color: rgb(218, 218, 218);</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_6">
+        <widget class="QPushButton" name="voc_pays">
          <property name="geometry">
           <rect>
            <x>340</x>
@@ -827,7 +860,7 @@ font: 700 10pt &quot;Times New Roman&quot;;</string>
           <string/>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_7">
+        <widget class="QPushButton" name="voc_nb">
          <property name="geometry">
           <rect>
            <x>140</x>
@@ -880,7 +913,7 @@ color: rgb(0, 0, 0);</string>
           <string>Type</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_8">
+        <widget class="QPushButton" name="voc_coach">
          <property name="geometry">
           <rect>
            <x>140</x>
@@ -940,7 +973,7 @@ color: rgb(0, 0, 0);</string>
 </string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_9">
+        <widget class="QPushButton" name="voc_nom">
          <property name="geometry">
           <rect>
            <x>140</x>
@@ -1173,10 +1206,10 @@ color: rgb(0, 0, 0);</string>
         <zorder>label_27</zorder>
         <zorder>dbcnt</zorder>
         <zorder>fincnt</zorder>
-        <zorder>pushButton_6</zorder>
-        <zorder>pushButton_7</zorder>
-        <zorder>pushButton_8</zorder>
-        <zorder>pushButton_9</zorder>
+        <zorder>voc_pays</zorder>
+        <zorder>voc_nb</zorder>
+        <zorder>voc_coach</zorder>
+        <zorder>voc_nom</zorder>
         <zorder>label</zorder>
         <zorder>label_2</zorder>
         <zorder>Ajouter</zorder>

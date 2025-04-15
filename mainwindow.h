@@ -1,13 +1,22 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
+#include "contratdialog.h"
+#include <QThread>
+#include <QFuture>
+#include <QtConcurrent>
+#include <QTextEdit>
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QPixmap>
 #include "connexion.h"
 #include"equipe.h"
 #include"statistique.h"
+#include <QFutureWatcher>
+#include <QAudioInput>    // Changed from QAudioSource
+#include <QAudioDevice>
+#include <QMediaDevices>
+#include <QFile>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -46,6 +55,14 @@ private slots:
     void rechercheEquipe() ;
     void afficherStatistiques() ;
 
+    void on_genererContratButton_clicked();
+    void on_voc_nom_clicked();
+    void on_voc_coach_clicked();
+    void on_voc_nb_clicked();
+    void on_voc_pays_clicked();
+    QString recordText();
+    QString processPythonRecognition()
+    ;
 
 private:
     Ui::MainWindow *ui;
@@ -54,6 +71,10 @@ private:
     QTimer *searchTimer;
     Equipe *Eq;
     bool isModifying;
+    QFutureWatcher<QString> *futureWatcher;
+QString lastClickedField;
+    QString m_lastAudioFile;
+
 
 };
 #endif // MAINWINDOW_H

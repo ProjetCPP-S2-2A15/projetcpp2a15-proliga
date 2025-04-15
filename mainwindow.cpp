@@ -22,12 +22,19 @@
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QChart>
 #include "statistique.h" // Include the Statistique header
+#include "contratdialog.h"
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QtConcurrent>
+#include <iostream> // For std::cout
+#include <exception> // For std::exception
+ // if the library uses this namespace
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , statistique(new Statistique(this)) // Initialize here
-
+    , futureWatcher(new QFutureWatcher<QString>(this)) // Initialize the future watcher
 {
     ui->setupUi(this);
     ui->programme->setModel(Eq->loadequipeData());
@@ -41,11 +48,14 @@ MainWindow::MainWindow(QWidget *parent)
     searchTimer->setSingleShot(true);
     ui->lineEditRecherche->setPlaceholderText("Rechercher par ville ou entraîneur...");
     chartView = nullptr;
-        // Create an instance of Statistique
+
+    // Create an instance of Statistique
     if (!ui->widget_6->layout()) {
         ui->widget_6->setLayout(new QVBoxLayout());
         ui->widget_6->layout()->setContentsMargins(0, 0, 0, 0);
-    } // Connections
+    }
+
+    // Connections
     connect(ui->lineEditRecherche, &QLineEdit::textChanged, [this]() {
         searchTimer->start(300); // Delay of 300ms
     });
@@ -68,12 +78,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->statistiquesButton, &QPushButton::clicked, this, &MainWindow::afficherStatistiques); // Connect statistics button
 
     // Connect QLineEdit fields to validation methods
-    connect(ui->nome, &QLineEdit::textChanged, this, &MainWindow::checkInput);
+    connect(ui->nome, &QLineEdit::textChanged, this, &MainWindow:: checkInput);
     connect(ui->Pays, &QLineEdit::textChanged, this, &MainWindow::checkInput);
     connect(ui->coach, &QLineEdit::textChanged, this, &MainWindow::checkInput);
     connect(ui->nbmarquee, &QLineEdit::textChanged, this, &MainWindow::checkInput);
     connect(ui->nbj, &QSpinBox::valueChanged, this, &MainWindow::checkInput);
     connect(ui->telechargement, &QPushButton::clicked, this, &MainWindow::exportTableToPDF);
+    connect(ui->voc_nom, &QPushButton::clicked, this, &MainWindow::on_voc_nom_clicked);
+    connect(ui->voc_coach, &QPushButton::clicked, this, &MainWindow::on_voc_coach_clicked);
+    connect(ui->voc_nb, &QPushButton::clicked, this, &MainWindow::on_voc_nb_clicked);
+    connect(ui->voc_pays, &QPushButton::clicked, this, &MainWindow::on_voc_pays_clicked);
 
     // Populate sorting combo boxes
     ui->sortFieldComboBox->addItems({"NOMEQUIPE", "TYPE"}); // Add fields to sort by
@@ -81,6 +95,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Connect sorting button
     connect(ui->triButton, &QPushButton::clicked, this, &MainWindow::trieEquipe);
+
+    // Connect future watcher
+    connect(futureWatcher, &QFutureWatcher<QString>::finished, this, [this]() {
+        QString text = futureWatcher->result();
+        if (!text.isEmpty()) {
+            // Update the appropriate UI field based on the last clicked button
+            if (lastClickedField == "nome") {
+                ui->nome->setText(text.toUpper());
+            } else if (lastClickedField == "coach") {
+                ui->coach->setText(text.toUpper());
+            } else if (lastClickedField == "nb") {
+                ui->nbmarquee->setText(text.toUpper());
+            } else if (lastClickedField == "pays") {
+                ui->Pays->setText(text.toUpper());
+            }
+        }
+    });
 }
 
 MainWindow::~MainWindow()
@@ -252,7 +283,6 @@ bool MainWindow::validateCoach() {
     bool valide = true;
     QRegularExpression regex("^[A-Z][a-zA-Z]*$");
     if (!regex.match(ui->coach->text()).hasMatch()) {
-        QMessageBox::warning(this, "Input Error", "Invalid coach name. It should start with a capital letter and contain only letters.");
         ui->coach->setFocus();
         valide = false;
     }
@@ -475,4 +505,113 @@ void MainWindow::trieEquipe() {
         QMessageBox::critical(this, "Erreur", "Erreur lors du tri : " + query.lastError().text());
     }
 }
-//statistiques
+//metier avancee
+void MainWindow::on_genererContratButton_clicked()
+{
+    // Assurez-vous que ces pointeurs correspondent à vos widgets dans mainwindow.ui
+    ContratDialog dialog(
+        ui->equipeComboBox,    // QComboBox*
+        ui->contratTextEdit,   // QTextEdit*
+        ui->genererContratButton,     // QPushButton*
+        QSqlDatabase::database(),
+        this
+        );
+
+    dialog.exec();
+}
+
+//metier avance speech totext
+void MainWindow::on_voc_nom_clicked() {
+    lastClickedField = "nome";
+    QString result = recordText(); // Appel direct au lieu de QtConcurrent
+    if (!result.isEmpty()) {
+        ui->nome->setText(result.toUpper());
+    }
+}
+
+// Faites de même pour les autres boutons vocaux...
+
+void MainWindow::on_voc_coach_clicked() {
+      lastClickedField = "coach";
+
+        QString result = recordText(); // Appel direct au lieu de QtConcurrent
+        if (!result.isEmpty()) {
+            ui->coach->setText(result.toUpper());
+        }
+    }
+
+    // Faites de même pour les autres boutons vocaux...
+
+void MainWindow::on_voc_nb_clicked() {
+      lastClickedField = "nb";
+
+        QString result = recordText(); // Appel direct au lieu de QtConcurrent
+        if (!result.isEmpty()) {
+            ui->nbmarquee->setText(result.toUpper());
+        }
+    }
+
+    // Faites de même pour les autres boutons vocaux...
+
+
+void MainWindow::on_voc_pays_clicked() {
+      lastClickedField = "pays";
+
+        QString result = recordText(); // Appel direct au lieu de QtConcurrent
+        if (!result.isEmpty()) {
+            ui->Pays->setText(result.toUpper());
+        }
+    }
+
+    // Faites de même pour les autres boutons vocaux...
+
+// ... (autres includes existants)
+QString MainWindow::recordText()
+{
+    // Générer un nom de fichier unique
+    m_lastAudioFile = QString("recording_%1.wav").arg(QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss"));
+
+    // Solution multi-plateforme pour l'enregistrement
+    QString program;
+    QStringList arguments;
+
+#ifdef Q_OS_WINDOWS
+    program = "powershell";
+    arguments << "-Command" << "Start-Process -FilePath python -ArgumentList '-c \"import sounddevice as sd; sd.rec(\""
+                                   + m_lastAudioFile + "\", 16000, samplerate=16000, channels=1, blocking=True)\" -Wait";
+#elif defined(Q_OS_LINUX)
+    program = "arecord";
+    arguments << "-f" << "S16_LE" << "-r" << "16000" << "-c" << "1" << "-d" << "5" << m_lastAudioFile;
+#elif defined(Q_OS_MAC)
+    program = "sox";
+    arguments << "-d" << m_lastAudioFile << "rate" << "16000" << "channels" << "1" << "trim" << "0" << "5";
+#endif
+
+    QMessageBox::information(this, "Enregistrement", "Parlez maintenant pendant 5 secondes...");
+
+    // Lancer l'enregistrement dans le thread principal
+    QProcess recorder;
+    recorder.start(program, arguments);
+    if (!recorder.waitForFinished(5500)) { // 5.5 secondes de timeout
+        QMessageBox::warning(this, "Erreur", "Échec de l'enregistrement audio");
+        return "";
+    }
+
+    // Traitement dans le même thread pour éviter les problèmes de parenté
+    return processPythonRecognition();
+}
+
+QString MainWindow::processPythonRecognition()
+{
+    QProcess pythonProcess;
+    pythonProcess.start("python", {"speech_to_text.py", m_lastAudioFile});
+
+    if (!pythonProcess.waitForFinished(5000)) {
+        return "";
+    }
+
+    QString result = pythonProcess.readAllStandardOutput().trimmed();
+    QFile::remove(m_lastAudioFile); // Nettoyer le fichier temporaire
+
+    return result;
+}
