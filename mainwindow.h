@@ -33,6 +33,7 @@ private slots:
     void on_pushButton_show_clicked();
     void on_pushButton_exporter_clicked();
     void on_pushButton_tri_clicked();
+    void on_pushButton_stats_clicked();
 
 public:
     Ui::MainWindow *ui;
@@ -40,7 +41,7 @@ public:
     bool validerDonnees(QString& erreur);
 
 public:
-    void remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email);
+    void remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email, QString telephone);
     void setCurrentArbitreId(int id);
     int currentArbitreId;
 };

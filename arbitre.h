@@ -1,43 +1,75 @@
 #ifndef ARBITRE_H
 #define ARBITRE_H
 
+#include <QObject>
 #include <QString>
 #include <QSqlQuery>
-#include <QSqlQueryModel>
-#include <QSqlDatabase>
-#include <QTableWidget> // Include QTableWidget
+#include <QTableWidget>
+#include <QNetworkAccessManager>
 
-// Forward declare MainWindow to avoid circular dependency
 class MainWindow;
 
-class Arbitre {
+class Arbitre : public QObject
+{
+    Q_OBJECT
+
 public:
-    // Default Constructor
-    Arbitre();
-    Arbitre(MainWindow *mainWindow);  // Constructor that accepts MainWindow pointer
+    // Constructors
+    explicit Arbitre(MainWindow *mainWindow = nullptr, QObject *parent = nullptr);
+    explicit Arbitre(QString nom, QString prenom, int age, int experience,
+                     QString sexe, QString email, QString telephone,
+                     QObject *parent = nullptr);
+    explicit Arbitre(int id, QString nom, QString prenom, int age, int experience,
+                     QString sexe, QString email, QString telephone,
+                     QObject *parent = nullptr);
 
-    // Constructor for adding a referee (ID is auto-incremented, so it's not included)
-    Arbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email);
-
-    // Constructor with ID (for modifying or deleting an existing referee)
-    Arbitre(int id, QString nom, QString prenom, int age, int experience, QString sexe, QString email);
-
-    // CRUD Operations
+    // Core functionality
     bool ajouter();
     bool supprimer(int id);
-    bool modifier(int id, QString nom, QString prenom, int age, int experience, QString sexe, QString email);
+    bool modifier(int id, QString nom, QString prenom, int age, int experience,
+                  QString sexe, QString email, QString telephone);
+
+    // UI operations
     void afficher(QTableWidget *tableWidget);
-    bool validerDonnees(QString& erreur);
-    void on_pushButton_update_clicked();
     void exporterEnPDF(QTableWidget *tableWidget);
 
-private:
-    MainWindow *mainWindow;  // Pointer to the MainWindow
-    int currentArbitreId;    // Store the current referee's ID
+    // Validation and utilities
+    bool validerDonnees(QString& erreur);
+    QString getExperienceStats();
+    static void drawSectionHeader(QPainter* painter, int x, int y,
+                                  int width, const QString& text);
 
-    int id_arbitre;          // Auto-incremented by Oracle DB
-    QString nom, prenom, sexe, email;
-    int age, experience;
+    // Email functionality
+    void envoyerConfirmationsArbitres();
+    void setSmtpCredentials(const QString &server, int port,
+                            const QString &user, const QString &password);
+
+private:
+    // Member variables
+    MainWindow *mainWindow;
+    int currentArbitreId;
+    int id_arbitre;
+    QString nom;
+    QString prenom;
+    QString sexe;
+    QString email;
+    QString telephone;
+    int age;
+    int experience;
+
+    // Email related
+    QNetworkAccessManager *networkManager;
+    QString smtpServer;
+    int smtpPort;
+    QString smtpUser;
+    QString smtpPassword;
+
+    // Private methods
+    void sendEmail(const QString &email, const QString &subject, const QString &body);
+    void generateCV(QPainter& painter, const QString& id, const QString& nom,
+                    const QString& prenom, const QString& age,
+                    const QString& experience, const QString& sexe,
+                    const QString& email, const QString& telephone);
 };
 
 #endif // ARBITRE_H

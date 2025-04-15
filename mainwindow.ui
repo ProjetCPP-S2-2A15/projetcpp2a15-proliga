@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>917</width>
-    <height>561</height>
+    <width>1217</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -588,10 +588,10 @@ height: 30px;</string>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>50</y>
-         <width>681</width>
-         <height>461</height>
+         <x>30</x>
+         <y>60</y>
+         <width>821</width>
+         <height>511</height>
         </rect>
        </property>
        <property name="currentIndex">
@@ -693,19 +693,19 @@ height: 30px;</string>
           <widget class="QGroupBox" name="groupBox">
            <property name="styleSheet">
             <string notr="true">QGroupBox {
-           border: 2px solid #4CAF50;
-           border-radius: 8px;
-           margin-top: 10px;
-           padding-top: 15px;
-           font: bold 12pt 'Segoe UI';
-           color: #2C3E50;
-       }
+                  border: 2px solid #4CAF50;
+                  border-radius: 8px;
+                  margin-top: 10px;
+                  padding-top: 15px;
+                  font: bold 12pt 'Segoe UI';
+                  color: #2C3E50;
+              }
 
-       QGroupBox::title {
-           subcontrol-origin: margin;
-           left: 10px;
-           padding: 0 5px;
-       }</string>
+              QGroupBox::title {
+                  subcontrol-origin: margin;
+                  left: 10px;
+                  padding: 0 5px;
+              }</string>
            </property>
            <property name="title">
             <string>Arbitre Information</string>
@@ -731,17 +731,17 @@ height: 30px;</string>
              <widget class="QLineEdit" name="lineEdit_nom">
               <property name="styleSheet">
                <string notr="true">QLineEdit {
-           background-color: #FFFFFF;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           padding: 6px 12px;
-           font: 10pt 'Segoe UI';
-           selection-background-color: #4CAF50;
-       }
+                  background-color: #FFFFFF;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+                  selection-background-color: #4CAF50;
+              }
 
-       QLineEdit:focus {
-           border: 1px solid #4CAF50;
-       }</string>
+              QLineEdit:focus {
+                  border: 1px solid #4CAF50;
+              }</string>
               </property>
              </widget>
             </item>
@@ -759,16 +759,16 @@ height: 30px;</string>
              <widget class="QSpinBox" name="lineEdit_experience">
               <property name="styleSheet">
                <string notr="true">QSpinBox {
-           background-color: #FFFFFF;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           padding: 6px 12px;
-           font: 10pt 'Segoe UI';
-       }
+                  background-color: #FFFFFF;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+              }
 
-       QSpinBox:focus {
-           border: 1px solid #4CAF50;
-       }</string>
+              QSpinBox:focus {
+                  border: 1px solid #4CAF50;
+              }</string>
               </property>
              </widget>
             </item>
@@ -786,17 +786,17 @@ height: 30px;</string>
              <widget class="QLineEdit" name="lineEdit_prenom">
               <property name="styleSheet">
                <string notr="true">QLineEdit {
-           background-color: #FFFFFF;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           padding: 6px 12px;
-           font: 10pt 'Segoe UI';
-           selection-background-color: #4CAF50;
-       }
+                  background-color: #FFFFFF;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+                  selection-background-color: #4CAF50;
+              }
 
-       QLineEdit:focus {
-           border: 1px solid #4CAF50;
-       }</string>
+              QLineEdit:focus {
+                  border: 1px solid #4CAF50;
+              }</string>
               </property>
              </widget>
             </item>
@@ -814,17 +814,17 @@ height: 30px;</string>
              <widget class="QLineEdit" name="lineEdit_email">
               <property name="styleSheet">
                <string notr="true">QLineEdit {
-           background-color: #FFFFFF;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           padding: 6px 12px;
-           font: 10pt 'Segoe UI';
-           selection-background-color: #4CAF50;
-       }
+                  background-color: #FFFFFF;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+                  selection-background-color: #4CAF50;
+              }
 
-       QLineEdit:focus {
-           border: 1px solid #4CAF50;
-       }</string>
+              QLineEdit:focus {
+                  border: 1px solid #4CAF50;
+              }</string>
               </property>
              </widget>
             </item>
@@ -842,16 +842,16 @@ height: 30px;</string>
              <widget class="QSpinBox" name="lineEdit_age">
               <property name="styleSheet">
                <string notr="true">QSpinBox {
-           background-color: #FFFFFF;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           padding: 6px 12px;
-           font: 10pt 'Segoe UI';
-       }
+                  background-color: #FFFFFF;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+              }
 
-       QSpinBox:focus {
-           border: 1px solid #4CAF50;
-       }</string>
+              QSpinBox:focus {
+                  border: 1px solid #4CAF50;
+              }</string>
               </property>
              </widget>
             </item>
@@ -869,23 +869,23 @@ height: 30px;</string>
              <widget class="QComboBox" name="comboBox_sexe">
               <property name="styleSheet">
                <string notr="true">QComboBox {
-           background-color: #FFFFFF;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           padding: 6px 12px;
-           font: 10pt 'Segoe UI';
-           min-width: 100px;
-       }
+                  background-color: #FFFFFF;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+                  min-width: 100px;
+              }
 
-       QComboBox:focus {
-           border: 1px solid #4CAF50;
-       }
+              QComboBox:focus {
+                  border: 1px solid #4CAF50;
+              }
 
-       QComboBox QAbstractItemView {
-           border: 1px solid #BDC3C7;
-           selection-background-color: #4CAF50;
-           selection-color: white;
-       }</string>
+              QComboBox QAbstractItemView {
+                  border: 1px solid #BDC3C7;
+                  selection-background-color: #4CAF50;
+                  selection-color: white;
+              }</string>
               </property>
               <item>
                <property name="text">
@@ -913,16 +913,44 @@ height: 30px;</string>
              <widget class="QLineEdit" name="lineEdit_id">
               <property name="styleSheet">
                <string notr="true">QLineEdit {
-           background-color: #F5F5F5;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           padding: 6px 12px;
-           font: 10pt 'Segoe UI';
-           color: #7F8C8D;
-       }</string>
+                  background-color: #F5F5F5;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+                  color: #7F8C8D;
+              }</string>
               </property>
               <property name="readOnly">
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
+             <widget class="QLabel" name="label_13">
+              <property name="styleSheet">
+               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+              </property>
+              <property name="text">
+               <string>Téléphone:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="3">
+             <widget class="QLineEdit" name="lineEdit_telephone">
+              <property name="styleSheet">
+               <string notr="true">QLineEdit {
+                  background-color: #FFFFFF;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  padding: 6px 12px;
+                  font: 10pt 'Segoe UI';
+                  selection-background-color: #4CAF50;
+              }
+
+              QLineEdit:focus {
+                  border: 1px solid #4CAF50;
+              }</string>
               </property>
              </widget>
             </item>
@@ -932,25 +960,51 @@ height: 30px;</string>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
+            <widget class="QPushButton" name="pushButton_stats">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+                  background-color: #9B59B6;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  padding: 8px 16px;
+                  font: bold 10pt 'Segoe UI';
+                  min-width: 100px;
+              }
+
+              QPushButton:hover {
+                  background-color: #8E44AD;
+              }
+
+              QPushButton:pressed {
+                  background-color: #7D3C98;
+              }</string>
+             </property>
+             <property name="text">
+              <string>Stats</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="pushButton_add">
              <property name="styleSheet">
               <string notr="true">QPushButton {
-           background-color: #4CAF50;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           padding: 8px 16px;
-           font: bold 10pt 'Segoe UI';
-           min-width: 100px;
-       }
+                  background-color: #4CAF50;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  padding: 8px 16px;
+                  font: bold 10pt 'Segoe UI';
+                  min-width: 100px;
+              }
 
-       QPushButton:hover {
-           background-color: #45A049;
-       }
+              QPushButton:hover {
+                  background-color: #45A049;
+              }
 
-       QPushButton:pressed {
-           background-color: #3D8B40;
-       }</string>
+              QPushButton:pressed {
+                  background-color: #3D8B40;
+              }</string>
              </property>
              <property name="text">
               <string>Ajouter</string>
@@ -961,22 +1015,22 @@ height: 30px;</string>
             <widget class="QPushButton" name="pushButton_update">
              <property name="styleSheet">
               <string notr="true">QPushButton {
-           background-color: #3498DB;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           padding: 8px 16px;
-           font: bold 10pt 'Segoe UI';
-           min-width: 100px;
-       }
+                  background-color: #3498DB;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  padding: 8px 16px;
+                  font: bold 10pt 'Segoe UI';
+                  min-width: 100px;
+              }
 
-       QPushButton:hover {
-           background-color: #2980B9;
-       }
+              QPushButton:hover {
+                  background-color: #2980B9;
+              }
 
-       QPushButton:pressed {
-           background-color: #2472A4;
-       }</string>
+              QPushButton:pressed {
+                  background-color: #2472A4;
+              }</string>
              </property>
              <property name="text">
               <string>Modifier</string>
@@ -987,22 +1041,22 @@ height: 30px;</string>
             <widget class="QPushButton" name="pushButton_exporter">
              <property name="styleSheet">
               <string notr="true">QPushButton {
-           background-color: #E74C3C;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           padding: 8px 16px;
-           font: bold 10pt 'Segoe UI';
-           min-width: 100px;
-       }
+                  background-color: #E74C3C;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  padding: 8px 16px;
+                  font: bold 10pt 'Segoe UI';
+                  min-width: 100px;
+              }
 
-       QPushButton:hover {
-           background-color: #C0392B;
-       }
+              QPushButton:hover {
+                  background-color: #C0392B;
+              }
 
-       QPushButton:pressed {
-           background-color: #A93226;
-       }</string>
+              QPushButton:pressed {
+                  background-color: #A93226;
+              }</string>
              </property>
              <property name="text">
               <string>Exporter</string>
@@ -1013,25 +1067,51 @@ height: 30px;</string>
             <widget class="QPushButton" name="pushButton_tri">
              <property name="styleSheet">
               <string notr="true">QPushButton {
-           background-color: #606060;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           padding: 8px 16px;
-           font: bold 10pt 'Segoe UI';
-           min-width: 100px;
-       }
+                  background-color: #606060;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  padding: 8px 16px;
+                  font: bold 10pt 'Segoe UI';
+                  min-width: 100px;
+              }
 
-       QPushButton:hover {
-           background-color: #C0392B;
-       }
+              QPushButton:hover {
+                  background-color: #505050;
+              }
 
-       QPushButton:pressed {
-           background-color: #A93226;
-       }</string>
+              QPushButton:pressed {
+                  background-color: #404040;
+              }</string>
              </property>
              <property name="text">
               <string>Tri</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_submit">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+                  background-color: #9B59B6;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  padding: 8px 16px;
+                  font: bold 10pt 'Segoe UI';
+                  min-width: 100px;
+              }
+
+              QPushButton:hover {
+                  background-color: #8E44AD;
+              }
+
+              QPushButton:pressed {
+                  background-color: #7D3C98;
+              }</string>
+             </property>
+             <property name="text">
+              <string>submit</string>
              </property>
             </widget>
            </item>
@@ -1052,36 +1132,42 @@ height: 30px;</string>
          </item>
          <item>
           <widget class="QTableWidget" name="tableWidget_arbitres">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>200</height>
+            </size>
+           </property>
            <property name="styleSheet">
             <string notr="true">QTableWidget {
-           background-color: white;
-           border: 1px solid #BDC3C7;
-           border-radius: 4px;
-           font: 9pt 'Segoe UI';
-           gridline-color: #ECF0F1;
-       }
+                  background-color: white;
+                  border: 1px solid #BDC3C7;
+                  border-radius: 4px;
+                  font: 9pt 'Segoe UI';
+                  gridline-color: #ECF0F1;
+              }
 
-       QTableWidget::item {
-           padding: 6px;
-       }
+              QTableWidget::item {
+                  padding: 6px;
+              }
 
-       QTableWidget::item:selected {
-           background-color: #4CAF50;
-           color: white;
-       }
+              QTableWidget::item:selected {
+                  background-color: #4CAF50;
+                  color: white;
+              }
 
-       QHeaderView::section {
-           background-color: #4CAF50;
-           color: white;
-           padding: 6px;
-           border: none;
-           font: bold 9pt 'Segoe UI';
-       }
+              QHeaderView::section {
+                  background-color: #4CAF50;
+                  color: white;
+                  padding: 6px;
+                  border: none;
+                  font: bold 9pt 'Segoe UI';
+              }
 
-       QTableCornerButton::section {
-           background-color: #4CAF50;
-           border: none;
-       }</string>
+              QTableCornerButton::section {
+                  background-color: #4CAF50;
+                  border: none;
+              }</string>
            </property>
            <column>
             <property name="text">
@@ -1120,35 +1206,27 @@ height: 30px;</string>
            </column>
            <column>
             <property name="text">
-             <string>Actions</string>
+             <string>CV</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Modifier</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Supprimer</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Téléphone</string>
             </property>
            </column>
           </widget>
          </item>
         </layout>
-       </widget>
-       <widget class="QWidget" name="joueurPage2">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-       </widget>
-       <widget class="QWidget" name="stadePage">
-        <widget class="QLabel" name="label_10">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>0</y>
-           <width>671</width>
-           <height>471</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: black;</string>
-         </property>
-         <property name="text">
-          <string>                                                                  Stades Page</string>
-         </property>
-        </widget>
        </widget>
        <widget class="QWidget" name="joueurPage">
         <property name="styleSheet">

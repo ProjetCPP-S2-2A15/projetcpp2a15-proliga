@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    A.setSmtpCredentials("smtp.gmail.com", 465,
+                         "heditrabelsi412@gmail.com",
+                         "kton jsoh jtmh blrf");
+
     // Apply design styles
     applyDesign(ui);
 
@@ -37,6 +41,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->stade2, &QPushButton::toggled, [this](bool checked) { on_stade2_toggled(ui, checked); });
     connect(ui->pushButton_tri, &QPushButton::clicked,
             this, &MainWindow::on_pushButton_tri_clicked);
+    connect(ui->pushButton_stats, &QPushButton::clicked,
+            this, &MainWindow::on_pushButton_stats_clicked);
+    connect(ui->pushButton_submit, &QPushButton::clicked,
+            this, [this]() { A.envoyerConfirmationsArbitres(); });
 
 }
 
@@ -45,44 +53,41 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email) {
+void MainWindow::remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email, QString telephone) {
     ui->lineEdit_nom->setText(nom);
     ui->lineEdit_prenom->setText(prenom);
     ui->lineEdit_age->setValue(age);
     ui->lineEdit_experience->setValue(experience);
     ui->comboBox_sexe->setCurrentText(sexe);
     ui->lineEdit_email->setText(email);
+    ui->lineEdit_telephone->setText(telephone);
 }
 
 void MainWindow::setCurrentArbitreId(int id) {
     currentArbitreId = id;
 }
 
-// ✅ Add button functionality (ID is auto-incremented, so do not set it)
 void MainWindow::on_pushButton_add_clicked()
 {
     QString nom = ui->lineEdit_nom->text();
     QString prenom = ui->lineEdit_prenom->text();
-    int age = ui->lineEdit_age->value();  // QSpinBox, use value() instead of text().toInt()
+    int age = ui->lineEdit_age->value();
     int experience = ui->lineEdit_experience->value();
     QString sexe = ui->comboBox_sexe->currentText();
     QString email = ui->lineEdit_email->text();
+    QString telephone = ui->lineEdit_telephone->text();
 
-    // Use constructor without ID (auto-incremented in Oracle)
-    Arbitre arbitre(nom, prenom, age, experience, sexe, email);
+    // Use constructor with telephone
+    Arbitre arbitre(nom, prenom, age, experience, sexe, email, telephone, nullptr);
 
     if (arbitre.ajouter()) {
         QMessageBox::information(this, "Success", "Arbitre added successfully!");
         A.afficher(ui->tableWidget_arbitres); // Refresh table
     } else {
-        qDebug() << "❌ SQL Insert Error: Check your database constraints!";
         QMessageBox::critical(this, "Error", "Failed to add Arbitre.");
     }
 }
 
-
-
-// ✅ Delete button functionality
 void MainWindow::on_pushButton_delete_clicked()
 {
     int id = ui->lineEdit_id->text().toInt();
@@ -94,15 +99,13 @@ void MainWindow::on_pushButton_delete_clicked()
 
     if (A.supprimer(id)) {
         QMessageBox::information(this, "Success", "Arbitre deleted successfully!");
-        A.afficher(ui->tableWidget_arbitres); // Refresh table
+        A.afficher(ui->tableWidget_arbitres);
     } else {
         QMessageBox::critical(this, "Error", "Failed to delete Arbitre. ID not found.");
     }
 }
 
-// ✅ Update button functionality
 void MainWindow::on_pushButton_update_clicked() {
-    // Get the ID from the form
     int id = ui->lineEdit_id->text().toInt();
 
     if (id == 0) {
@@ -110,63 +113,59 @@ void MainWindow::on_pushButton_update_clicked() {
         return;
     }
 
-    // Get the updated values
     QString nom = ui->lineEdit_nom->text();
     QString prenom = ui->lineEdit_prenom->text();
     int age = ui->lineEdit_age->value();
     int experience = ui->lineEdit_experience->value();
     QString sexe = ui->comboBox_sexe->currentText();
     QString email = ui->lineEdit_email->text();
+    QString telephone = ui->lineEdit_telephone->text();
 
-    // Call the modifier function
-    if (A.modifier(id, nom, prenom, age, experience, sexe, email)) {
+    // Call modifier with telephone
+    if (A.modifier(id, nom, prenom, age, experience, sexe, email, telephone)) {
         QMessageBox::information(this, "Succès", "Arbitre modifié avec succès !");
-        A.afficher(ui->tableWidget_arbitres);  // Refresh table
+        A.afficher(ui->tableWidget_arbitres);
     } else {
         QMessageBox::critical(this, "Erreur", "Échec de la modification.");
     }
 }
 
-
-// ✅ Show button functionality
 void MainWindow::on_pushButton_show_clicked()
 {
     A.afficher(ui->tableWidget_arbitres);
-
 }
-
 
 void MainWindow::on_pushButton_exporter_clicked()
 {
-    // 1. Get reference to the table widget
-    QTableWidget *table = ui->tableWidget_arbitres; // Use your actual table widget name
+    QTableWidget *table = ui->tableWidget_arbitres;
 
-    // 2. Verify table has data
     if (table->rowCount() == 0) {
         QMessageBox::warning(this, "Avertissement", "Aucune donnée à exporter!");
         return;
     }
 
-    // 3. Call the export function directly on the A instance
-    A.exporterEnPDF(table); // Note the dot (.) operator for direct member access
-
-    // Optional: Show confirmation message
+    A.exporterEnPDF(table);
     QMessageBox::information(this, "Succès", "Export PDF lancé avec succès");
 }
 
 void MainWindow::on_pushButton_tri_clicked()
 {
-    // Get reference to your table
     QTableWidget *table = ui->tableWidget_arbitres;
-
-    // Sort by name (column 1) in ascending order
-    table->sortItems(1, Qt::AscendingOrder);  // 1 = name column index
-
-    // Optional: Visual feedback
+    table->sortItems(1, Qt::AscendingOrder);
     ui->pushButton_tri->setText("Trié (A-Z)");
     QTimer::singleShot(1500, [this]() {
         ui->pushButton_tri->setText("Tri");
     });
 }
 
+void MainWindow::on_pushButton_stats_clicked() {
+    QString statsHtml = A.getExperienceStats();
 
+    QMessageBox statsBox(this);
+    statsBox.setWindowTitle("Referee Statistics");
+    statsBox.setTextFormat(Qt::RichText);
+    statsBox.setText(statsHtml);
+    statsBox.setIconPixmap(QPixmap(":/images/stats_icon.png").scaled(64, 64)); // Optional icon
+    statsBox.setStyleSheet("QLabel{min-width: 300px; min-height: 200px;}");
+    statsBox.exec();
+}
