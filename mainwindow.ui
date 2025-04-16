@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>917</width>
-    <height>561</height>
+    <width>1337</width>
+    <height>564</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -588,14 +588,14 @@ height: 30px;</string>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>80</y>
-         <width>681</width>
-         <height>451</height>
+         <x>0</x>
+         <y>70</y>
+         <width>1141</width>
+         <height>481</height>
         </rect>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="homePage">
         <widget class="QLabel" name="label_4">
@@ -623,9 +623,9 @@ height: 30px;</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>10</y>
+           <y>0</y>
            <width>661</width>
-           <height>431</height>
+           <height>441</height>
           </rect>
          </property>
          <property name="styleSheet">
@@ -641,14 +641,14 @@ height: 30px;</string>
          </property>
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>691</width>
-           <height>441</height>
+           <x>20</x>
+           <y>0</y>
+           <width>1101</width>
+           <height>471</height>
           </rect>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>3</number>
          </property>
          <property name="tabBarAutoHide">
           <bool>false</bool>
@@ -662,7 +662,7 @@ height: 30px;</string>
             <rect>
              <x>10</x>
              <y>10</y>
-             <width>631</width>
+             <width>681</width>
              <height>401</height>
             </rect>
            </property>
@@ -1006,7 +1006,7 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>50</y>
-             <width>651</width>
+             <width>801</width>
              <height>361</height>
             </rect>
            </property>
@@ -1227,8 +1227,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>661</width>
-             <height>401</height>
+             <width>611</width>
+             <height>411</height>
             </rect>
            </property>
            <property name="currentIndex">
@@ -1301,7 +1301,7 @@ QPushButton:pressed {
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>60</y>
+               <y>80</y>
                <width>201</width>
                <height>31</height>
               </rect>
@@ -1331,6 +1331,161 @@ QPushButton:pressed {
               <string>Generer statistiques</string>
              </property>
             </widget>
+            <widget class="QComboBox" name="listChamp_2">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>220</y>
+               <width>131</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 2px solid black; /* Black border */
+    border-radius: 10px; /* Adjust the radius for desired roundness */
+    background-color: black; /* Black background */
+    color: white; /* White text color */
+    padding: 5px; /* Add some padding */
+	font-size: 12px;</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_12">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>140</y>
+               <width>151</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Plannification des matches:</string>
+             </property>
+            </widget>
+            <widget class="QSpinBox" name="inter_m">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>290</y>
+               <width>61</width>
+               <height>22</height>
+              </rect>
+             </property>
+            </widget>
+            <widget class="QLineEdit" name="year_l">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>350</y>
+               <width>91</width>
+               <height>35</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border: 2px solid #3498db;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    color: #2c3e50;
+    background-color: #ecf0f1;</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_14">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>190</y>
+               <width>151</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Championnats en question:</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_18">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>260</y>
+               <width>151</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Intervale entre les matches</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_20">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>320</y>
+               <width>151</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Année du plan</string>
+             </property>
+            </widget>
+            <widget class="QSpinBox" name="nbr_m">
+             <property name="geometry">
+              <rect>
+               <x>260</x>
+               <y>220</y>
+               <width>61</width>
+               <height>22</height>
+              </rect>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_23">
+             <property name="geometry">
+              <rect>
+               <x>260</x>
+               <y>190</y>
+               <width>151</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Nombre de matches</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="planBUT">
+             <property name="geometry">
+              <rect>
+               <x>250</x>
+               <y>350</y>
+               <width>201</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+             </property>
+             <property name="text">
+              <string>Génerer Plan</string>
+             </property>
+            </widget>
            </widget>
            <widget class="QWidget" name="page_2"/>
           </widget>
@@ -1344,8 +1499,8 @@ QPushButton:pressed {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>661</width>
-             <height>411</height>
+             <width>1091</width>
+             <height>441</height>
             </rect>
            </property>
            <widget class="QLineEdit" name="majNom">
@@ -1720,23 +1875,677 @@ QPushButton:pressed {
            </widget>
           </widget>
          </widget>
+         <widget class="QWidget" name="SR">
+          <attribute name="title">
+           <string>Season review</string>
+          </attribute>
+          <widget class="QComboBox" name="Sdate">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>131</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 2px solid black; /* Black border */
+    border-radius: 10px; /* Adjust the radius for desired roundness */
+    background-color: black; /* Black background */
+    color: white; /* White text color */
+    padding: 5px; /* Add some padding */
+	font-size: 12px;</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>25/24</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>24/23</string>
+            </property>
+           </item>
+          </widget>
+          <widget class="QLabel" name="label">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>20</y>
+             <width>61</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>La Saison :</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="MsL">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>130</y>
+             <width>131</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 2px solid black; /* Black border */
+    border-radius: 10px; /* Adjust the radius for desired roundness */
+    background-color: black; /* Black background */
+    color: white; /* White text color */
+    padding: 5px; /* Add some padding */
+	font-size: 12px;</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Un seul championnat</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Tous les champoinnats </string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </widget>
+          <widget class="QLabel" name="label_2">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>100</y>
+             <width>61</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Méthode:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_3">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>180</y>
+             <width>101</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Sujet du Review</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="listChamp">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>220</y>
+             <width>131</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 2px solid black; /* Black border */
+    border-radius: 10px; /* Adjust the radius for desired roundness */
+    background-color: black; /* Black background */
+    color: white; /* White text color */
+    padding: 5px; /* Add some padding */
+	font-size: 12px;</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="majbutton_2">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>340</y>
+             <width>121</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+           </property>
+           <property name="text">
+            <string>Ouvrir</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_9">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>290</y>
+             <width>61</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Assistant IA</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="LSRbut">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>400</y>
+             <width>121</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+           </property>
+           <property name="text">
+            <string>Lancer</string>
+           </property>
+          </widget>
+          <widget class="QWidget" name="DLR" native="true">
+           <property name="geometry">
+            <rect>
+             <x>170</x>
+             <y>30</y>
+             <width>581</width>
+             <height>391</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QWidget" name="widget_5" native="true">
+           <property name="geometry">
+            <rect>
+             <x>760</x>
+             <y>30</y>
+             <width>321</width>
+             <height>391</height>
+            </rect>
+           </property>
+           <widget class="QLabel" name="label_11">
+            <property name="geometry">
+             <rect>
+              <x>80</x>
+              <y>10</y>
+              <width>61</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Champion</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="win_lab">
+            <property name="geometry">
+             <rect>
+              <x>80</x>
+              <y>50</y>
+              <width>211</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_13">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>10</y>
+              <width>31</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/winner.svg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="BA_lab">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>140</y>
+              <width>211</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_15">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>90</y>
+              <width>41</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/football-strike.svg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_16">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>100</y>
+              <width>141</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>L'attack la plus puissante</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_17">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>190</y>
+              <width>141</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Meilleure Défence</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="MD_lab">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>230</y>
+              <width>211</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_19">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>180</y>
+              <width>41</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/bestdef.svg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="CS_lab">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>330</y>
+              <width>211</width>
+              <height>16</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_21">
+            <property name="geometry">
+             <rect>
+              <x>20</x>
+              <y>270</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/cleansh.svg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_22">
+            <property name="geometry">
+             <rect>
+              <x>90</x>
+              <y>290</y>
+              <width>111</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Plus de Clean sheet</string>
+            </property>
+           </widget>
+          </widget>
+         </widget>
         </widget>
        </widget>
        <widget class="QWidget" name="matchPage">
-        <widget class="QLabel" name="label_6">
+        <widget class="QCalendarWidget" name="CW">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>661</width>
-           <height>441</height>
+           <x>710</x>
+           <y>30</y>
+           <width>351</width>
+           <height>261</height>
           </rect>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: black;</string>
+          <string notr="true"/>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="Scor">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>90</y>
+           <width>211</width>
+           <height>35</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 2px solid #3498db;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    color: #2c3e50;
+    background-color: #ecf0f1;</string>
+         </property>
+        </widget>
+        <widget class="QDateEdit" name="dateEdit">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>150</y>
+           <width>131</width>
+           <height>21</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="listChamp_3">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>210</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 2px solid black; /* Black border */
+    border-radius: 10px; /* Adjust the radius for desired roundness */
+    background-color: black; /* Black background */
+    color: white; /* White text color */
+    padding: 5px; /* Add some padding */
+	font-size: 12px;</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="TYP">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>280</y>
+           <width>211</width>
+           <height>35</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 2px solid #3498db;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    color: #2c3e50;
+    background-color: #ecf0f1;</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="ID_m">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>340</y>
+           <width>211</width>
+           <height>35</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 2px solid #3498db;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    color: #2c3e50;
+    background-color: #ecf0f1;</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>50</y>
+           <width>49</width>
+           <height>16</height>
+          </rect>
          </property>
          <property name="text">
-          <string>                                                                      Matches Page</string>
+          <string>Score</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_24">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>190</y>
+           <width>151</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Championnats en question</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_25">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>130</y>
+           <width>81</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>date du match</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_26">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>260</y>
+           <width>49</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_27">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>320</y>
+           <width>49</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>ID_m</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="CBT">
+         <property name="geometry">
+          <rect>
+           <x>710</x>
+           <y>340</y>
+           <width>121</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+         </property>
+         <property name="text">
+          <string>Consulter CW</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="HideCW">
+         <property name="geometry">
+          <rect>
+           <x>850</x>
+           <y>340</y>
+           <width>41</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: white;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="img.qrc">
+           <normaloff>:/interface_icons/bin.png</normaloff>:/interface_icons/bin.png</iconset>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="addMatchButton">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>410</y>
+           <width>121</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px; /* Increased border-radius for more rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #333;
+}
+
+QPushButton:pressed {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #555; /* Even lighter shade when pressed */
+}</string>
+         </property>
+         <property name="text">
+          <string>ajouter</string>
          </property>
         </widget>
        </widget>

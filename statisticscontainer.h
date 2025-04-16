@@ -23,6 +23,6 @@ public:
     // Static function declarations
     static QChartView* generateHighPoolDeGainDisparityChart();
     static QChartView* generatePercentageOfGainsChart();
-};
+};//hrllo
 
 #endif // STATISTICSCONTAINER_H

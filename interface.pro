@@ -30,6 +30,7 @@ SOURCES += \
     loginwindow.cpp \
     main.cpp \
     mainwindow.cpp \
+    match.cpp \
     statisticscontainer.cpp
 
 HEADERS += \
@@ -39,6 +40,7 @@ HEADERS += \
      connexion.h\
     design.h \
     mainwindow.h \
+    match.h \
     statisticscontainer.h
 
 FORMS += \

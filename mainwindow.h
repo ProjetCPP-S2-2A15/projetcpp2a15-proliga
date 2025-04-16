@@ -3,6 +3,7 @@
 
 #include "connexion.h"
 #include"championnats.h"
+#include "match.h"
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QPixmap>
@@ -15,6 +16,8 @@
 #include <QDate>
 #include <QtCharts>
 #include <QVBoxLayout>
+#include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -56,6 +59,21 @@ private slots:
     void sortByName();
     void on_sortBut_clicked();
     void on_statGEN_clicked();
+    void loadCBchampL();
+    void on_MsL_currentIndexChanged(const QString &selectedText);
+    void displayCoupeBracket(const QString& champname);
+    void on_LSRbut_clicked();
+    void loadLigueTable(const QString& nomChamp);
+    void displayCompetitionStats(const QString& champName);
+    void generatePlanning(QComboBox* comboBoxChamp, int intervalDays, int year, int numberOfMatches);
+    bool isDatePlanned(const QString& champname, const QDate& matchDate);
+    void on_planBUT_clicked();
+    void loadChampL();
+    void on_addMatchButton_clicked();
+    void on_CBT_clicked();
+    void on_HideCW_clicked();
+
+
 
 
 };

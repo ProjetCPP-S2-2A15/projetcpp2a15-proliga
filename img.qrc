@@ -37,5 +37,10 @@
         <file>interface_icons/koura.png</file>
         <file>interface_icons/login.png</file>
         <file>interface_icons/faceid.png</file>
+        <file>../../../Users/ADMIN/Downloads/winner.svg</file>
+        <file>../../../Users/ADMIN/Downloads/gain.svg</file>
+        <file>../../../Users/ADMIN/Downloads/cleansh.svg</file>
+        <file>../../../Users/ADMIN/Downloads/bestdef.svg</file>
+        <file>../../../Users/ADMIN/Downloads/football-strike.svg</file>
     </qresource>
 </RCC>

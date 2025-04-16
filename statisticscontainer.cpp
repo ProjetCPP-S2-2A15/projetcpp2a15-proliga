@@ -67,7 +67,7 @@ QChartView* StatisticsContainer::generatePercentageOfGainsChart() {
 
     // Store championship names dynamically
     QStringList championshipNames;
-
+//hrllo
     while (query.next()) {
         QString nom = query.value(0).toString();
         double poolGains = query.value(1).toDouble();
@@ -92,7 +92,7 @@ QChartView* StatisticsContainer::generatePercentageOfGainsChart() {
     }
 
     series->append(set);
-
+//hello
     QChart *chart = new QChart();
     chart->addSeries(series);
     chart->setTitle("Percentage of Gains per Team");
