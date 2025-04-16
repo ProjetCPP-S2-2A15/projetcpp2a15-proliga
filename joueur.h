@@ -23,6 +23,7 @@ public:
     void setDateDeNaissance(const QDate &date) { Date_de_naissance = date; }
     void setPaysOrigine(const QString &pays) { Pays_origine = pays; }
     void setPosition(const QString &position) { Position = position; }
+    void setImgPath(const QString &imgPath) { ImgPath = imgPath; }
     void setSalaire(float s) { salaire = s; }
     void setFilter(int x) { filter = x; }
 
@@ -32,6 +33,7 @@ public:
     QDate getDateDeNaissance() const { return Date_de_naissance; }
     QString getPaysOrigine() const { return Pays_origine; }
     QString getPosition() const { return Position; }
+    QString getImgPath() const { return ImgPath; }
     float getSalaire() const { return salaire; }
 
 
@@ -42,6 +44,7 @@ private:
     QDate Date_de_naissance;
     QString Pays_origine;
     QString Position;
+    QString ImgPath;
     float salaire;
     int filter = 1;
 };

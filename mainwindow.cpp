@@ -140,7 +140,7 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
 
     // Clear previous widgets in column 6
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 5);
+        tableWidgetPlayers->removeCellWidget(row, 6);
     }
 
     // Add action buttons (Delete & Update)
@@ -174,7 +174,7 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 5, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 6, buttonContainer);
     }
 }
 
@@ -194,7 +194,7 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
 
     // Clear previous widgets in column 5 (Delete and Update buttons)
     for (int row = 0; row < rowCount; ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 5);
+        tableWidgetPlayers->removeCellWidget(row, 6);
     }
 
     // Add action buttons (Delete & Update)
@@ -230,7 +230,7 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 5, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 6, buttonContainer);
     }
 }
 
@@ -248,7 +248,7 @@ void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, 
 
     // Clear previous widgets in column 6
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 5);
+        tableWidgetPlayers->removeCellWidget(row, 6);
     }
 
     // Add action buttons (Delete & Update)
@@ -282,7 +282,7 @@ void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, 
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 5, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 6, buttonContainer);
     }
 }
 
@@ -395,8 +395,7 @@ void MainWindow::validateInputs() {
     }
 
     //validate image path
-    if (ui->Img_pathInput->text().trimmed().isEmpty() ||
-        !alphaRegex.match(ui->Img_pathInput->text().trimmed()).hasMatch() || ui->Img_pathInput->text().length() > 10 || ui->Img_pathInput->text().length() <3) {
+    if (ui->Img_pathInput->text().trimmed().isEmpty()) {
         ui->ImgError->setText("invalide !");
         ui->ImgError->setStyleSheet(
             "color: #D32F2F; "
@@ -535,7 +534,9 @@ void MainWindow::freeInputs(){
     ui->PrenomInput->setText("");
     //ui->PositionInput->setText("");
     ui->NationaliteInput->setText("");
+    ui->Img_pathInput->setText("");
 }
+
 
 void MainWindow::on_deleteButton_clicked()
 {
@@ -610,4 +611,7 @@ void MainWindow::on_deleteButton_clicked()
         ui->Img_pathInput->setText(faceImagePath); // Fill the input field with the face image path
     }
 }
+
+
+
 

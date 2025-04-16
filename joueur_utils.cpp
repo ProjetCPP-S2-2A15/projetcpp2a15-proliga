@@ -37,6 +37,9 @@ void createJoueurFromUI(MainWindow *mainWin) {
         if (input->objectName()=="NationaliteInput") {
             j.setPaysOrigine(input->text());
         }
+        if (input->objectName()=="Img_pathInput"){
+            j.setImgPath(input->text());
+        }
     }
 
     QComboBox* positionComboBox = joueurWidget->findChild<QComboBox*>("PositionInput2");

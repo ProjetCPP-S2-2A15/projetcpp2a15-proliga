@@ -6,9 +6,14 @@
 #include <QDebug>
 #include <QTableWidget>
 #include <QMessageBox>
+#include <QFile>
+#include <QByteArray>
+#include <QSqlDatabase>
+#include <QLabel>
 
 Joueur::Joueur() {}
 
+/*
 void Joueur::addJoueur() {
     Connection conn;
 
@@ -41,9 +46,56 @@ void Joueur::addJoueur() {
         qDebug() << "Joueur added successfully!";
     }
 
+}*/
+
+void Joueur::addJoueur() {
+    Connection conn;
+
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return;
+    }
+
+    QSqlQuery query(db);
+
+    // Prepare the SQL query to insert data including the image BLOB
+    query.prepare("INSERT INTO joueur1 (Nom, Prenom, Date_de_naissance, Pays_origine, Position, Img) "
+                  "VALUES (:Nom, :Prenom, :Date_de_naissance, :Pays_origine, :Position, :Img)");
+
+    // Bind values for other fields
+    query.bindValue(":Nom", this->Nom);
+    query.bindValue(":Prenom", this->Prenom);
+    query.bindValue(":Date_de_naissance", this->Date_de_naissance);
+    query.bindValue(":Pays_origine", this->Pays_origine);
+    query.bindValue(":Position", this->Position);
+
+    // Read the image from the file path and bind it as a BLOB
+    QString imagePath = this->ImgPath;  // Assuming Img_pathInput contains the path to the image
+    QFile imageFile(imagePath);
+
+    if (imageFile.open(QIODevice::ReadOnly)) {
+        QByteArray imageData = imageFile.readAll();  // Read the image data as binary
+        query.bindValue(":Img", imageData);  // Bind the image data as a BLOB
+    } else {
+        qDebug() << "Failed to open image file: " << imagePath;
+    }
+
+    // Execute the query
+    if (!query.exec()) {
+        qDebug() << "Failed to add Joueur: " << query.lastError().text();
+    } else {
+        qDebug() << "Joueur added successfully!";
+    }
 }
 
-
+/*
 void Joueur::readJoueur(QTableWidget *tableWidget) {
     if (!tableWidget) return;
 
@@ -96,7 +148,83 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
     } else {
         qDebug() << "Players loaded successfully!";
     }
+}*/
+
+void Joueur::readJoueur(QTableWidget *tableWidget) {
+    if (!tableWidget) return;
+
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return;
+    }
+
+    QString queryString;
+    if (filter == 1) {
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG FROM joueur1 ORDER BY NOM";
+    } else if (filter == 2) {
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG FROM joueur1 ORDER BY PAYS_ORIGINE";
+    } else {
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG FROM joueur1 ORDER BY POSITION";
+    }
+
+    QSqlQuery query(queryString, db);
+
+    tableWidget->setColumnCount(7); // 5 text fields + 1 image
+    tableWidget->setHorizontalHeaderLabels(QStringList() << "Nom" << "Prenom" << "Date de Naissance" << "Position" << "Pays d'origine" << "Photo");
+    tableWidget->setRowCount(0);
+
+    int row = 0;
+
+    while (query.next()) {
+        tableWidget->insertRow(row);
+
+        tableWidget->setItem(row, 0, new QTableWidgetItem(query.value("Nom").toString()));
+        tableWidget->setItem(row, 1, new QTableWidgetItem(query.value("Prenom").toString()));
+        tableWidget->setItem(row, 2, new QTableWidgetItem(query.value("Date_de_naissance").toDate().toString("yyyy-MM-dd")));
+        tableWidget->setItem(row, 3, new QTableWidgetItem(query.value("Position").toString()));
+        tableWidget->setItem(row, 4, new QTableWidgetItem(query.value("PAYS_ORIGINE").toString()));
+
+        // 🖼️ Load image
+        QByteArray imageData = query.value("IMG").toByteArray();
+        QPixmap pixmap;
+        pixmap.loadFromData(imageData);
+
+        // Create QLabel to display the image
+        QLabel *imageLabel = new QLabel();
+        if (!pixmap.isNull()) {
+            imageLabel->setPixmap(pixmap.scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            imageLabel->setAlignment(Qt::AlignCenter);
+            imageLabel->setScaledContents(true);  // Ensure the image scales to fit
+        } else {
+            imageLabel->setText("No image");
+            imageLabel->setAlignment(Qt::AlignCenter);
+        }
+
+        // Set the image label in the table
+        tableWidget->setCellWidget(row, 5, imageLabel);
+
+        // Optional: Adjust row height and column width
+        tableWidget->setRowHeight(row, 100);
+        tableWidget->setColumnWidth(5, 100);
+
+        row++;
+
+    }
+
+    if (query.lastError().isValid()) {
+        qDebug() << "Error reading players:" << query.lastError().text();
+    } else {
+        qDebug() << "Players loaded successfully!";
+    }
 }
+
 
 
 QVector<Joueur> Joueur::getJoueurs() {
