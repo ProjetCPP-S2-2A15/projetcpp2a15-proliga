@@ -19,6 +19,9 @@
 #include <QGraphicsOpacityEffect>  // For opacity effect
 #include <QPropertyAnimation>  // For animations
 #include <QTimer>
+
+#include <QSerialPort>  // Include for serial port
+#include <QSerialPortInfo>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -53,7 +56,7 @@ private:
      bool isExpanded;
      int originalDeleteMatchX;
      int originalChercherWidth;
-
+     QSerialPort *serial;  // Declare QSerialPort pointer for communication
 
  QPushButton *nextButton;
      QChartView *chartView = nullptr; // Stocker le QChartView
@@ -81,6 +84,7 @@ private slots:
     void predictWinner(int row);
     void showMonthlyMatchStatistics();
    void on_exporter_excel_match_clicked();
+
 };
 
 

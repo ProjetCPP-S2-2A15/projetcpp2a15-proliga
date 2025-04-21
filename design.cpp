@@ -132,6 +132,32 @@ void applyDesign(Ui::MainWindow *ui)
         "    padding: 3px;"
         "}"
         );
+    ui->tri_histo_match->setStyleSheet(
+        "QComboBox {"
+        "    background-color: #444;"
+        "    color: white;"
+        "    border-radius: 5px;"
+        "    padding: 5px;"
+        "    font-size: 10px;"
+        "    border: 1px solid #666;"
+        "} "
+        "QComboBox::drop-down {"
+        "    border: none;"
+        "    width: 20px;"
+        "} "
+        "QComboBox::down-arrow {"
+        "    image: url(:/down.png);"
+        "    width: 12px;"
+        "    height: 12px;"
+        "} "
+        "QComboBox QAbstractItemView {"
+        "    background-color: #555;"
+        "    color: white;"
+        "    border-radius: 5px;"
+        "    selection-background-color: #666;"
+        "    padding: 3px;"
+        "}"
+        );
 
 
 
@@ -238,6 +264,8 @@ ui->random_arbitre->setStyleSheet(
     "    outline: none; "
     "}"
 );
+
+
 
 
 }

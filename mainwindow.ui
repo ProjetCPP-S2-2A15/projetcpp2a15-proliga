@@ -913,23 +913,6 @@ font: 700 9pt &quot;System&quot;;
            <property name="styleSheet">
             <string notr="true">background-color: rgb(239, 239, 239);</string>
            </property>
-           <widget class="QPushButton" name="show_4">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>21</width>
-              <height>20</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="img.qrc">
-              <normaloff>:/interface_icons/more.png</normaloff>:/interface_icons/more.png</iconset>
-            </property>
-           </widget>
           </widget>
           <widget class="QTabWidget" name="tabWidget">
            <property name="geometry">
@@ -1210,51 +1193,6 @@ font: 700 9pt &quot;System&quot;;
               <string>Ajouter</string>
              </property>
             </widget>
-            <widget class="QComboBox" name="comboBox">
-             <property name="geometry">
-              <rect>
-               <x>100</x>
-               <y>20</y>
-               <width>91</width>
-               <height>22</height>
-              </rect>
-             </property>
-             <item>
-              <property name="text">
-               <string> Amical</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string> Retour </string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Groupe</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string> Qualification</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string> Championnat </string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Playoff </string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Coupe</string>
-              </property>
-             </item>
-            </widget>
             <widget class="QComboBox" name="comboBox_2">
              <property name="geometry">
               <rect>
@@ -1451,6 +1389,61 @@ font: 700 9pt &quot;System&quot;;
                <height>20</height>
               </rect>
              </property>
+            </widget>
+            <widget class="QComboBox" name="comboBox">
+             <property name="geometry">
+              <rect>
+               <x>110</x>
+               <y>20</y>
+               <width>111</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <item>
+              <property name="text">
+               <string>Pré-qualification</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Tour 1 QAL</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>tour 2 QAL</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1/32 de Finale</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1/16 de Finale</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1/8 de Finale</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Quart de Finale</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Demi-Finale</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Finale</string>
+              </property>
+             </item>
             </widget>
            </widget>
           </widget>

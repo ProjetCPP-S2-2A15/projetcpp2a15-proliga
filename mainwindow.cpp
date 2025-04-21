@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "arduinoshiraz.h"
 #include "design.h"
 #include <QPropertyAnimation>
 #include "changeWidget.h"
@@ -10,7 +11,7 @@
 #include <QInputDialog>
 #include <QWidget>
 #include <random>
-#include "loginwindow.h"// Include the chatbot widget header
+#include "loginwindow.h"
 #include <QTimer>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
@@ -40,6 +41,20 @@
 #include <QDir>
 
 
+
+
+
+
+
+
+
+
+#include <QSerialPort>
+#include <QSerialPortInfo>
+#include <QTextStream>
+
+
+QSerialPort *serial;
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -273,7 +288,6 @@ void MainWindow::on_addMatchButton_clicked() {
 
 //------------------------------------------AFFICHAGE PROG ET HISTORIQUE DES MATCHES-------------------------------------------------------------------------------------------------
 
-
 void MainWindow::loadMatchesIntoTable()
 {
     QSqlQuery query("SELECT ID_MATCH, TYPE_MATCH, EQUIPE1, EQUIPE2, SCORE, DATE_MATCH, ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4, SCOREEDIT FROM MATCHES");
@@ -281,24 +295,27 @@ void MainWindow::loadMatchesIntoTable()
     ui->programmation_2->setRowCount(0);
     ui->historique_table->setRowCount(0);
 
-    QDate today = QDate::currentDate();
+    QDateTime now = QDateTime::currentDateTime(); // Get current date and time
     int progRow = 0, histRow = 0;
 
     while (query.next()) {
-        QDate matchDate = query.value(5).toDate();
+        QDateTime matchDateTime = query.value(5).toDateTime(); // Full timestamp with hours/minutes
         int scoreEdit = query.value(10).toInt();
         QString score = query.value(4).toString();
 
+        // Calculate elapsed time since match
+        qint64 secondsSinceMatch = matchDateTime.secsTo(now);
+        bool isOlderThan2_5Hours = secondsSinceMatch > (2.5 * 3600);
+
         QColor rowColor;
-        if (scoreEdit ==0 ) {
-            rowColor = QColor(255, 200, 200);
+        if (!isOlderThan2_5Hours) {
+            rowColor = QColor(255, 165, 0); // orange: less than 2.5h
         } else {
-            rowColor = QColor(197, 255, 217);
+            rowColor = (scoreEdit == 0) ? QColor(255, 200, 200) : QColor(197, 255, 217); // red or green
         }
 
-
-        //table histo
-        if (matchDate < today) {
+        // Historique table if match is in the past
+        if (matchDateTime < now) {
             ui->historique_table->insertRow(histRow);
             for (int col = 0; col < 10; col++) {
                 QTableWidgetItem *item = new QTableWidgetItem;
@@ -306,7 +323,7 @@ void MainWindow::loadMatchesIntoTable()
                 if (col == 4) {
                     item->setText(score);
                 } else if (col == 5) {
-                    item->setText(query.value(5).toString());
+                    item->setText(matchDateTime.toString("yyyy-MM-dd HH:mm:ss"));
                 } else if (col == 6) {
                     item->setText(query.value(6).toString());
                 } else if (col == 7) {
@@ -319,14 +336,12 @@ void MainWindow::loadMatchesIntoTable()
                     item->setText(query.value(col < 4 ? col : col + 2).toString());
                 }
 
-
                 item->setBackground(rowColor);
                 ui->historique_table->setItem(histRow, col, item);
             }
             histRow++;
         }
-
-        //table prog
+        // Programmation table if match is upcoming or current
         else {
             ui->programmation_2->insertRow(progRow);
 
@@ -334,17 +349,17 @@ void MainWindow::loadMatchesIntoTable()
                 QTableWidgetItem *item = new QTableWidgetItem;
 
                 if (col == 4) {
-                    item->setText(query.value(5).toString());  // SCORE column (index 4 in query)
+                    item->setText(matchDateTime.toString("yyyy-MM-dd HH:mm:ss"));
                 } else if (col == 5) {
-                    item->setText(query.value(6).toString());  // DATE_MATCH column (index 5 in query)
+                    item->setText(query.value(6).toString());
                 } else if (col == 6) {
-                    item->setText(query.value(7).toString());  // ID_ARBITRE1 column (index 6 in query)
+                    item->setText(query.value(7).toString());
                 } else if (col == 7) {
-                    item->setText(query.value(8).toString());  // ID_ARBITRE2 column (index 7 in query)
+                    item->setText(query.value(8).toString());
                 } else if (col == 8) {
-                    item->setText(query.value(9).toString());  // ID_ARBITRE3 column (index 8 in query)
+                    item->setText(query.value(9).toString());
                 } else {
-                    item->setText(query.value(col < 4 ? col : col + 1).toString());  // EQUIPE1, EQUIPE2, and other columns
+                    item->setText(query.value(col < 4 ? col : col + 1).toString());
                 }
 
                 ui->programmation_2->setItem(progRow, col, item);
@@ -356,9 +371,7 @@ void MainWindow::loadMatchesIntoTable()
 
             progRow++;
         }
-
     }
-
 }
 
 
@@ -433,21 +446,62 @@ void MainWindow::deleteMatch()
         return;
     }
 
-    QSqlQuery query;
-    query.prepare("DELETE FROM MATCHES WHERE ID_MATCH = :id");
-    query.bindValue(":id", id);
+    // 1. Récupérer les données du match
+    QSqlQuery selectQuery;
+    selectQuery.prepare("SELECT TYPE_MATCH, DATE_MATCH, EQUIPE1, EQUIPE2, ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4 "
+                        "FROM MATCHES WHERE ID_MATCH = :id");
+    selectQuery.bindValue(":id", id);
 
-    if (query.exec()) {
-        QMessageBox::information(this, "Suppression réussie", "Le match de " + equipe1 + " et " + equipe2 +
-                                                                  " prévu le " + dateMatch + " a été supprimé avec succès !");
-        ui->programmation_2->removeRow(row);
+    if (selectQuery.exec() && selectQuery.next()) {
+        QString typeMatch = selectQuery.value(0).toString();
+        QDateTime dateMatchDB = selectQuery.value(1).toDateTime(); // Correct type for TIMESTAMP
+        QString eq1 = selectQuery.value(2).toString();
+        QString eq2 = selectQuery.value(3).toString();
+        QString arb1 = selectQuery.value(4).toString();
+        QString arb2 = selectQuery.value(5).toString();
+        QString arb3 = selectQuery.value(6).toString();
+        QString arb4 = selectQuery.value(7).toString();
+
+        // 2. Insérer dans CANCELLED_MATCH
+        QSqlQuery insertQuery;
+        insertQuery.prepare("INSERT INTO CANCELLED_MATCH (ID_MATCH, TYPE_MATCH, DATE_MATCH, EQUIPE1, EQUIPE2, "
+                            "ID_ARBITRE1, ID_ARBITRE2, ID_ARBITRE3, ID_ARBITRE4) "
+                            "VALUES (:id, :type, :date, :eq1, :eq2, :arb1, :arb2, :arb3, :arb4)");
+        insertQuery.bindValue(":id", id);
+        insertQuery.bindValue(":type", typeMatch);
+        insertQuery.bindValue(":date", dateMatchDB); // Correct binding for TIMESTAMP
+        insertQuery.bindValue(":eq1", eq1);
+        insertQuery.bindValue(":eq2", eq2);
+        insertQuery.bindValue(":arb1", arb1);
+        insertQuery.bindValue(":arb2", arb2);
+        insertQuery.bindValue(":arb3", arb3);
+        insertQuery.bindValue(":arb4", arb4);
+
+        if (!insertQuery.exec()) {
+            qDebug() << "Erreur d'insertion dans CANCELLED_MATCH:" << insertQuery.lastError().text();
+            QMessageBox::critical(this, "Erreur", "Échec de la sauvegarde du match annulé.");
+            return;
+        }
+
+        // 3. Supprimer le match de MATCHES
+        QSqlQuery deleteQuery;
+        deleteQuery.prepare("DELETE FROM MATCHES WHERE ID_MATCH = :id");
+        deleteQuery.bindValue(":id", id);
+
+        if (deleteQuery.exec()) {
+            QMessageBox::information(this, "Suppression réussie", "Le match de " + equipe1 + " et " + equipe2 +
+                                                                      " prévu le " + dateMatch + " a été supprimé avec succès !");
+            ui->programmation_2->removeRow(row);
+        } else {
+            QString error = deleteQuery.lastError().text();
+            qDebug() << "SQL Error: " << error;
+            QMessageBox::critical(this, "Erreur", "Erreur lors de la suppression du match dans la base de données : " + error);
+        }
     } else {
-        QString error = query.lastError().text();
-        qDebug() << "SQL Error: " << error;
-        QMessageBox::critical(this, "Erreur", "Erreur lors de la suppression du match dans la base de données : " + error);
+        qDebug() << "Erreur de récupération des données:" << selectQuery.lastError().text();
+        QMessageBox::critical(this, "Erreur", "Impossible de récupérer les détails du match avant suppression.");
     }
 }
-
 
 
 //------------------------------------GESTION ARBITRES DANS MATCHES --------------------------------------------------------------------------------------
@@ -702,46 +756,54 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
 {
     if (col == 4) {
 
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Confirm Modification", "Do you want to modify the score?",
-                                      QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::Yes) {
+        QDateTime now = QDateTime::currentDateTime();
+        QString dateTimeString = ui->historique_table->item(row, 5)->text();
+        QDateTime matchDateTime = QDateTime::fromString(dateTimeString, "yyyy-MM-dd HH:mm:ss");
 
-            QString oldScore = ui->historique_table->item(row, col)->text();
+        qint64 secondsDiff = matchDateTime.secsTo(now);
+        bool askTrackOption = (secondsDiff <= 9000); // 2.5 hours = 9000 seconds
 
-            // Score validation (format X-Y)
-            QRegularExpression regExp("^\\d+-\\d+$");
-            QRegularExpressionValidator validator(regExp, this);
+        if (askTrackOption) {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Match en cours");
+            msgBox.setText("Le match est toujours en cours.\nChoisissez comment vous souhaitez mettre à jour le score :");
+            QPushButton *manualButton = msgBox.addButton("Manuellement", QMessageBox::AcceptRole);
+            QPushButton *realtimeButton = msgBox.addButton("Suivi en temps réel", QMessageBox::RejectRole);
+            msgBox.exec();
 
-            bool ok;
-            QString newScore = QInputDialog::getText(this, "Modify Score", "New Score:", QLineEdit::Normal,
-                                                     oldScore, &ok);
+            if (msgBox.clickedButton() == realtimeButton) {
+                // Get team names from columns 2 and 3 in the table
+                QString team1Name = ui->historique_table->item(row, 2)->text(); // Team 1 name (col 2)
+                QString team2Name = ui->historique_table->item(row, 3)->text(); // Team 2 name (col 3)
 
-            if (ok && !newScore.isEmpty()) {
-                int pos = 0;
-                if (validator.validate(newScore, pos) == QValidator::Acceptable) {
+                // Trigger the real-time score tracking and pass team names to dialog
+                Arduinoshiraz realtimeDialog(this, team1Name, team2Name); // Pass team names here
+                if (realtimeDialog.exec() == QDialog::Accepted) {
+                    // Get the final score from the real-time tracking dialog
+                    QString finalScore = realtimeDialog.getFinalScore();
+
                     // Update the score in the table
-                    ui->historique_table->item(row, col)->setText(newScore);
+                    ui->historique_table->item(row, col)->setText(finalScore);
 
-                    // Extract scores
-                    QStringList scores = newScore.split("-");
+                    // Extract the scores
+                    QStringList scores = finalScore.split("-");
                     int scoreTeam1 = scores[0].toInt();
                     int scoreTeam2 = scores[1].toInt();
 
                     // Determine the winner
                     QString winner;
                     if (scoreTeam1 > scoreTeam2) {
-                        winner = ui->historique_table->item(row, 2)->text(); // Team 1 name
+                        winner = team1Name; // Use the actual team name from column 2
                     } else if (scoreTeam1 < scoreTeam2) {
-                        winner = ui->historique_table->item(row, 3)->text(); // Team 2 name
+                        winner = team2Name; // Use the actual team name from column 3
                     } else {
-                        winner = "ta3adol";
+                        winner = "égalité";
                     }
 
-                    // Update database
+                    // Update the database
                     QSqlQuery query;
                     query.prepare("UPDATE MATCHES SET SCORE = :score, WINNER = :winner, SCOREEDIT = 1 WHERE ID_MATCH = :id_match");
-                    query.bindValue(":score", newScore);
+                    query.bindValue(":score", finalScore);
                     query.bindValue(":winner", winner);
                     query.bindValue(":id_match", ui->historique_table->item(row, 0)->text());
 
@@ -750,14 +812,61 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
                     } else {
                         QMessageBox::warning(this, "Erreur", "Échec de la mise à jour du score dans la base de données.");
                     }
-                } else {
-                    QMessageBox::warning(this, "Format invalide", "Veuillez saisir un score valide au format X-Y.");
                 }
+                return;
+            }
+        }
+
+        // If the user chooses to update manually
+        QString oldScore = ui->historique_table->item(row, col)->text();
+
+        // Validate the score format (X-Y)
+        QRegularExpression regExp("^\\d+-\\d+$");
+        QRegularExpressionValidator validator(regExp, this);
+
+        bool ok;
+        QString newScore = QInputDialog::getText(this, "Modifier le score", "Nouveau score :", QLineEdit::Normal,
+                                                 oldScore, &ok);
+
+        if (ok && !newScore.isEmpty()) {
+            int pos = 0;
+            if (validator.validate(newScore, pos) == QValidator::Acceptable) {
+                // Update the score in the table
+                ui->historique_table->item(row, col)->setText(newScore);
+
+                // Extract the scores
+                QStringList scores = newScore.split("-");
+                int scoreTeam1 = scores[0].toInt();
+                int scoreTeam2 = scores[1].toInt();
+
+                // Determine the winner
+                QString winner;
+                if (scoreTeam1 > scoreTeam2) {
+                    winner = ui->historique_table->item(row, 2)->text(); // Team 1 name
+                } else if (scoreTeam1 < scoreTeam2) {
+                    winner = ui->historique_table->item(row, 3)->text(); // Team 2 name
+                } else {
+                    winner = "égalité";
+                }
+
+                // Update the database
+                QSqlQuery query;
+                query.prepare("UPDATE MATCHES SET SCORE = :score, WINNER = :winner, SCOREEDIT = 1 WHERE ID_MATCH = :id_match");
+                query.bindValue(":score", newScore);
+                query.bindValue(":winner", winner);
+                query.bindValue(":id_match", ui->historique_table->item(row, 0)->text());
+
+                if (query.exec()) {
+                    QMessageBox::information(this, "Succès", "Score mis à jour avec succès !");
+                } else {
+                    QMessageBox::warning(this, "Erreur", "Échec de la mise à jour du score dans la base de données.");
+                }
+            } else {
+                QMessageBox::warning(this, "Format invalide", "Veuillez saisir un score valide au format X-Y.");
             }
         }
     }
 }
-
 
 //--------------------------------------------DESIGN HISTORIQUE-----------------------------------------------------------------------------------------
 
@@ -769,27 +878,36 @@ void MainWindow::onItemChanged(QTableWidgetItem *item)
     // Check if we are editing the SCORE column (index 4)
     if (col == 4) {
         QString newScore = item->text();
+        QString idMatch = ui->historique_table->item(row, 0)->text(); // ID_MATCH is in column 0
 
-        // Check the SCOREEDIT value from the database to determine if it's been modified before
+        // Fetch SCOREEDIT and DATE_MATCH from the database
         QSqlQuery query;
-        query.prepare("SELECT SCOREEDIT FROM MATCHES WHERE ID_MATCH = :id_match");
-        query.bindValue(":id_match", ui->historique_table->item(row, 0)->text()); // Assuming ID_MATCH is in column 0
+        query.prepare("SELECT SCOREEDIT, DATE_MATCH FROM MATCHES WHERE ID_MATCH = :id_match");
+        query.bindValue(":id_match", idMatch);
 
         if (query.exec() && query.next()) {
             int scoreEditValue = query.value(0).toInt();
+            QDateTime matchDateTime = query.value(1).toDateTime();
+            QDateTime now = QDateTime::currentDateTime();
+
+            qint64 diffInSeconds = matchDateTime.secsTo(now);
+            bool isOlderThan2_5Hours = diffInSeconds > (2.5 * 3600); // 2.5 hours in seconds
 
             QColor rowColor;
-            if (newScore == "0-0") {
-                if (scoreEditValue == 1) {
-                    rowColor = QColor(197, 255, 217);
-                } else {
-                    rowColor = QColor(255, 200, 200);
-                }
+
+            if (!isOlderThan2_5Hours) {
+                // Match ended less than 2.5 hours ago → orange always
+                rowColor = QColor(255, 165, 0); // Orange
             } else {
-                rowColor = QColor(197, 255, 217);  // Light green color
+                // Match ended more than 2.5 hours ago → use original logic
+                if (newScore == "0-0") {
+                    rowColor = (scoreEditValue == 1) ? QColor(197, 255, 217) : QColor(255, 200, 200); // Green or Red
+                } else {
+                    rowColor = QColor(197, 255, 217); // Green
+                }
             }
 
-            // Iterate through all columns in the row and set the background color
+            // Apply the background color to the entire row
             for (int c = 0; c < ui->historique_table->columnCount(); ++c) {
                 QTableWidgetItem *rowItem = ui->historique_table->item(row, c);
                 if (rowItem) {
@@ -798,9 +916,7 @@ void MainWindow::onItemChanged(QTableWidgetItem *item)
             }
         }
     }
-
 }
-
 
 
 
@@ -1158,8 +1274,9 @@ void MainWindow::exportStatisticsToPDF(const QString &filePath) {
 
     // Month names
     QStringList monthNames = {
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+                              "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+                              "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+
     };
 
     // Draw statistics (month name and match count)
@@ -1275,20 +1392,17 @@ void MainWindow::on_tri_prog_clicked()
         while (query.next()) {
             ui->programmation_2->insertRow(row);
 
-            // Insert data from the query to each column
             for (int col = 0; col < query.record().count(); col++) {
                 ui->programmation_2->setItem(row, col, new QTableWidgetItem(query.value(col).toString()));
             }
 
-            // Now calculate and set the predicted winner for this row
-            predictWinner(row); // You can directly call predictWinner here
+            predictWinner(row);
             row++;
         }
     } else {
         QMessageBox::warning(this, "Erreur", "Impossible de trier les matchs !");
     }
 }
-
 void MainWindow::on_tri_histo_clicked()
 {
     QSqlQuery query;
@@ -1298,18 +1412,23 @@ void MainWindow::on_tri_histo_clicked()
         ui->historique_table->setRowCount(0);
 
         int row = 0;
-        QDate today = QDate::currentDate();
+        QDateTime now = QDateTime::currentDateTime();
 
         while (query.next()) {
-            QDate matchDate = query.value(5).toDate();
+            QDateTime matchDateTime = query.value(5).toDateTime();  // Full date + time
             int scoreEdit = query.value(10).toInt();
             QString score = query.value(4).toString();
 
+            // Calculate elapsed time since match
+            qint64 secondsSinceMatch = matchDateTime.secsTo(now);
+            bool isOlderThan2_5Hours = secondsSinceMatch > (2.5 * 3600);
+
+            // Set row color based on time and scoreEdit
             QColor rowColor;
-            if (scoreEdit == 0) {
-                rowColor = QColor(255, 200, 200);
+            if (!isOlderThan2_5Hours) {
+                rowColor = QColor(255, 165, 0); // orange: less than 2.5 hours
             } else {
-                rowColor = QColor(197, 255, 217);
+                rowColor = (scoreEdit == 0) ? QColor(255, 200, 200) : QColor(197, 255, 217); // red or green
             }
 
             ui->historique_table->insertRow(row);
@@ -1332,13 +1451,11 @@ void MainWindow::on_tri_histo_clicked()
 }
 
 
-
-
 //------------------------PREDICTION RESULTAT MATCH-----------------------------------------------------------------------------------------------
 
 void MainWindow::predictWinner(int row)
 {
-    // Ensure the row has valid data
+   //------------------------------------------------
     if (!ui->programmation_2->item(row, 2) || !ui->programmation_2->item(row, 3)) {
         qDebug() << "Error: Missing team names in row" << row;
         return;
@@ -1351,11 +1468,11 @@ void MainWindow::predictWinner(int row)
         qDebug() << "Error: One of the team names is empty in row" << row;
         return;
     }
-
+    //-------------------------debut------------------------------------------
     QSqlQuery query;
     int countEquipe1 = 0, countEquipe2 = 0;
 
-    // Count how many times each team has won
+
     query.prepare("SELECT COUNT(*) FROM MATCHES WHERE WINNER = :equipe");
     query.bindValue(":equipe", equipe1);
     if (query.exec() && query.next()) {
@@ -1372,16 +1489,16 @@ void MainWindow::predictWinner(int row)
         qDebug() << "Query Error for equipe2:" << query.lastError().text();
     }
 
-    // Determine predicted winner
+
     QString predictedWinner;
     if (countEquipe1 > countEquipe2)
         predictedWinner = equipe1;
     else if (countEquipe1 < countEquipe2)
         predictedWinner = equipe2;
     else
-        predictedWinner = "ta3adol"; // Draw
+        predictedWinner = "égalité";
 
-    // Set predicted winner in column 9
+
     QTableWidgetItem *item = ui->programmation_2->item(row, 9);
     if (!item) {
         item = new QTableWidgetItem();
@@ -1389,7 +1506,7 @@ void MainWindow::predictWinner(int row)
     }
     item->setText(predictedWinner);
 
-    // Force UI update
+
     ui->programmation_2->viewport()->update();
 
     qDebug() << "Predicted winner for row" << row << ":" << predictedWinner;
@@ -1398,80 +1515,75 @@ void MainWindow::predictWinner(int row)
 
 //----------------------------------------STATS MATCH --------------------------------------------------------------------
 void MainWindow::showMonthlyMatchStatistics() {
-    // Create a map to store the number of matches per month
+
     QMap<int, int> monthCount;
 
-    // Execute the query to get match dates
     QSqlQuery query("SELECT DATE_MATCH FROM MATCHES WHERE EXTRACT(YEAR FROM DATE_MATCH) = 2025");
 
-    // Populate the map with match counts per month
     while (query.next()) {
         QDate matchDate = query.value(0).toDate();
         int month = matchDate.month();
         monthCount[month]++;
     }
 
-    // Create a pie series for the pie chart
+
     QPieSeries *series = new QPieSeries();
 
-    // Names of the months in French
     QStringList monthNames = {
         "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
         "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     };
 
-    // Define a set of green shades
+    //---verts--
     QVector<QColor> greenShades = {
         QColor(0, 100, 0), QColor(34, 139, 34), QColor(50, 205, 50), QColor(60, 179, 113),
         QColor(46, 139, 87), QColor(107, 142, 35), QColor(154, 205, 50), QColor(85, 107, 47),
         QColor(144, 238, 144), QColor(173, 255, 47), QColor(0, 255, 127), QColor(0, 250, 154)
     };
+    //-------
 
-    // Create slices for each month
+
     QVector<QColor> sliceColors;
     QVector<QString> sliceLabels;
 
     int colorIndex = 0;
     for (int month = 1; month <= 12; month++) {
         int matchCount = monthCount.value(month, 0);
-        if (matchCount > 0) {  // Only add if the month has matches
+        if (matchCount > 0) {
             QPieSlice *slice = series->append(monthNames[month - 1] + " - " + QString::number(matchCount), matchCount);
 
-            // Apply a different green color to each slice
+            //----design------------------
             QColor sliceColor = greenShades[colorIndex % greenShades.size()];
             slice->setBrush(sliceColor);
             colorIndex++;
-
-            // Save the color and name for the legend
             sliceColors.append(sliceColor);
             sliceLabels.append(monthNames[month - 1]);
-
-            // Set label visibility and color
             slice->setLabelVisible(true);
             slice->setLabelColor(Qt::white);
+            //----------------------------------
 
-            // Add hover effect
-            // Add hover effect
             connect(slice, &QPieSlice::hovered, [slice, monthNames, month, matchCount, monthCount](bool hovered) {
                 if (hovered) {
-                    // Calculate the total number of matches for all months
+
                     int totalMatches = 0;
                     for (int i = 1; i <= 12; i++) {
                         totalMatches += monthCount.value(i, 0);
                     }
 
-                    // Calculate the percentage of matches for the current month
                     double percentage = (matchCount / double(totalMatches)) * 100;
 
-                    // Set the slice exploded effect
-                    slice->setExploded(true);
 
-                    // Show the tooltip with the formatted percentage value
+                    //--design(tekber)----
+                    slice->setExploded(true);
+                    //-----------
+
+
+
                     QToolTip::showText(QCursor::pos(),
                                        QString("Mois: %1\nNombre de matchs: %2\nPourcentage: %3%")
                                            .arg(monthNames[month - 1])
                                            .arg(matchCount)
-                                           .arg(QString::number(percentage, 'f', 0)));  // Format the percentage with 2 decimal places
+                                           .arg(QString::number(percentage, 'f', 0)));
                 } else {
                     slice->setExploded(false);
                 }
@@ -1479,115 +1591,104 @@ void MainWindow::showMonthlyMatchStatistics() {
 
         }
     }
-
-    // Create a chart and add the series
+//--design------------------------
     QChart *chart = new QChart();
     chart->addSeries(series);
 
-    // Improve the title with a more attractive style
     QFont titleFont = chart->titleFont();
-    titleFont.setPointSize(10);  // Font size
-    titleFont.setBold(true);     // Bold
-    titleFont.setFamily("System"); // Font family
+    titleFont.setPointSize(10);
+    titleFont.setBold(true);
+    titleFont.setFamily("System");
     chart->setTitle("Statistiques des matches pour 2025");
     chart->setTitleFont(titleFont);
-    chart->setTitleBrush(QBrush(Qt::black)); // Title text color
+    chart->setTitleBrush(QBrush(Qt::black));
 
-    // Hide the legend
     chart->legend()->hide();
 
-    // Add the chart to the view
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
     chartView->setParent(ui->widget_6);
     chartView->resize(ui->widget_6->size());
 
-    // Create opacity effect for the chartView
     QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect(chartView);
     chartView->setGraphicsEffect(opacityEffect);
 
-    // Initialize opacity to 0 (invisible)
     opacityEffect->setOpacity(0);
 
-    // Use QTimer to delay the animation after display
+
     QTimer::singleShot(0, [opacityEffect]() {
-        // Animation to gradually show the chart
         QPropertyAnimation *animation = new QPropertyAnimation(opacityEffect, "opacity");
-        animation->setDuration(5000);  // 5-second animation
-        animation->setStartValue(0);   // Start with opacity 0
-        animation->setEndValue(1);     // End with opacity 1
-        animation->setEasingCurve(QEasingCurve::OutCubic);  // Smooth animation
-        animation->start(QAbstractAnimation::DeleteWhenStopped);  // Start and delete when done
+        animation->setDuration(5000);
+        animation->setStartValue(0);
+        animation->setEndValue(1);
+        animation->setEasingCurve(QEasingCurve::OutCubic);
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
     });
 
-    // Create a scene for the chart
+
     QGraphicsScene *scene = chartView->scene();
-    int xOffset = 20;  // Initial horizontal position
-    int yOffset = chart->boundingRect().bottom() + 213;  // Position below the pie chart
+    int xOffset = 20;
+    int yOffset = chart->boundingRect().bottom() + 213;
 
-    // Use a QGridLayout for grid layout management
+
     QGridLayout *legendLayout = new QGridLayout();
-    legendLayout->setSpacing(5); // Reduce the space between elements
+    legendLayout->setSpacing(5);
 
-    // Create a widget for the legend
+
     QWidget *legendWidget = new QWidget();
     legendWidget->setLayout(legendLayout);
-    legendWidget->setStyleSheet("background-color: transparent;"); // White background for the legend
+    legendWidget->setStyleSheet("background-color: transparent;");
 
-    // Add the legend to the scene
+
     scene->addWidget(legendWidget);
 
-    // Add legend items with line breaks after 4 items
-    int columns = 4; // Maximum number of items per row
+
+    int columns = 4;
     for (int i = 0; i < sliceColors.size(); ++i) {
         int row = i / columns;
         int col = i % columns;
 
-        // Create a layout for each row
         QHBoxLayout *rowLayout = new QHBoxLayout();
 
         QFrame *colorBox = new QFrame();
         colorBox->setFrameShape(QFrame::Box);
-        colorBox->setFixedSize(10, 10); // Small color box size initially
+        colorBox->setFixedSize(10, 10);
         colorBox->setStyleSheet(QString("background-color: %1").arg(sliceColors[i].name()));
 
         QLabel *textItem = new QLabel(sliceLabels[i]);
-        textItem->setStyleSheet("font-size: 8px;"); // Very small text
+        textItem->setStyleSheet("font-size: 8px;");
 
-        // Install event filter for hover effect
+
         colorBox->installEventFilter(this);
 
-        // Align the color box and text properly
+
         rowLayout->addWidget(colorBox);
         rowLayout->addWidget(textItem);
 
-        // Add the row layout to the legend layout
+
         legendLayout->addLayout(rowLayout, row, col);
     }
 
-    // Set the legend widget geometry
-    legendWidget->setGeometry(xOffset, yOffset, 300, 10);  // Position the legend below the pie chart
+
+    legendWidget->setGeometry(xOffset, yOffset, 300, 10);
 }
 
 
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
     if (event->type() == QEvent::Enter) {
-        // Increase the size of the color box on hover
+
         if (QFrame *frame = qobject_cast<QFrame *>(watched)) {
-            frame->setFixedSize(20, 20);  // Increase size when hovered
+            frame->setFixedSize(20, 20);
         }
     } else if (event->type() == QEvent::Leave) {
-        // Reset the size when hover ends
+
         if (QFrame *frame = qobject_cast<QFrame *>(watched)) {
-            frame->setFixedSize(10, 10);  // Reset size when mouse leaves
+            frame->setFixedSize(10, 10);
         }
     }
     return QObject::eventFilter(watched, event);
 }
-
-
-
 
 
 

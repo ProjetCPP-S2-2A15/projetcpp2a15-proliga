@@ -40,16 +40,12 @@ private:
     QString m_equipe1;
     QString m_equipe2;
     QString m_scoreMatch;
-
 };
-
-
 
 class MatchManager
 {
 public:
     MatchManager();
-
 
 private:
     QSqlDatabase m_db;
@@ -62,19 +58,37 @@ class ChatBotWidget : public QWidget
 public:
     explicit ChatBotWidget(QWidget *parent = nullptr);
 
-private slots:
-    void onSendButtonClicked();
+public slots:
+
+
+    void handleTeamInput();
+ void handleSuiviInput(const QString &year);
+
+ // This is a slot you can connect to
+
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    QString getChatBotResponse(const QString &userMessage);
     void initChatInterface();
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
-    QLineEdit *lineEdit_5;
-    QPushButton *submitButton;
-    QTextEdit *chatBox;
+    void displayTeamScore(const QString &teamName);
+    void checkTeamMatches(const QString& year, const QString& team);
+    void checkBestScore(const QString& year, const QString& team);
+
+    // Other private members
+
+    QVBoxLayout *layout = nullptr;
+    QWidget *questionContainer = nullptr;
+    QLineEdit *lineEdit_5 = nullptr;
+    QPushButton *submitButton = nullptr;
+    QTextEdit *chatBox = nullptr;
+    QTextEdit *suiviChatBox=nullptr;
+ QLineEdit *lineEdit_year = nullptr;
+     QLineEdit *lineEdit_ouiNon = nullptr;
+
 };
 
 #endif // MATCH_H

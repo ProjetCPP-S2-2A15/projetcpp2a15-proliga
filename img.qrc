@@ -48,5 +48,7 @@
         <file>interface_icons/excel.png</file>
         <file>interface_icons/next.png</file>
         <file>interface_icons/prv.png</file>
+        <file>interface_icons/chatbot2.jpg</file>
+        <file>interface_icons/chatbot3.jpg</file>
     </qresource>
 </RCC>
