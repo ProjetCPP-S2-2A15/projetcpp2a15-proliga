@@ -36,21 +36,13 @@ public:
 
 private slots:
     void Ajouter_clicked();
-    bool validateName();
-    bool validateCountry();
-    bool validateCoach();
-    bool validateGoals();
-    bool validatePlayers();
-    void checkInput();
+
     void refreshTable();
     void openModificationDialog(int idEquipe);
     void modifyEquipe(int equipeId);
     void addButtonsToTable();
     void addActionColumn();
     void exportTableToPDF();
-    bool isTeamNameUnique(const QString& teamName, int excludedId = -1);
-    bool validateContractDates();
-    bool validateTypeSelection();
     void trieEquipe() ;
     void rechercheEquipe() ;
     void afficherStatistiques() ;
@@ -61,9 +53,8 @@ private slots:
     void on_voc_nb_clicked();
     void on_voc_pays_clicked();
     QString recordText();
-    QString processPythonRecognition()
-    ;
-
+   // QString processPythonRecognition() ;
+    bool isTeamNameUnique(const QString& teamName, int excludedId = -1);
 private:
     Ui::MainWindow *ui;
     Statistique *statistique; // Declare the Statistique pointer
@@ -72,7 +63,7 @@ private:
     Equipe *Eq;
     bool isModifying;
     QFutureWatcher<QString> *futureWatcher;
-QString lastClickedField;
+    QString lastClickedField;
     QString m_lastAudioFile;
 
 

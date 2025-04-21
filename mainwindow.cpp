@@ -28,7 +28,7 @@
 #include <QtConcurrent>
 #include <iostream> // For std::cout
 #include <exception> // For std::exception
- // if the library uses this namespace
+// if the library uses this namespace
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -78,16 +78,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->statistiquesButton, &QPushButton::clicked, this, &MainWindow::afficherStatistiques); // Connect statistics button
 
     // Connect QLineEdit fields to validation methods
-    connect(ui->nome, &QLineEdit::textChanged, this, &MainWindow:: checkInput);
-    connect(ui->Pays, &QLineEdit::textChanged, this, &MainWindow::checkInput);
-    connect(ui->coach, &QLineEdit::textChanged, this, &MainWindow::checkInput);
-    connect(ui->nbmarquee, &QLineEdit::textChanged, this, &MainWindow::checkInput);
-    connect(ui->nbj, &QSpinBox::valueChanged, this, &MainWindow::checkInput);
+   /* connect(ui->nome, &QLineEdit::textChanged, this, &MainWindow:: validateInputs);
+    connect(ui->Pays, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    connect(ui->coach, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    connect(ui->nbmarquee, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
+    connect(ui->nbj, &QSpinBox::valueChanged, this, &MainWindow::validateInputs);*/
     connect(ui->telechargement, &QPushButton::clicked, this, &MainWindow::exportTableToPDF);
     connect(ui->voc_nom, &QPushButton::clicked, this, &MainWindow::on_voc_nom_clicked);
     connect(ui->voc_coach, &QPushButton::clicked, this, &MainWindow::on_voc_coach_clicked);
     connect(ui->voc_nb, &QPushButton::clicked, this, &MainWindow::on_voc_nb_clicked);
     connect(ui->voc_pays, &QPushButton::clicked, this, &MainWindow::on_voc_pays_clicked);
+
 
     // Populate sorting combo boxes
     ui->sortFieldComboBox->addItems({"NOMEQUIPE", "TYPE"}); // Add fields to sort by
@@ -211,7 +212,6 @@ void MainWindow::addButtonsToTable() {
         ui->programme->setIndexWidget(ui->programme->model()->index(row, ui->programme->model()->columnCount() - 1), buttonWidget);
     }
 }
-
 bool MainWindow::isTeamNameUnique(const QString& teamName, int excludedId) {
     QSqlQuery query;
     query.prepare("SELECT COUNT(*) FROM equipe WHERE NOMEQUIPE = :nomE AND IDEQUIPE != :excludedId");
@@ -226,119 +226,91 @@ bool MainWindow::isTeamNameUnique(const QString& teamName, int excludedId) {
         return false;
     }
 }
-
-bool MainWindow::validateName() {
-    bool valide = true;
-    QRegularExpression regex("^[A-Z][a-zA-Z]*$");
-    if (!regex.match(ui->nome->text()).hasMatch()) {
-        QMessageBox::warning(this, "Input Error", "Invalid name. It should start with a capital letter and contain only letters.");
-        ui->nome->setFocus();
-        valide = false;
-    } else if (!isTeamNameUnique(ui->nome->text())) {
-        QMessageBox::warning(this, "Input Error", "Le nom de l'équipe doit être unique.");
-        ui->nome->setFocus();
-        valide = false;
-    }
-    return valide;
-}
-
-bool MainWindow::validateContractDates() {
-    QDate dateDebut = ui->dbcnt->date();
-    QDate dateFin = ui->fincnt->date();
-
-    if (dateFin <= dateDebut) {
-        QMessageBox::warning(this, "Input Error", "La date de fin de contrat doit être postérieure à la date de début de contrat.");
-        ui->fincnt->setFocus();
-        return false;
-    }
-    return true;
-}
-
-bool MainWindow::validateTypeSelection() {
+void MainWindow::Ajouter_clicked() {
+    // Retrieve data from the UI
+    QString teamName = ui->nome->text().trimmed();
+    QString country = ui->Pays->text().trimmed();
+    QString coach = ui->coach->text().trimmed();
+    QString goals = ui->nbmarquee->text().trimmed();
+    QString players = ui->nbj->text().trimmed();
+    QDate dateDebutContrat = ui->dbcnt->date();
+    QDate dateFinContrat = ui->fincnt->date();
     bool normalChecked = ui->Normal->isChecked();
     bool nationalChecked = ui->Nationnal->isChecked();
 
-    if (!normalChecked && !nationalChecked) {
-        QMessageBox::warning(this, "Input Error", "Veuillez sélectionner un type (Normal ou National).");
-        return false;
-    } else if (normalChecked && nationalChecked) {
-        QMessageBox::warning(this, "Input Error", "Veuillez sélectionner un seul type (Normal ou National).");
-        return false;
-    }
-    return true;
-}
+    // Regular expressions
+    static const QRegularExpression alphaRegex("^[A-Z][a-zA-Z]*$");
+    static const QRegularExpression numberRegex("^[0-9]+$");
 
-bool MainWindow::validateCountry() {
-    bool valide = true;
-    QRegularExpression regex("^[A-Z][a-zA-Z]*$");
-    if (!regex.match(ui->Pays->text()).hasMatch()) {
-        QMessageBox::warning(this, "Input Error", "Invalid country name. It should start with a capital letter and contain only letters.");
-        ui->Pays->setFocus();
-        valide = false;
+    // Validate Team Name
+    if (teamName.isEmpty() || !isTeamNameUnique(teamName) || !alphaRegex.match(teamName).hasMatch()) {
+        ui->nome->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid team name. It should be unique and start with a capital letter.");
+        return;
+    } else {
+        ui->nome->setStyleSheet("border: 1px solid #2E7D32;");
     }
-    return valide;
-}
 
-bool MainWindow::validateCoach() {
-    bool valide = true;
-    QRegularExpression regex("^[A-Z][a-zA-Z]*$");
-    if (!regex.match(ui->coach->text()).hasMatch()) {
-        ui->coach->setFocus();
-        valide = false;
+    // Validate Country
+    if (country.isEmpty() || !alphaRegex.match(country).hasMatch()) {
+        ui->Pays->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid country name. It should start with a capital letter.");
+        return;
+    } else {
+        ui->Pays->setStyleSheet("border: 1px solid #2E7D32;");
     }
-    return valide;
-}
 
-bool MainWindow::validateGoals() {
-    bool valide = true;
-    QRegularExpression numberRegex("^[0-9]+$");
-    if (!numberRegex.match(ui->nbmarquee->text()).hasMatch()) {
-        QMessageBox::warning(this, "Input Error", "Invalid number of goals. It should contain only digits.");
-        ui->nbmarquee->setFocus();
-        valide = false;
-    } else if (ui->nbmarquee->text().toInt() < 0) {
-        QMessageBox::warning(this, "Input Error", "The number of goals scored must be non-negative.");
-        ui->nbmarquee->setFocus();
-        valide = false;
+    // Validate Coach
+    if (coach.isEmpty() || !alphaRegex.match(coach).hasMatch()) {
+        ui->coach->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid coach name. It should start with a capital letter.");
+        return;
+    } else {
+        ui->coach->setStyleSheet("border: 1px solid #2E7D32;");
     }
-    return valide;
-}
 
-bool MainWindow::validatePlayers() {
-    bool valide = true;
-    QRegularExpression numberRegex("^[0-9]+$");
-    if (!numberRegex.match(ui->nbj->text()).hasMatch()) {
-        QMessageBox::warning(this, "Input Error", "Invalid number of players. It should contain only digits.");
-        ui->nbj->setFocus();
-        valide = false;
-    } else if (ui->nbj->value() < 11) {
+    // Validate Goals
+    if (!numberRegex.match(goals).hasMatch() || goals.toInt() < 0) {
+        ui->nbmarquee->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid number of goals. It should be a non-negative integer.");
+        return;
+    } else {
+        ui->nbmarquee->setStyleSheet("border: 1px solid #2E7D32;");
+    }
+
+    // Validate Players
+    if (!numberRegex.match(players).hasMatch() || players.toInt() < 11) {
+        ui->nbj->setStyleSheet("border: 1px solid #D32F2F;");
         QMessageBox::warning(this, "Input Error", "The number of players must be at least 11.");
-        ui->nbj->setFocus();
-        valide = false;
-    }
-    return valide;
-}
-
-void MainWindow::checkInput() {
-    bool isValid = validateName() && validateCountry() && validateCoach() && validateGoals() && validatePlayers() && validateContractDates() && validateTypeSelection();
-    ui->Ajouter->setEnabled(isValid);
-}
-
-void MainWindow::Ajouter_clicked() {
-    if (!validateName() || !validateCountry() || !validateCoach() || !validateGoals() || !validatePlayers() || !validateContractDates() || !validateTypeSelection()) {
-        return; // Stop if any validation fails
+        return;
+    } else {
+        ui->nbj->setStyleSheet("border: 1px solid #2E7D32;");
     }
 
-    QString nomE = ui->nome->text();
-    QString nomv = ui->Pays->text();
-    QString nomC = ui->coach->text();
-    int nbj = ui->nbj->value();
-    QString type = ui->Normal->isChecked() ? "Normal" : "National";
-    int nbm = ui->nbmarquee->text().toInt();
-    QDate dateDebutContrat = ui->dbcnt->date();
-    QDate dateFinContrat = ui->fincnt->date();
+    // Validate Contract Dates
+    if (dateFinContrat <= dateDebutContrat) {
+        ui->dbcnt->setStyleSheet("border: 1px solid #D32F2F;");
+        ui->fincnt->setStyleSheet("border: 1px solid #D32F2F;");
 
-    Equipe EQUIPE(nomE, nomv, nomC, nbj, type, nbm, dateDebutContrat, dateFinContrat);
+        QMessageBox::warning(this, "Input Error", "The end date must be after the start date.");
+        return;
+    } else {
+        ui->fincnt->setStyleSheet("border: 1px solid #2E7D32;");
+         ui->dbcnt->setStyleSheet("border: 1px solid #2E7D32;");
+    }
+
+    // Validate Type Selection
+    if (!normalChecked && !nationalChecked) {
+        QMessageBox::warning(this, "Input Error", "Please select a type (Normal or National).");
+        return;
+    } else if (normalChecked && nationalChecked) {
+        QMessageBox::warning(this, "Input Error", "Please select only one type (Normal or National).");
+        return;
+    }
+
+    // If all validations pass, proceed to add the team
+    QString type = normalChecked ? "Normal" : "National";
+    Equipe EQUIPE(teamName, country, coach, players.toInt(), type, goals.toInt(), dateDebutContrat, dateFinContrat);
     bool success = EQUIPE.Ajouter();
     if (success) {
         QMessageBox::information(this, "Success", "Equipe added successfully!");
@@ -352,7 +324,6 @@ void MainWindow::Ajouter_clicked() {
         QMessageBox::critical(this, "Error", "Failed to add the EQUIPE: " + QSqlDatabase::database().lastError().text());
     }
 }
-
 void MainWindow::openModificationDialog(int equipeId) {
     QSqlQuery query;
     query.prepare("SELECT * FROM equipe WHERE IDEQUIPE = :id");
@@ -365,6 +336,12 @@ void MainWindow::openModificationDialog(int equipeId) {
         ui->coach->setText(query.value("NOMENTRAINEUR").toString());
         ui->nbj->setValue(query.value("NOMBREJOUEURS").toInt());
         ui->nbmarquee->setText(query.value("NOMBREBUTSMARQUES").toString());
+
+        // Retrieve and set the contract dates
+        QDate dateDebutContrat = query.value("DATEDEBUTCONTRAT").toDate(); // Assuming the column name is DATEDEBUT
+        QDate dateFinContrat = query.value("DATEFINCONTRAT").toDate(); // Assuming the column name is DATEFIN
+        ui->dbcnt->setDate(dateDebutContrat);
+        ui->fincnt->setDate(dateFinContrat);
 
         if (query.value("TYPE").toString() == "Normal") {
             ui->Normal->setChecked(true);
@@ -381,24 +358,98 @@ void MainWindow::openModificationDialog(int equipeId) {
 }
 
 void MainWindow::modifyEquipe(int equipeId) {
-    if (!validateCountry() || !validateCoach() || !validateGoals() || !validatePlayers() || !validateContractDates() || !validateTypeSelection()) {
-        return; // Stop if any validation fails
+    // Retrieve data from the UI
+    QString teamName = ui->nome->text().trimmed();
+    QString country = ui->Pays->text().trimmed();
+    QString coach = ui->coach->text().trimmed();
+    QString goals = ui->nbmarquee->text().trimmed();
+    QString players = ui->nbj->text().trimmed();
+    bool normalChecked = ui->Normal->isChecked();
+    bool nationalChecked = ui->Nationnal->isChecked();
+
+    // Convert QDate to QString, trim it, and convert back to QDate
+    QDate dateDebutContrat = QDate::fromString(ui->dbcnt->date().toString("yyyy-MM-dd").trimmed(), "yyyy-MM-dd");
+    QDate dateFinContrat = QDate::fromString(ui->fincnt->date().toString("yyyy-MM-dd").trimmed(), "yyyy-MM-dd");
+
+    // Regular expressions
+    static const QRegularExpression alphaRegex("^[A-Z][a-zA-Z]*$");
+    static const QRegularExpression numberRegex("^[0-9]+$");
+
+    // Validate Team Name
+    if (teamName.isEmpty() || !isTeamNameUnique(teamName, equipeId) || !alphaRegex.match(teamName).hasMatch()) {
+        ui->nome->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid team name. It should be unique and start with a capital letter.");
+        return;
+    } else {
+        ui->nome->setStyleSheet("border: 1px solid #2E7D32;");
     }
 
-    QString nomE = ui->nome->text();
-    QString nomv = ui->Pays->text();
-    QString nomC = ui->coach->text();
-    int nbj = ui->nbj->value();
-    int nbm = ui->nbmarquee->text().toInt();
-    QString type = ui->Normal->isChecked() ? "Normal" : "National";
+    // Validate Country
+    if (country.isEmpty() || !alphaRegex.match(country).hasMatch()) {
+        ui->Pays->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid country name. It should start with a capital letter.");
+        return;
+    } else {
+        ui->Pays->setStyleSheet("border: 1px solid #2E7D32;");
+    }
+
+    // Validate Coach
+    if (coach.isEmpty() || !alphaRegex.match(coach).hasMatch()) {
+        ui->coach->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid coach name. It should start with a capital letter.");
+        return;
+    } else {
+        ui->coach->setStyleSheet("border: 1px solid #2E7D32;");
+    }
+
+    // Validate Goals
+    if (!numberRegex.match(goals).hasMatch() || goals.toInt() < 0) {
+        ui->nbmarquee->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "Invalid number of goals. It should be a non-negative integer.");
+        return;
+    } else {
+        ui->nbmarquee->setStyleSheet("border: 1px solid #2E7D32;");
+    }
+
+    // Validate Players
+    if (!numberRegex.match(players).hasMatch() || players.toInt() < 11) {
+        ui->nbj->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "The number of players must be at least 11.");
+        return;
+    } else {
+        ui->nbj->setStyleSheet("border: 1px solid #2E7D32;");
+    }
+
+    // Validate Contract Dates
+    if (dateFinContrat <= dateDebutContrat) {
+        ui->dbcnt->setStyleSheet("border: 1px solid #D32F2F;");
+        ui->fincnt->setStyleSheet("border: 1px solid #D32F2F;");
+        QMessageBox::warning(this, "Input Error", "The end date must be after the start date.");
+        return;
+    } else {
+        ui->fincnt->setStyleSheet("border: 1px solid #2E7D32;");
+        ui->dbcnt->setStyleSheet("border: 1px solid # 2E7D32;");
+    }
+
+    // Validate Type Selection
+    if (!normalChecked && !nationalChecked) {
+        QMessageBox::warning(this, "Input Error", "Please select a type (Normal or National).");
+        return;
+    } else if (normalChecked && nationalChecked) {
+        QMessageBox::warning(this, "Input Error", "Please select only one type (Normal or National).");
+        return;
+    }
+
+    // If all validations pass, proceed to modify the team
+    QString type = normalChecked ? "Normal" : "National";
 
     QSqlQuery query;
     query.prepare("UPDATE equipe SET NOMVILLE = :nomv, NOMENTRAINEUR = :nomC, "
                   "NOMBREJOUEURS = :nbj, NOMBREBUTSMARQUES = :nbm, TYPE = :type WHERE IDEQUIPE = :id");
-    query.bindValue(":nomv", nomv);
-    query.bindValue(":nomC", nomC);
-    query.bindValue(":nbj", nbj);
-    query.bindValue(":nbm", nbm);
+    query.bindValue(":nomv", country);
+    query.bindValue(":nomC", coach);
+    query.bindValue(":nbj", players.toInt());
+    query.bindValue(":nbm", goals.toInt());
     query.bindValue(":type", type);
     query.bindValue(":id", equipeId);
 
@@ -419,7 +470,6 @@ void MainWindow::modifyEquipe(int equipeId) {
         QMessageBox::critical(this, "Error", "Failed to modify the equipe: " + query.lastError().text());
     }
 }
-
 void MainWindow::exportTableToPDF() {
     QTextDocument document;
     QTextCursor cursor(&document);
@@ -518,9 +568,8 @@ void MainWindow::on_genererContratButton_clicked()
         );
 
     dialog.exec();
-}
-
-//metier avance speech totext
+}//metier avance speechto text
+#include <cstdlib> // Pour system()
 void MainWindow::on_voc_nom_clicked() {
     lastClickedField = "nome";
     QString result = recordText(); // Appel direct au lieu de QtConcurrent
@@ -532,86 +581,71 @@ void MainWindow::on_voc_nom_clicked() {
 // Faites de même pour les autres boutons vocaux...
 
 void MainWindow::on_voc_coach_clicked() {
-      lastClickedField = "coach";
+    lastClickedField = "coach";
 
-        QString result = recordText(); // Appel direct au lieu de QtConcurrent
-        if (!result.isEmpty()) {
-            ui->coach->setText(result.toUpper());
-        }
+    QString result = recordText(); // Appel direct au lieu de QtConcurrent
+    if (!result.isEmpty()) {
+        ui->coach->setText(result.toUpper());
     }
+}
 
-    // Faites de même pour les autres boutons vocaux...
+// Faites de même pour les autres boutons vocaux...
 
 void MainWindow::on_voc_nb_clicked() {
-      lastClickedField = "nb";
+    lastClickedField = "nb";
 
-        QString result = recordText(); // Appel direct au lieu de QtConcurrent
-        if (!result.isEmpty()) {
-            ui->nbmarquee->setText(result.toUpper());
-        }
+    QString result = recordText(); // Appel direct au lieu de QtConcurrent
+    if (!result.isEmpty()) {
+        ui->nbmarquee->setText(result.toUpper());
     }
+}
 
-    // Faites de même pour les autres boutons vocaux...
+// Faites de même pour les autres boutons vocaux...
 
 
 void MainWindow::on_voc_pays_clicked() {
-      lastClickedField = "pays";
+    lastClickedField = "pays";
 
-        QString result = recordText(); // Appel direct au lieu de QtConcurrent
-        if (!result.isEmpty()) {
-            ui->Pays->setText(result.toUpper());
-        }
+    QString result = recordText(); // Appel direct au lieu de QtConcurrent
+    if (!result.isEmpty()) {
+        ui->Pays->setText(result.toUpper());
     }
+}
+#include <QProcess>
+#include <QFile>
+#include <QMessageBox>
 
-    // Faites de même pour les autres boutons vocaux...
-
-// ... (autres includes existants)
 QString MainWindow::recordText()
 {
-    // Générer un nom de fichier unique
-    m_lastAudioFile = QString("recording_%1.wav").arg(QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss"));
+    QString pythonScriptPath = "C:/Users/PC_DELL/Downloads/c++/voc exec/voc.py";
+    QString pythonExecutable = "C:/Python312/python.exe";
 
-    // Solution multi-plateforme pour l'enregistrement
-    QString program;
-    QStringList arguments;
+    QProcess process;
 
-#ifdef Q_OS_WINDOWS
-    program = "powershell";
-    arguments << "-Command" << "Start-Process -FilePath python -ArgumentList '-c \"import sounddevice as sd; sd.rec(\""
-                                   + m_lastAudioFile + "\", 16000, samplerate=16000, channels=1, blocking=True)\" -Wait";
-#elif defined(Q_OS_LINUX)
-    program = "arecord";
-    arguments << "-f" << "S16_LE" << "-r" << "16000" << "-c" << "1" << "-d" << "5" << m_lastAudioFile;
-#elif defined(Q_OS_MAC)
-    program = "sox";
-    arguments << "-d" << m_lastAudioFile << "rate" << "16000" << "channels" << "1" << "trim" << "0" << "5";
-#endif
+    // Clear PYTHONHOME and PYTHONPATH environment variables
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.remove("PYTHONHOME");
+    env.remove("PYTHONPATH");
+    process.setProcessEnvironment(env);
 
     QMessageBox::information(this, "Enregistrement", "Parlez maintenant pendant 5 secondes...");
 
-    // Lancer l'enregistrement dans le thread principal
-    QProcess recorder;
-    recorder.start(program, arguments);
-    if (!recorder.waitForFinished(5500)) { // 5.5 secondes de timeout
-        QMessageBox::warning(this, "Erreur", "Échec de l'enregistrement audio");
+    process.start(pythonExecutable, QStringList() << pythonScriptPath);
+
+    if (!process.waitForFinished(10000)) { // 10 second timeout
+        QMessageBox::warning(this, "Error",
+                             process.error() == QProcess::Timedout ?
+                                 "Process timed out" : "Failed to execute the Python script");
         return "";
     }
 
-    // Traitement dans le même thread pour éviter les problèmes de parenté
-    return processPythonRecognition();
-}
+    QString output = process.readAllStandardOutput().trimmed();
+    QString errorOutput = process.readAllStandardError().trimmed();
 
-QString MainWindow::processPythonRecognition()
-{
-    QProcess pythonProcess;
-    pythonProcess.start("python", {"speech_to_text.py", m_lastAudioFile});
-
-    if (!pythonProcess.waitForFinished(5000)) {
+    if (!errorOutput.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Error in Python script: " + errorOutput);
         return "";
     }
 
-    QString result = pythonProcess.readAllStandardOutput().trimmed();
-    QFile::remove(m_lastAudioFile); // Nettoyer le fichier temporaire
-
-    return result;
+    return output;
 }

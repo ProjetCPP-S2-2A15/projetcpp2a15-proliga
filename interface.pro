@@ -12,26 +12,6 @@ QT += multimedia  # Change to your Python version  # Change '3.x' to your Python
 TARGET = interface
 TEMPLATE = app
 
-# The following define makes your compiler emit warnings if you use
-# any feature of Qt which has been marked as deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
-
-# Replace the Python check with:
-win32 {
-    # Check for Python in standard locations
-    PYTHON_PATH = $$system(where python)
-    isEmpty(PYTHON_PATH) {
-        message("Python not found in PATH")
-    } else {
-        message("Python found at: $$PYTHON_PATH")
-    }
-}
-# Change from error to warning
-!system(python --version) {
-    warning("Python 3 not found - speech recognition will be disabled")
-    DEFINES += DISABLE_SPEECH_RECOGNITION
-}
 CONFIG += c++11
 
 # You can make your code fail to compile if it uses deprecated APIs.
