@@ -130,3 +130,17 @@ static QSqlQuery getChampionnatsData() {
     QSqlQuery query("SELECT NOM, POOL_GAINS, NBR_EQUIPE FROM CHAMPIONNATS");
     return query;
 }
+
+QSqlQueryModel* Championnats::afficher() {
+    QSqlQueryModel* model = new QSqlQueryModel();
+    QSqlQuery query;
+    query.prepare("SELECT nom, type FROM Championnats");
+    query.exec();
+
+    model->setQuery(std::move(query));
+
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("Nom"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Type"));
+
+    return model;
+}

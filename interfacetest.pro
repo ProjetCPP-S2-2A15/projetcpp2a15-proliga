@@ -37,7 +37,8 @@ SOURCES += \
     mainwindow.cpp \
     match.cpp \
     scene1.cpp \
-    statisticscontainer.cpp
+    statisticscontainer.cpp\
+    stades.cpp
 
 HEADERS += \
     championnats.h \
@@ -48,7 +49,8 @@ HEADERS += \
     mainwindow.h \
     match.h \
     scene1.h \
-    statisticscontainer.h
+    statisticscontainer.h\
+    stades.h
 
 FORMS += \
     mainwindow.ui

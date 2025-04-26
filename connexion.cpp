@@ -11,7 +11,6 @@ bool Connection::createconnect()
     db.setDatabaseName("projet2A15");
     db.setUserName("malek");
     db.setPassword("sys");
-
     if (db.open())
         test=true;
 

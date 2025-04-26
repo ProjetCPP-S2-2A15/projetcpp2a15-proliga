@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     Connection c;
-    //MainWindow M;
     bool test = c.createconnect();
     if (!test) {
         QMessageBox::critical(nullptr, QObject::tr("Database Error"),
@@ -25,6 +24,5 @@ int main(int argc, char *argv[])
 
     LoginWindow login;
     login.show();
-
     return a.exec();
 }

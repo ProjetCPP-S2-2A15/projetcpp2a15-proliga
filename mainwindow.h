@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include "connexion.h"
-#include"championnats.h"
+#include "championnats.h"
 #include "match.h"
 #include "scene1.h"
 #include <QMainWindow>
@@ -20,6 +20,8 @@
 #include <QVector>
 #include <QList>
 #include "scene1.h"
+#include <QPushButton>
+#include <QSqlQueryModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -43,6 +45,9 @@ private:
     QTimer *validationTimerUP;
     QString rechercheact;
     QString triact;
+    QPushButton *newButton;
+    QSqlQueryModel* afficherConsulter();
+    QString selectedChamp;
     Scene1 *scene1;
 
 
@@ -76,13 +81,25 @@ private slots:
     void on_CBT_clicked();
     void on_HideCW_clicked();
     void on_SendARD_clicked();
+    void on_tableView_clicked(const QModelIndex &index);
+    void on_addStadiumbuttoN_clicked();
+    void on_pushbuttonmodifieR_clicked();
+    void on_pushButton_supprimer_clicked();
+    void on_comboBoxTri_currentIndexChanged(int index);
+    void on_pushButton_genererPDF_clicked();
+    void on_pushButton_genererExcel_clicked();
+    void on_pushButton_generer_clicked();
+    void on_pushButton_afficherStats_clicked();
+    void refreshMap();
+    void on_tirageButton_clicked();
+    void on_tableViewChamps_clicked(const QModelIndex &index);
+    void on_clearConsulterbutton_clicked();
+    void on_rechercheNom_textChanged(const QString &text);
+    void on_capaciteMinMax_textChanged();
     //void checkSerialData();
 
 
 
 
 };
-
-
-
 #endif // MAINWINDOW_H

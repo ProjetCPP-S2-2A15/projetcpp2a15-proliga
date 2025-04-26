@@ -2887,7 +2887,7 @@ background-color: rgb(210, 247, 221);
               </rect>
              </property>
             </widget>
-            <widget class="QPushButton" name="addStadiumbutton">
+            <widget class="QPushButton" name="addStadiumbuttoN">
              <property name="geometry">
               <rect>
                <x>10</x>
