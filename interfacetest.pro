@@ -4,6 +4,11 @@ QT += widgets sql
 QT += axcontainer
 QT += printsupport
 QT += charts
+QT += serialport
+QT += quick location positioning
+QT += quickwidgets
+QT += positioning location
+QT += quick positioning location
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,6 +36,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     match.cpp \
+    scene1.cpp \
     statisticscontainer.cpp
 
 HEADERS += \
@@ -41,6 +47,7 @@ HEADERS += \
     design.h \
     mainwindow.h \
     match.h \
+    scene1.h \
     statisticscontainer.h
 
 FORMS += \

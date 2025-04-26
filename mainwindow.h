@@ -4,6 +4,7 @@
 #include "connexion.h"
 #include"championnats.h"
 #include "match.h"
+#include "scene1.h"
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QPixmap>
@@ -18,6 +19,7 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <QList>
+#include "scene1.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -41,6 +43,7 @@ private:
     QTimer *validationTimerUP;
     QString rechercheact;
     QString triact;
+    Scene1 *scene1;
 
 
 private slots:
@@ -72,6 +75,8 @@ private slots:
     void on_addMatchButton_clicked();
     void on_CBT_clicked();
     void on_HideCW_clicked();
+    void on_SendARD_clicked();
+    //void checkSerialData();
 
 
 

@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
+    scene1 = new Scene1();
     //design
     applyDesign(ui);
     StyleTW(ui->tableWidget);
@@ -69,15 +69,51 @@ MainWindow::MainWindow(QWidget *parent)
 
     loadChampData();
     loadChampL();
+    //checkSerialData();
     connect(ui->MsL, &QComboBox::currentTextChanged, this, &MainWindow::on_MsL_currentIndexChanged);
     //connect(ui->LSRbut, &QPushButton::clicked, this, &MainWindow::on_LSRbut_clicked);
+
+
+
+
+
+    QTimer *serialTimer = new QTimer(this);
+    connect(serialTimer, &QTimer::timeout, this, [=]() {
+        QString name = scene1->readSerialData();
+        if (!name.isEmpty()) {
+            ui->ARD_R->setText("Received: " + name);
+        }
+    });
+    serialTimer->start(2500);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete scene1;
 
 }
+
+void MainWindow::on_SendARD_clicked(){
+    scene1->getChampDB();
+    qDebug() << "Available serial ports:";
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+        qDebug() << " - " << info.portName() << ":" << info.description();
+    }
+}
+
+
+/*void MainWindow::checkSerialData() {
+
+    QString name = scene1->readSerialData();
+
+
+    if (!name.isEmpty()) {
+        ui->ARD_R->setText(name);
+    }
+}*/
+
+
 void MainWindow::ajoutChampB_clicked(){
 
     bool test = validateInputs();
