@@ -139,7 +139,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/competition.png</normaloff>:/interface_icons/competition.png</iconset>
            </property>
            <property name="checkable">
@@ -160,7 +160,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/ball.png</normaloff>:/interface_icons/ball.png</iconset>
            </property>
            <property name="checkable">
@@ -182,7 +182,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/t.png</normaloff>:/interface_icons/t.png</iconset>
            </property>
            <property name="checkable">
@@ -203,7 +203,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/p.png</normaloff>:/interface_icons/p.png</iconset>
            </property>
            <property name="checkable">
@@ -224,7 +224,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/a.png</normaloff>:/interface_icons/a.png</iconset>
            </property>
            <property name="checkable">
@@ -245,7 +245,7 @@ border: none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/ss.png</normaloff>:/interface_icons/ss.png</iconset>
            </property>
            <property name="checkable">
@@ -281,7 +281,7 @@ border: none;</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="img.qrc">
+          <iconset>
            <normaloff>:/interface_icons/q.png</normaloff>:/interface_icons/q.png</iconset>
          </property>
          <property name="checkable">
@@ -346,7 +346,7 @@ color: white;</string>
             <string>ArenaChamps</string>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/log.png</normaloff>:/interface_icons/log.png</iconset>
            </property>
            <property name="iconSize">
@@ -370,7 +370,7 @@ color: #788596;</string>
             <string> Competition</string>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/competition.png</normaloff>:/interface_icons/competition.png</iconset>
            </property>
            <property name="checkable">
@@ -394,7 +394,7 @@ color: #788596;</string>
             <string>  Matches</string>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/ball.png</normaloff>:/interface_icons/ball.png</iconset>
            </property>
            <property name="checkable">
@@ -418,7 +418,7 @@ color: #788596;</string>
             <string>   Equipes</string>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/t.png</normaloff>:/interface_icons/t.png</iconset>
            </property>
            <property name="checkable">
@@ -442,7 +442,7 @@ color: #788596;</string>
             <string>   Joueurs</string>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/p.png</normaloff>:/interface_icons/p.png</iconset>
            </property>
            <property name="checkable">
@@ -466,7 +466,7 @@ color: #788596;</string>
             <string>   Arbitres</string>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/a.png</normaloff>:/interface_icons/a.png</iconset>
            </property>
            <property name="checkable">
@@ -490,7 +490,7 @@ color: #788596;</string>
             <string>   Stades</string>
            </property>
            <property name="icon">
-            <iconset resource="img.qrc">
+            <iconset>
              <normaloff>:/interface_icons/ss.png</normaloff>:/interface_icons/ss.png</iconset>
            </property>
            <property name="checkable">
@@ -529,7 +529,7 @@ color: #788596;</string>
           <string>logout</string>
          </property>
          <property name="icon">
-          <iconset resource="img.qrc">
+          <iconset>
            <normaloff>:/interface_icons/q.png</normaloff>:/interface_icons/q.png</iconset>
          </property>
          <property name="checkable">
@@ -577,7 +577,7 @@ height: 30px;</string>
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="img.qrc">
+         <iconset>
           <normaloff>:/interface_icons/menu.png</normaloff>:/interface_icons/menu.png</iconset>
         </property>
         <property name="checkable">
@@ -595,7 +595,7 @@ height: 30px;</string>
         </rect>
        </property>
        <property name="currentIndex">
-        <number>6</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="homePage">
         <widget class="QLabel" name="label_4">
@@ -648,7 +648,7 @@ height: 30px;</string>
           </rect>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>4</number>
          </property>
          <property name="tabBarAutoHide">
           <bool>false</bool>
@@ -2201,7 +2201,7 @@ QPushButton:pressed {
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/winner.svg</pixmap>
+             <pixmap>:/Users/ADMIN/Downloads/winner.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -2233,7 +2233,7 @@ QPushButton:pressed {
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/football-strike.svg</pixmap>
+             <pixmap>:/Users/ADMIN/Downloads/football-strike.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -2291,7 +2291,7 @@ QPushButton:pressed {
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/bestdef.svg</pixmap>
+             <pixmap>:/Users/ADMIN/Downloads/bestdef.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -2323,7 +2323,7 @@ QPushButton:pressed {
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="img.qrc">:/Users/ADMIN/Downloads/cleansh.svg</pixmap>
+             <pixmap>:/Users/ADMIN/Downloads/cleansh.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -2575,7 +2575,7 @@ QPushButton:pressed {
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="img.qrc">
+          <iconset>
            <normaloff>:/interface_icons/bin.png</normaloff>:/interface_icons/bin.png</iconset>
          </property>
         </widget>
@@ -3247,7 +3247,7 @@ background-color: rgb(17, 145, 214);
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="img.qrc">
+             <iconset>
               <normaloff>:/interface_icons/bin.png</normaloff>:/interface_icons/bin.png</iconset>
             </property>
             <property name="checkable">
@@ -3451,7 +3451,7 @@ color: rgb(58, 135, 58);</string>
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="img.qrc">
+             <iconset>
               <normaloff>:/interface_icons/bin.png</normaloff>:/interface_icons/bin.png</iconset>
             </property>
            </widget>
@@ -3530,9 +3530,7 @@ color: rgb(58, 135, 58);</string>
    <header location="global">QtQuickWidgets/QQuickWidget</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="img.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>sidebar</sender>
