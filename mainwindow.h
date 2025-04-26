@@ -96,6 +96,7 @@ private slots:
     void on_clearConsulterbutton_clicked();
     void on_rechercheNom_textChanged(const QString &text);
     void on_capaciteMinMax_textChanged();
+    QString ARD_consulter(const QString &champName);
     //void checkSerialData();
 
 

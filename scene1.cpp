@@ -83,3 +83,15 @@ QString Scene1::readSerialData() {
 
     return name;
 }
+
+void Scene1::ARD_sendCS(const QString &message)
+{
+    if (serial.isOpen() && serial.isWritable()) {
+        QByteArray data = message.toUtf8();
+        data.append('\n');
+        serial.write(data);
+        serial.flush();
+    } else {
+        qDebug() << "Serial port is not open or not writable!";
+    }
+}

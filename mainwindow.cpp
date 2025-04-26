@@ -43,7 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
     //changeWidget
 
 
-    ui->setupUi(this);
     ui->tableView->setModel(Stade().afficher());
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -84,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->recherche, &QPushButton::clicked, this, &MainWindow::rechrecheparnom);
     connect(ui->exp_b,&QPushButton::clicked,this,&MainWindow::selectExp);
     ui->tableWidget->setSortingEnabled(true);
-    connect(ui->addStadiumbuttoN,&QPushButton::clicked,this, &MainWindow::on_addStadiumbuttoN_clicked);
+    //connect(ui->addStadiumbuttoN,&QPushButton::clicked,this, &MainWindow::on_addStadiumbuttoN_clicked);
 
 
 
@@ -134,6 +133,9 @@ MainWindow::MainWindow(QWidget *parent)
         QString name = scene1->readSerialData();
         if (!name.isEmpty()) {
             ui->ARD_R->setText("Received: " + name);
+            QString RM = ARD_consulter(name);
+            scene1->ARD_sendCS(RM);
+
         }
     });
     serialTimer->start(2500);
@@ -1474,6 +1476,7 @@ void MainWindow::on_tableView_clicked(const QModelIndex &index) {
 }
 
 void MainWindow::on_addStadiumbuttoN_clicked() {
+    qDebug() << "Button clicked!";
     QString name = ui->lineEdit_nomA->text();
     QString location = ui->lineEdit_lieuA->text();
     QString capacityStr = ui->lineEdit_capaciteA->text();
@@ -1980,8 +1983,8 @@ void MainWindow::on_tirageButton_clicked() {
         QMessageBox::critical(this, "Erreur", "Impossible de vérifier le type du championnat.");
         return;
     }
-    if (typeQuery.value("type").toString() != "E") {
-        QMessageBox::critical(this, "Erreur", "Le championnat sélectionné doit être de type 'E'.");
+    if (typeQuery.value("type").toString() != "Coupe") {
+        QMessageBox::critical(this, "Erreur", "Le championnat sélectionné doit être de type 'Coupe'.");
         return;
     }
 
@@ -2047,4 +2050,69 @@ void MainWindow::on_clearConsulterbutton_clicked() {
 
     QMessageBox::information(this, "Succès", "Tableau CONSULTER vidé.");
     ui->tableViewConsulter->setModel(afficherConsulter());
+}
+
+QString MainWindow::ARD_consulter(const QString &champName)
+{
+    if (champName.isEmpty()) {
+        return "Erreur: Aucun championnat sélectionné.";
+    }
+
+    QSqlQuery typeQuery;
+    typeQuery.prepare("SELECT type FROM Championnats WHERE nom = :nom");
+    typeQuery.bindValue(":nom", champName);
+    if (!typeQuery.exec() || !typeQuery.next()) {
+        return "Erreur: Impossible de vérifier le type du championnat.";
+    }
+    if (typeQuery.value("type").toString() != "Coupe") {
+        return "Erreur: Le championnat sélectionné n'est pas de type 'Coupe'.";
+    }
+
+    QSqlQuery checkQuery;
+    checkQuery.prepare("SELECT 1 FROM CONSULTER WHERE nom_champ = :nom_champ");
+    checkQuery.bindValue(":nom_champ", champName);
+    if (checkQuery.exec() && checkQuery.next()) {
+        return "Erreur: Ce championnat a déjà un stade assigné.";
+    }
+
+    QStringList stadeNames;
+    QSqlQuery stadeQuery;
+    stadeQuery.prepare("SELECT nom FROM Stades WHERE capacite > :minCapacity "
+                       "AND nom NOT IN (SELECT nom_stade FROM CONSULTER)");
+    stadeQuery.bindValue(":minCapacity", 40000);
+    if (stadeQuery.exec()) {
+        while (stadeQuery.next()) {
+            stadeNames << stadeQuery.value("nom").toString();
+        }
+    } else {
+        return "Erreur: Impossible de récupérer les stades.";
+    }
+
+    if (stadeNames.isEmpty()) {
+        return "Erreur: Aucun stade disponible avec une capacité supérieure à 40 000.";
+    }
+
+    QRandomGenerator rng(QRandomGenerator::securelySeeded());
+    QString selectedStade = stadeNames[rng.bounded(stadeNames.size())];
+
+    int nextId = 1;
+    QSqlQuery idQuery;
+    idQuery.prepare("SELECT NVL(MAX(ID_CONSULTER), 0) + 1 FROM CONSULTER");
+    if (idQuery.exec() && idQuery.next()) {
+        nextId = idQuery.value(0).toInt();
+    }
+
+    QSqlQuery insertQuery;
+    insertQuery.prepare("INSERT INTO CONSULTER (ID_CONSULTER, nom_champ, nom_stade) "
+                        "VALUES (:id, :nom_champ, :nom_stade)");
+    insertQuery.bindValue(":id", nextId);
+    insertQuery.bindValue(":nom_champ", champName);
+    insertQuery.bindValue(":nom_stade", selectedStade);
+    if (!insertQuery.exec()) {
+        return "Erreur: Échec de l'ajout au tirage.";
+    }
+
+    ui->tableViewConsulter->setModel(afficherConsulter());
+
+    return QString("Succès: %1 assigné à %2 !").arg(champName, selectedStade);
 }

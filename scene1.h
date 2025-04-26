@@ -16,6 +16,7 @@ public:
     void closeSerialPort();
     void getChampDB();
     QString readSerialData();
+    void ARD_sendCS(const QString &message);
 
 private:
     QSerialPort serial;
