@@ -50,5 +50,6 @@
         <file>interface_icons/prv.png</file>
         <file>interface_icons/chatbot2.jpg</file>
         <file>interface_icons/chatbot3.jpg</file>
+        <file>interface_icons/showarduino.png</file>
     </qresource>
 </RCC>

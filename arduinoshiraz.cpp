@@ -13,7 +13,6 @@ Arduinoshiraz::Arduinoshiraz(QWidget *parent, const QString &team1Name, const QS
     team1Name(team1Name),
     team2Name(team2Name)
 {
-    // Apply the gradient background to the whole dialog
     this->setStyleSheet(R"(
         Arduinoshiraz {
             background: qlineargradient(
@@ -25,46 +24,43 @@ Arduinoshiraz::Arduinoshiraz(QWidget *parent, const QString &team1Name, const QS
         }
     )");
 
-    // Main vertical layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    // Top layout with logo aligned to top-right
     QHBoxLayout *topLayout = new QHBoxLayout();
     QLabel *logoLabel = new QLabel(this);
-    QPixmap logoPixmap(":/interface_icons/logb.png"); // Replace with the correct path if needed
+    QPixmap logoPixmap(":/interface_icons/logb.png");
     logoLabel->setPixmap(logoPixmap.scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     logoLabel->setAlignment(Qt::AlignRight | Qt::AlignTop);
-    logoLabel->setAttribute(Qt::WA_TranslucentBackground);  // Let Qt know it's transparent
-    logoLabel->setStyleSheet("background: transparent;");   // Ensure label has no background
+    logoLabel->setAttribute(Qt::WA_TranslucentBackground);
+    logoLabel->setStyleSheet("background: transparent;");
 
-    topLayout->addStretch();  // Push logo to the right
+    topLayout->addStretch();
     topLayout->addWidget(logoLabel);
     mainLayout->addLayout(topLayout);
 
-    // Score label centered with styling
     scoreLabel = new QLabel(QString("%1: 0 | %2: 0").arg(team1Name).arg(team2Name), this);
     scoreLabel->setAlignment(Qt::AlignCenter);
     scoreLabel->setStyleSheet("font-size: 24px; font-weight: bold; padding: 10px;");
     mainLayout->addWidget(scoreLabel);
 
-    // Stop button centered and styled
     stopButton = new QPushButton("Arrêter le suivi", this);
     stopButton->setStyleSheet("padding: 10px; font-size: 16px;");
     mainLayout->addWidget(stopButton, 0, Qt::AlignCenter);
     connect(stopButton, &QPushButton::clicked, this, &Arduinoshiraz::stopTracking);
 
-    // Serial communication setup
-    serial->setPortName("COM6");  // Update if needed
+    serial->setPortName("COM6");
     serial->setBaudRate(QSerialPort::Baud9600);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
     serial->setStopBits(QSerialPort::OneStop);
     serial->setFlowControl(QSerialPort::NoFlowControl);
 
-    if (serial->open(QIODevice::ReadOnly)) {
+    if (serial->open(QIODevice::ReadWrite)) {
+        sendScoreToArduino(scoreTeam1, scoreTeam2);
+
         connect(serial, &QSerialPort::readyRead, this, &Arduinoshiraz::readSerialData);
     } else {
-        QMessageBox::critical(this, "Erreur", "Impossible d'ouvrir le port série.");
+        QMessageBox::critical(this, "Erreur", "Impossible d'ouvrir le port série: " + serial->errorString());
     }
 }
 
@@ -75,13 +71,21 @@ Arduinoshiraz::~Arduinoshiraz()
     }
 }
 
-void Arduinoshiraz::readSerialData()
+void Arduinoshiraz::sendScoreToArduino(int score1, int score2)
+{
+    if (serial->isOpen()) {
+        QString message = QString("T1=%1;T2=%2;").arg(score1).arg(score2);
+        QByteArray data = message.toUtf8();
+        serial->write(data);
+        serial->waitForBytesWritten(1000);
+    }
+}
 
+void Arduinoshiraz::readSerialData()
 {
     QByteArray data = serial->readAll();
     QString dataString = QString::fromUtf8(data);
 
-    // Check if the data contains score information (e.g., "Team 1: 5 | Team 2: 0")
     if (dataString.contains("Team 1:") && dataString.contains("Team 2:")) {
         QStringList scoreParts = dataString.split("|");
         if (scoreParts.size() >= 2) {
@@ -91,21 +95,20 @@ void Arduinoshiraz::readSerialData()
             scoreTeam1 = team1Score.toInt();
             scoreTeam2 = team2Score.toInt();
 
-            // Update the label to show current scores
             scoreLabel->setText(QString(" %1  -  %2").arg(scoreTeam1).arg(scoreTeam2));
+
+            sendScoreToArduino(scoreTeam1, scoreTeam2);
         }
     }
 }
 
 void Arduinoshiraz::stopTracking()
 {
-    // Stop the serial communication and close the dialog
     if (serial->isOpen()) {
         serial->close();
     }
-    accept(); // Close the dialog
+    accept();
 }
-// In Arduinoshiraz.cpp
 
 QString Arduinoshiraz::getFinalScore()
 {

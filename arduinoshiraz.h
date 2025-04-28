@@ -30,6 +30,8 @@ private:
     int scoreTeam2;
     QString team1Name;
     QString team2Name;
+    void sendScoreToArduino(int score1, int score2);
+
 };
 
 #endif // ARDUINOSHIRAZ_H

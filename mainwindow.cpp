@@ -129,6 +129,9 @@ MainWindow::MainWindow(QWidget *parent)
      connect(ui->show_3, &QPushButton::clicked, this, &MainWindow::onShow3ButtonClicked);
     connect(ui->tri_prog, SIGNAL(clicked()), this, SLOT(on_tri_prog_clicked()));
     connect(ui->tri_histo, SIGNAL(clicked()), this, SLOT(on_tri_histo_clicked()));
+    connect(ui->showarduino, &QPushButton::clicked,
+            this, &MainWindow::on_showArduinoButton_clicked);
+
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 }
@@ -761,7 +764,7 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
         QDateTime matchDateTime = QDateTime::fromString(dateTimeString, "yyyy-MM-dd HH:mm:ss");
 
         qint64 secondsDiff = matchDateTime.secsTo(now);
-        bool askTrackOption = (secondsDiff <= 9000); // 2.5 hours = 9000 seconds
+        bool askTrackOption = (secondsDiff <= 9000);
 
         if (askTrackOption) {
             QMessageBox msgBox;
@@ -772,35 +775,27 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
             msgBox.exec();
 
             if (msgBox.clickedButton() == realtimeButton) {
-                // Get team names from columns 2 and 3 in the table
-                QString team1Name = ui->historique_table->item(row, 2)->text(); // Team 1 name (col 2)
-                QString team2Name = ui->historique_table->item(row, 3)->text(); // Team 2 name (col 3)
+                QString team1Name = ui->historique_table->item(row, 2)->text();
+                QString team2Name = ui->historique_table->item(row, 3)->text();
 
-                // Trigger the real-time score tracking and pass team names to dialog
-                Arduinoshiraz realtimeDialog(this, team1Name, team2Name); // Pass team names here
+                Arduinoshiraz realtimeDialog(this, team1Name, team2Name);
                 if (realtimeDialog.exec() == QDialog::Accepted) {
-                    // Get the final score from the real-time tracking dialog
                     QString finalScore = realtimeDialog.getFinalScore();
-
-                    // Update the score in the table
                     ui->historique_table->item(row, col)->setText(finalScore);
 
-                    // Extract the scores
                     QStringList scores = finalScore.split("-");
                     int scoreTeam1 = scores[0].toInt();
                     int scoreTeam2 = scores[1].toInt();
 
-                    // Determine the winner
                     QString winner;
                     if (scoreTeam1 > scoreTeam2) {
-                        winner = team1Name; // Use the actual team name from column 2
+                        winner = team1Name;
                     } else if (scoreTeam1 < scoreTeam2) {
-                        winner = team2Name; // Use the actual team name from column 3
+                        winner = team2Name;
                     } else {
                         winner = "égalité";
                     }
 
-                    // Update the database
                     QSqlQuery query;
                     query.prepare("UPDATE MATCHES SET SCORE = :score, WINNER = :winner, SCOREEDIT = 1 WHERE ID_MATCH = :id_match");
                     query.bindValue(":score", finalScore);
@@ -817,10 +812,8 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
             }
         }
 
-        // If the user chooses to update manually
         QString oldScore = ui->historique_table->item(row, col)->text();
 
-        // Validate the score format (X-Y)
         QRegularExpression regExp("^\\d+-\\d+$");
         QRegularExpressionValidator validator(regExp, this);
 
@@ -831,25 +824,21 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
         if (ok && !newScore.isEmpty()) {
             int pos = 0;
             if (validator.validate(newScore, pos) == QValidator::Acceptable) {
-                // Update the score in the table
                 ui->historique_table->item(row, col)->setText(newScore);
 
-                // Extract the scores
                 QStringList scores = newScore.split("-");
                 int scoreTeam1 = scores[0].toInt();
                 int scoreTeam2 = scores[1].toInt();
 
-                // Determine the winner
                 QString winner;
                 if (scoreTeam1 > scoreTeam2) {
-                    winner = ui->historique_table->item(row, 2)->text(); // Team 1 name
+                    winner = ui->historique_table->item(row, 2)->text();
                 } else if (scoreTeam1 < scoreTeam2) {
-                    winner = ui->historique_table->item(row, 3)->text(); // Team 2 name
+                    winner = ui->historique_table->item(row, 3)->text();
                 } else {
                     winner = "égalité";
                 }
 
-                // Update the database
                 QSqlQuery query;
                 query.prepare("UPDATE MATCHES SET SCORE = :score, WINNER = :winner, SCOREEDIT = 1 WHERE ID_MATCH = :id_match");
                 query.bindValue(":score", newScore);
@@ -867,6 +856,9 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
         }
     }
 }
+
+
+
 
 //--------------------------------------------DESIGN HISTORIQUE-----------------------------------------------------------------------------------------
 
@@ -1691,4 +1683,69 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
 }
 
 
+//---------------------------output arduino------------------------------------------------------
 
+void MainWindow::on_showArduinoButton_clicked()
+{
+    arduinoMode = true;
+    QMessageBox::information(this, "Afficher sur Arduino", "Veuillez sélectionner un match dans la table.");
+}
+
+void MainWindow::on_historique_table_cellClicked(int row, int column)
+{
+    if (!arduinoMode)
+        return;
+
+    if (column == 4) {
+        QString team1Name = ui->historique_table->item(row, 2)->text().trimmed();
+        QString team2Name = ui->historique_table->item(row, 3)->text().trimmed();
+        QString score = ui->historique_table->item(row, column)->text();
+        QStringList parts = score.split("-");
+
+        if (parts.size() == 2) {
+            bool ok1, ok2;
+            int team1Score = parts[0].trimmed().toInt(&ok1);
+            int team2Score = parts[1].trimmed().toInt(&ok2);
+
+            if (!ok1 || !ok2) {
+                QMessageBox::warning(this, "Erreur", "Format de score invalide");
+                arduinoMode = false;
+                return;
+            }
+
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Envoyer le score",
+                                          QString("Voulez-vous afficher les scores?\n"
+                                                  "%1: %2 | %3: %4")
+                                              .arg(team1Name).arg(team1Score)
+                                              .arg(team2Name).arg(team2Score),
+                                          QMessageBox::Yes | QMessageBox::No);
+
+            if (reply == QMessageBox::Yes) {
+                QSerialPort serialPort;
+                serialPort.setPortName("COM6");
+
+                if (!serialPort.open(QIODevice::WriteOnly)) {
+                    QMessageBox::warning(this, "Erreur",
+                                         "Port série non disponible:\n" + serialPort.errorString());
+                    arduinoMode = false;
+                    return;
+                }
+
+                serialPort.setBaudRate(QSerialPort::Baud9600);
+
+                QString message = QString("T1=%1;T2=%2;").arg(team1Score).arg(team2Score);
+
+                if (serialPort.write(message.toUtf8())) {
+                    serialPort.waitForBytesWritten(1000);
+                    QMessageBox::information(this, "Succès",
+                                             QString("Scores affichés:\n%1: %2 | %3: %4")
+                                                 .arg(team1Name).arg(team1Score)
+                                                 .arg(team2Name).arg(team2Score));
+                }
+                serialPort.close();
+            }
+            arduinoMode = false;
+        }
+    }
+}

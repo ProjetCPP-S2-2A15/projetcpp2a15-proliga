@@ -900,6 +900,23 @@ font: 700 9pt &quot;System&quot;;
              <string>Chercher </string>
             </property>
            </widget>
+           <widget class="QPushButton" name="showarduino">
+            <property name="geometry">
+             <rect>
+              <x>310</x>
+              <y>0</y>
+              <width>21</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="img.qrc">
+              <normaloff>:/interface_icons/showarduino.png</normaloff>:/interface_icons/showarduino.png</iconset>
+            </property>
+           </widget>
           </widget>
           <widget class="QWidget" name="widget_8" native="true">
            <property name="geometry">

@@ -63,6 +63,8 @@ private:
  bool eventFilter(QObject *watched, QEvent *event);
 
 
+     bool arduinoMode = false;
+
 private slots:
     void on_addMatchButton_clicked();
     void toggleIconOnlySidebar();
@@ -84,6 +86,9 @@ private slots:
     void predictWinner(int row);
     void showMonthlyMatchStatistics();
    void on_exporter_excel_match_clicked();
+    void on_historique_table_cellClicked(int row, int column);
+   void on_showArduinoButton_clicked();
+
 
 };
 

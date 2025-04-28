@@ -547,6 +547,7 @@ void ChatBotWidget::checkBestScore(const QString& year, const QString& team) {
 
     if (query.exec()) {
         int maxTeamScore = -1;
+        int maxGoalDiff = -1;
         QList<QString> bestMatches;
 
         while (query.next()) {
@@ -563,16 +564,18 @@ void ChatBotWidget::checkBestScore(const QString& year, const QString& team) {
 
                 int teamScore = (equipe1 == team) ? team1Score : team2Score;
                 int opponentScore = (teamScore == team1Score) ? team2Score : team1Score;
+                int goalDifference = teamScore - opponentScore;
                 QString opponentTeam = (equipe1 == team) ? equipe2 : equipe1;
 
-                if (teamScore > maxTeamScore) {
-                    // New best score found, reset list
+                if (teamScore > maxTeamScore || (teamScore == maxTeamScore && goalDifference > maxGoalDiff)) {
+                    // New best score found
                     maxTeamScore = teamScore;
+                    maxGoalDiff = goalDifference;
                     bestMatches.clear();
                     bestMatches.append(QString("%1-%2 contre %3, joué le %4")
                                            .arg(teamScore).arg(opponentScore).arg(opponentTeam).arg(dateMatch));
-                } else if (teamScore == maxTeamScore) {
-                    // Add to existing list of best scores
+                } else if (teamScore == maxTeamScore && goalDifference == maxGoalDiff) {
+                    // Same best score and same goal difference
                     bestMatches.append(QString("%1-%2 contre %3, joué le %4")
                                            .arg(teamScore).arg(opponentScore).arg(opponentTeam).arg(dateMatch));
                 }
@@ -606,7 +609,6 @@ void ChatBotWidget::checkBestScore(const QString& year, const QString& team) {
 }
 
 
-
 bool ChatBotWidget::eventFilter(QObject *watched, QEvent *event)
 {
     if (event->type() == QEvent::Enter) {
@@ -628,20 +630,19 @@ bool ChatBotWidget::eventFilter(QObject *watched, QEvent *event)
 
 
 
-
 void ChatBotWidget::checkTeamMatches(const QString& year, const QString& team) {
     QSqlQuery query;
 
     QString trimmedTeam = team.trimmed();
     QString queryString = QString(
-        "SELECT DATE_MATCH "
+        "SELECT DATE_MATCH, WINNER "
         "FROM MATCHES "
         "WHERE (EQUIPE1 = :team OR EQUIPE2 = :team) "
         "AND EXTRACT(YEAR FROM DATE_MATCH) = :year");
 
     query.prepare(queryString);
     query.bindValue(":team", trimmedTeam);
-    query.bindValue(":year", year.toInt());  // Use int for year comparison
+    query.bindValue(":year", year.toInt());
 
     if (query.exec()) {
         int playedCount = 0;
@@ -651,22 +652,26 @@ void ChatBotWidget::checkTeamMatches(const QString& year, const QString& team) {
 
         while (query.next()) {
             QDateTime matchDate = query.value("DATE_MATCH").toDateTime();
-            int matchYear = matchDate.date().year();
 
-            // Determine if the match is played or upcoming
             if (matchDate < QDateTime::currentDateTime()) {
-                playedCount++; // It's played
-                if (query.value("win").toInt() == 1) {
-                    wins++;
-                } else {
-                    losses++;
+                playedCount++;
+
+                QString winner = query.value("WINNER").toString().trimmed();
+
+                // Count wins and losses only if there's a result
+                if (!winner.isEmpty()) {
+                    if (winner.compare(trimmedTeam, Qt::CaseInsensitive) == 0) {
+                        wins++;
+                    } else {
+                        losses++;
+                    }
                 }
+
             } else {
-                upcomingCount++; // It's upcoming
+                upcomingCount++;
             }
         }
 
-        // Prepare the response
         QString response = QString("Dans l'année %1, l'équipe %2 joue %3 matchs, dont %4 sont déjà joués avec %5 victoire(s) et %6 défaite(s), "
                                    "et %7 matchs à venir.")
                                .arg(year)
@@ -677,7 +682,6 @@ void ChatBotWidget::checkTeamMatches(const QString& year, const QString& team) {
                                .arg(losses)
                                .arg(upcomingCount);
 
-        // Display the response in the chatbox
         QString htmlResponse = "<div style='text-align: left;'><b><span style='display:inline-block; vertical-align: middle;'>"
                                "<img src=':/interface_icons/chatbot.png' width='20' height='20' /> : </span></b> "
                                "<span>" + response + "</span></div>";
