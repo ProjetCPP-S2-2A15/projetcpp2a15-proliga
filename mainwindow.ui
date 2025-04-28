@@ -799,6 +799,16 @@ height: 30px;</string>
            </column>
            <column>
             <property name="text">
+             <string>Nb_Yellow</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Nb_Red</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
              <string>Options</string>
             </property>
            </column>
@@ -819,16 +829,6 @@ height: 30px;</string>
            </property>
            <property name="text">
             <string>delete</string>
-           </property>
-          </widget>
-          <widget class="QLineEdit" name="deleteInput">
-           <property name="geometry">
-            <rect>
-             <x>480</x>
-             <y>380</y>
-             <width>113</width>
-             <height>28</height>
-            </rect>
            </property>
           </widget>
           <widget class="QPushButton" name="pdfButton">
@@ -918,7 +918,7 @@ height: 30px;</string>
             </property>
            </item>
           </widget>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
              <x>20</x>
@@ -1191,6 +1191,29 @@ background-color: rgba(70, 130, 120, 255);</string>
              </layout>
             </item>
            </layout>
+          </widget>
+          <widget class="QComboBox" name="liste_Joueurs">
+           <property name="geometry">
+            <rect>
+             <x>460</x>
+             <y>380</y>
+             <width>82</width>
+             <height>28</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="ArduinoButton">
+           <property name="geometry">
+            <rect>
+             <x>362</x>
+             <y>380</y>
+             <width>101</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>selectionner</string>
+           </property>
           </widget>
          </widget>
          <widget class="QWidget" name="statsTab">

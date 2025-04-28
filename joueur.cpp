@@ -150,6 +150,34 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
     }
 }*/
 
+void Joueur::getListe(QComboBox* liste){
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Failed to connect to database!";
+        return;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+    if (!db.isOpen()) {
+        qDebug() << "Database is not open!";
+        return;
+    }
+
+    QString queryString;
+    queryString = "SELECT NOM FROM joueur1";
+
+    QSqlQuery query(queryString, db);
+
+    liste->clear();
+
+    while (query.next()){
+        QString playerName = query.value(0).toString();  // Retrieve the player name
+        liste->addItem(playerName);
+    }
+
+}
+
+
 void Joueur::readJoueur(QTableWidget *tableWidget) {
     if (!tableWidget) return;
 
@@ -167,17 +195,17 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
 
     QString queryString;
     if (filter == 1) {
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG FROM joueur1 ORDER BY NOM";
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY NOM";
     } else if (filter == 2) {
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG FROM joueur1 ORDER BY PAYS_ORIGINE";
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY PAYS_ORIGINE";
     } else {
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG FROM joueur1 ORDER BY POSITION";
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY POSITION";
     }
 
     QSqlQuery query(queryString, db);
 
-    tableWidget->setColumnCount(7); // 5 text fields + 1 image
-    tableWidget->setHorizontalHeaderLabels(QStringList() << "Nom" << "Prenom" << "Date de Naissance" << "Position" << "Pays d'origine" << "Photo");
+    tableWidget->setColumnCount(9);
+    tableWidget->setHorizontalHeaderLabels(QStringList() << "Nom" << "Prenom" << "Date de Naissance" << "Position" << "Pays d'origine" << "Nb_Yellow" << "Red_Card" << "Photo");
     tableWidget->setRowCount(0);
 
     int row = 0;
@@ -190,6 +218,8 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         tableWidget->setItem(row, 2, new QTableWidgetItem(query.value("Date_de_naissance").toDate().toString("yyyy-MM-dd")));
         tableWidget->setItem(row, 3, new QTableWidgetItem(query.value("Position").toString()));
         tableWidget->setItem(row, 4, new QTableWidgetItem(query.value("PAYS_ORIGINE").toString()));
+        tableWidget->setItem(row, 5, new QTableWidgetItem(query.value("Nb_Yellow").toString()));
+        tableWidget->setItem(row, 6, new QTableWidgetItem(query.value("Red_Card").toString()));
 
         // 🖼️ Load image
         QByteArray imageData = query.value("IMG").toByteArray();
@@ -208,11 +238,11 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         }
 
         // Set the image label in the table
-        tableWidget->setCellWidget(row, 5, imageLabel);
+        tableWidget->setCellWidget(row, 7, imageLabel);
 
         // Optional: Adjust row height and column width
         tableWidget->setRowHeight(row, 100);
-        tableWidget->setColumnWidth(5, 100);
+        tableWidget->setColumnWidth(7, 100);
 
         row++;
 

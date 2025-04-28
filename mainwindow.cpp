@@ -3,6 +3,7 @@
 #include "design.h"
 #include "changeWidget.h"
 #include "joueur_utils.h"
+#include "arduino.h"
 #include <QFileDialog>
 #include <QPixmap>
 #include <QMessageBox>
@@ -16,11 +17,14 @@
 #include <QProcess>
 #include <QDebug>
 
+
+//next step: fix the image in the update
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    arduino = new Arduino();
 
     //design
     applyDesign(ui);
@@ -64,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     //read joueur
     Joueur j;
 
+    j.getListe(ui->liste_Joueurs);
     int pageIndex = ui->stackedWidget->indexOf(ui->joueurPage);
     QWidget* joueurWidget = ui->stackedWidget->widget(pageIndex);
     QTableWidget* tableWidgetPlayers = joueurWidget->findChild<QTableWidget*>("tableWidgetPlayers");
@@ -75,12 +80,176 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pdfButton, &QPushButton::clicked, this, &MainWindow::exportToPDF);
     refreshStats();
 
+    //arduino
+    setupArduinoConnection();
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete arduino;
 }
+
+void MainWindow::setupArduinoConnection() {
+    // Attempt to connect to the Arduino
+    int connectionStatus = arduino->connect_arduino();
+
+    if (connectionStatus == -1) {
+        qDebug() << "Arduino not found!";
+        return;
+    } else if (connectionStatus == 1) {
+        qDebug() << "Failed to open serial port!";
+        return;
+    } else {
+        qDebug() << "Connected to Arduino on port:" << arduino->getarduino_port_name();
+    }
+
+    // Connect the serial data handler immediately
+    connect(arduino->getserial(), &QSerialPort::readyRead, this, &MainWindow::handleArduinoData);
+
+    // Set up player name sending
+    connect(ui->ArduinoButton, &QPushButton::clicked, this, [this]() {
+        QString playerName = ui->liste_Joueurs->currentText().trimmed();
+        qDebug() << "Sending player name to Arduino:" << playerName;
+
+        if (playerName.isEmpty()) {
+            qDebug() << "Error: No player selected!";
+            return;
+        }
+
+        if (!arduino || !arduino->getserial()->isOpen()) {
+            qDebug() << "Error: Arduino not connected!";
+            return;
+        }
+
+        QByteArray playerNameBytes = playerName.toUtf8();
+        playerNameBytes.append('\n');
+        arduino->write_to_arduino(playerNameBytes);
+    });
+}
+
+void MainWindow::handleArduinoData() {
+    if (!arduino || !arduino->getserial()->isOpen()) {
+        qDebug() << "Arduino not connected in handler!";
+        return;
+    }
+
+    int pageIndex = ui->stackedWidget->indexOf(ui->joueurPage);
+    QWidget* joueurWidget = ui->stackedWidget->widget(pageIndex);
+    QTableWidget* tableWidgetPlayers = joueurWidget->findChild<QTableWidget*>("tableWidgetPlayers");
+
+    // Read all available data
+    QByteArray data = arduino->getserial()->readAll();
+    QString message = QString::fromUtf8(data).trimmed();
+    qDebug() << "Received from Arduino:" << message;
+
+    if (message == "Y" || message == "YELLOW_CARD") {  // Handle both versions
+        QString currentPlayer = ui->liste_Joueurs->currentText().trimmed();
+        if (!currentPlayer.isEmpty()) {
+            qDebug() << "Processing yellow card for:" << currentPlayer;
+            incrementYellowCards(currentPlayer);
+            setupTableWithDeleteButtons(ui->tableWidgetPlayers);
+
+            // Optional: Send acknowledgment back to Arduino
+            arduino->write_to_arduino("ACK\n");
+        } else {
+            qDebug() << "No player selected when yellow card received";
+        }
+    }
+
+    if (message == "G" || message == "\u0000") {  // Handle both versions
+        QString currentPlayer = ui->liste_Joueurs->currentText().trimmed();
+        if (!currentPlayer.isEmpty()) {
+            qDebug() << "Processing red card for:" << currentPlayer;
+            incrementRedCards(currentPlayer);
+
+            // Optional: Send acknowledgment back to Arduino
+            arduino->write_to_arduino("ACK\n");
+        } else {
+            qDebug() << "No player selected when yellow card received";
+        }
+    }
+}
+/*
+void MainWindow::incrementYellowCards(const QString &playerName) {
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Database connection failed!";
+        return;
+    }
+
+    QSqlQuery query(conn.getDatabase());
+    query.prepare("UPDATE joueur1 SET NB_YELLOW = NB_YELLOW + 1 WHERE NOM = ?");
+    query.addBindValue(playerName);
+
+    if (!query.exec()) {
+        qDebug() << "Update failed:" << query.lastError().text();
+    } else {
+        qDebug() << "Successfully updated yellow cards for" << playerName;
+    }
+}*/
+
+void MainWindow::incrementYellowCards(const QString &playerName) {
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Database connection failed!";
+        return;
+    }
+
+    QSqlDatabase db = conn.getDatabase();
+
+    // First get current yellow card count
+    QSqlQuery getQuery(db);
+    getQuery.prepare("SELECT NB_YELLOW, RED_CARD FROM joueur1 WHERE NOM = ?");
+    getQuery.addBindValue(playerName);
+
+    if (!getQuery.exec() || !getQuery.next()) {
+        qDebug() << "Failed to get current card counts:" << getQuery.lastError().text();
+        return;
+    }
+
+    int currentYellows = getQuery.value("NB_YELLOW").toInt();
+    int currentReds = getQuery.value("RED_CARD").toInt();
+
+    QSqlQuery updateQuery(db);
+
+    if (currentYellows >= 1) {  // If player will reach 2 yellows after increment
+        // Convert 2 yellows to 1 red and reset yellows
+        updateQuery.prepare("UPDATE joueur1 SET NB_YELLOW = 0, RED_CARD = 1 WHERE NOM = ?");
+        qDebug() << "Converting 2 yellow cards to 1 red card for" << playerName;
+    } else {
+        // Just increment yellows normally
+        updateQuery.prepare("UPDATE joueur1 SET NB_YELLOW = NB_YELLOW + 1 WHERE NOM = ?");
+    }
+
+    updateQuery.addBindValue(playerName);
+
+    if (!updateQuery.exec()) {
+        qDebug() << "Update failed:" << updateQuery.lastError().text();
+    } else {
+        qDebug() << "Successfully updated cards for" << playerName;
+    }
+}
+
+void MainWindow::incrementRedCards(const QString &playerName) {
+    Connection conn;
+    if (!conn.createconnect()) {
+        qDebug() << "Database connection failed!";
+        return;
+    }
+
+    QSqlQuery query(conn.getDatabase());
+    query.prepare("UPDATE joueur1 SET RED_CARD = 1 WHERE NOM = ?");
+    query.addBindValue(playerName);
+
+    if (!query.exec()) {
+        qDebug() << "Update failed:" << query.lastError().text();
+    } else {
+        qDebug() << "Successfully updated red cards for" << playerName;
+    }
+}
+
 
 void MainWindow::refreshStats() {
     int pageIndex = ui->stackedWidget->indexOf(ui->joueurPage);
@@ -122,6 +291,10 @@ void MainWindow::refreshStats() {
 void MainWindow::onAjouterButtonClicked() {
     createJoueurFromUI(this);
     refreshStats();
+    Joueur j;
+
+    j.getListe(ui->liste_Joueurs);
+
 }
 
 void MainWindow::onrechercherButtonClicked(){
@@ -140,7 +313,7 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
 
     // Clear previous widgets in column 6
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 6);
+        tableWidgetPlayers->removeCellWidget(row, 8);
     }
 
     // Add action buttons (Delete & Update)
@@ -174,7 +347,7 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 6, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 8, buttonContainer);
     }
 }
 
@@ -194,7 +367,7 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
 
     // Clear previous widgets in column 5 (Delete and Update buttons)
     for (int row = 0; row < rowCount; ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 6);
+        tableWidgetPlayers->removeCellWidget(row, 8);
     }
 
     // Add action buttons (Delete & Update)
@@ -230,7 +403,7 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 6, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 8, buttonContainer);
     }
 }
 
@@ -248,7 +421,7 @@ void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, 
 
     // Clear previous widgets in column 6
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 6);
+        tableWidgetPlayers->removeCellWidget(row, 8);
     }
 
     // Add action buttons (Delete & Update)
@@ -282,7 +455,7 @@ void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, 
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 6, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 8, buttonContainer);
     }
 }
 
@@ -611,6 +784,10 @@ void MainWindow::on_deleteButton_clicked()
         ui->Img_pathInput->setText(faceImagePath); // Fill the input field with the face image path
     }
 }
+
+
+#include <QSerialPort>
+#include <QSerialPortInfo>
 
 
 

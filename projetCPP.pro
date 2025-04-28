@@ -1,6 +1,7 @@
 QT       += core gui
 QT += sql charts
 QT += widgets sql
+QT += serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,6 +21,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    arduino.cpp \
     changeWidget.cpp \
      connexion.cpp \
     design.cpp \
@@ -30,6 +32,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    arduino.h \
     changeWidget.h \
     joueur.h \
     joueur_utils.h \

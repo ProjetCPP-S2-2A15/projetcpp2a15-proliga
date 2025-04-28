@@ -2,10 +2,13 @@
 #define MAINWINDOW_H
 
 #include "connexion.h"
+#include "arduino.h"
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QPixmap>
 #include <QTableWidget>
+#include <QSerialPort>
+#include <QSerialPortInfo>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,6 +30,10 @@ public:
     void validateInputs();
     void freeInputs();
     void refreshStats();
+    void setupArduinoConnection();
+    void handleArduinoData();
+    void incrementYellowCards(const QString &playerName);
+    void incrementRedCards(const QString &playerName);
 
 private slots:
     void onAjouterButtonClicked();   \
@@ -41,5 +48,7 @@ private slots:
     private:
     Ui::MainWindow *ui;
     int selected_row=-1;
+    Arduino* arduino = nullptr;
+
 };
 #endif // MAINWINDOW_H

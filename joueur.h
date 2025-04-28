@@ -4,6 +4,7 @@
 #include <QString>
 #include <QDate>
 #include <QTableWidget>
+#include <QComboBox>
 
 class Joueur
 {
@@ -16,6 +17,7 @@ public:
     void rechercheJoueur(QTableWidget *tableWidget, const QString &nom);
     void rechercheJoueurFilter(QTableWidget *tableWidget, const QString &arg1);
     QVector<Joueur> getJoueurs();
+    void getListe(QComboBox* liste);
 
     // Setters
     void setNom(const QString &nom) { Nom = nom; }
