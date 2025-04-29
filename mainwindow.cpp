@@ -110,7 +110,7 @@ void MainWindow::setupArduinoConnection() {
 
     // Set up player name sending
     connect(ui->ArduinoButton, &QPushButton::clicked, this, [this]() {
-        QString playerName = ui->liste_Joueurs->currentText().trimmed();
+        QString playerName = " " + ui->liste_Joueurs->currentText().trimmed();
         qDebug() << "Sending player name to Arduino:" << playerName;
 
         if (playerName.isEmpty()) {
@@ -144,7 +144,7 @@ void MainWindow::handleArduinoData() {
     QString message = QString::fromUtf8(data).trimmed();
     qDebug() << "Received from Arduino:" << message;
 
-    if (message == "Y" || message == "YELLOW_CARD") {  // Handle both versions
+    if (message == "Y") {  // Handle both versions
         QString currentPlayer = ui->liste_Joueurs->currentText().trimmed();
         if (!currentPlayer.isEmpty()) {
             qDebug() << "Processing yellow card for:" << currentPlayer;
@@ -158,11 +158,12 @@ void MainWindow::handleArduinoData() {
         }
     }
 
-    if (message == "G" || message == "\u0000") {  // Handle both versions
+    if (message == "R") {  // Handle both versions
         QString currentPlayer = ui->liste_Joueurs->currentText().trimmed();
         if (!currentPlayer.isEmpty()) {
             qDebug() << "Processing red card for:" << currentPlayer;
             incrementRedCards(currentPlayer);
+            setupTableWithDeleteButtons(ui->tableWidgetPlayers);
 
             // Optional: Send acknowledgment back to Arduino
             arduino->write_to_arduino("ACK\n");
@@ -240,7 +241,7 @@ void MainWindow::incrementRedCards(const QString &playerName) {
     }
 
     QSqlQuery query(conn.getDatabase());
-    query.prepare("UPDATE joueur1 SET RED_CARD = 1 WHERE NOM = ?");
+    query.prepare("UPDATE joueur1 SET RED_CARD = 1, NB_YELLOW = 0 WHERE NOM = ?");
     query.addBindValue(playerName);
 
     if (!query.exec()) {
