@@ -12,6 +12,7 @@ bool Connection::createconnect()
     db.setUserName("Shiraz");
     db.setPassword("esprit20");
 
+
     if (db.open())
         test=true;
 

@@ -1,6 +1,14 @@
 QT       += core gui
 QT += sql
 QT += widgets sql
+QT += axcontainer
+QT += printsupport
+QT += charts
+QT += serialport
+QT += quick location positioning
+QT += quickwidgets
+QT += positioning location
+QT += quick positioning location
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,22 +29,30 @@ CONFIG += c++11
 
 SOURCES += \
     arduinoshiraz.cpp \
+    championnats.cpp \
     changeWidget.cpp \
      connexion.cpp \
     design.cpp \
     loginwindow.cpp \
     main.cpp \
     mainwindow.cpp \
-    match.cpp
+    match.cpp \
+    scene1.cpp \
+    statisticscontainer.cpp\
+    stades.cpp
 
 HEADERS += \
     arduinoshiraz.h \
+    championnats.h \
     changeWidget.h \
       loginwindow.h \
      connexion.h\
     design.h \
     mainwindow.h \
-    match.h
+    match.h \
+    scene1.h \
+    statisticscontainer.h\
+    stades.h
 
 FORMS += \
     mainwindow.ui
@@ -49,14 +65,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     img.qrc
 
-QT += sql
 
-QT += widgets sql
-QT += core gui charts
-QT += printsupport
-
-QT += axcontainer
-QT += serialport
 
 
 

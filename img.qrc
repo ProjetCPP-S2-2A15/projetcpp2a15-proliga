@@ -51,5 +51,11 @@
         <file>interface_icons/chatbot2.jpg</file>
         <file>interface_icons/chatbot3.jpg</file>
         <file>interface_icons/showarduino.png</file>
+        <file>MapView.qml</file>
+        <file>cleansh.svg</file>
+        <file>winner.svg</file>
+        <file>bestdef.svg</file>
+        <file>football-strike.svg</file>
+        <file>gain.svg</file>
     </qresource>
 </RCC>
