@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->programme->setModel(Eq->loadequipeData());
+    loadTeamsIntoComboBox();
     addActionColumn();
 
     // Apply design
@@ -78,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->statistiquesButton, &QPushButton::clicked, this, &MainWindow::afficherStatistiques); // Connect statistics button
 
     // Connect QLineEdit fields to validation methods
-   /* connect(ui->nome, &QLineEdit::textChanged, this, &MainWindow:: validateInputs);
+    /* connect(ui->nome, &QLineEdit::textChanged, this, &MainWindow:: validateInputs);
     connect(ui->Pays, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
     connect(ui->coach, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
     connect(ui->nbmarquee, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
@@ -88,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->voc_coach, &QPushButton::clicked, this, &MainWindow::on_voc_coach_clicked);
     connect(ui->voc_nb, &QPushButton::clicked, this, &MainWindow::on_voc_nb_clicked);
     connect(ui->voc_pays, &QPushButton::clicked, this, &MainWindow::on_voc_pays_clicked);
-
+    connect(ui->GenererContratJoueur, &QPushButton::clicked, this, &MainWindow::GenererContratJoueur);
 
     // Populate sorting combo boxes
     ui->sortFieldComboBox->addItems({"NOMEQUIPE", "TYPE"}); // Add fields to sort by
@@ -195,6 +196,7 @@ void MainWindow::addButtonsToTable() {
                 if (Eq->Delete(equipeId)) {
                     QMessageBox::information(this, "Succès", "Équipe supprimée avec succès !");
                     refreshTable();
+                    loadTeamsIntoComboBox();
                 } else {
                     QMessageBox::critical(this, "Erreur", "Échec de la suppression de l'équipe.");
                 }
@@ -296,7 +298,7 @@ void MainWindow::Ajouter_clicked() {
         return;
     } else {
         ui->fincnt->setStyleSheet("border: 1px solid #2E7D32;");
-         ui->dbcnt->setStyleSheet("border: 1px solid #2E7D32;");
+        ui->dbcnt->setStyleSheet("border: 1px solid #2E7D32;");
     }
 
     // Validate Type Selection
@@ -315,6 +317,7 @@ void MainWindow::Ajouter_clicked() {
     if (success) {
         QMessageBox::information(this, "Success", "Equipe added successfully!");
         refreshTable();
+        loadTeamsIntoComboBox();
         ui->nome->clear();
         ui->Pays->clear();
         ui->coach->clear();
@@ -456,6 +459,7 @@ void MainWindow::modifyEquipe(int equipeId) {
     if (query.exec()) {
         QMessageBox::information(this, "Success", "Equipe modified successfully!");
         refreshTable();
+        loadTeamsIntoComboBox();
         ui->nome->clear();
         ui->Pays->clear();
         ui->coach->clear();
@@ -556,19 +560,117 @@ void MainWindow::trieEquipe() {
     }
 }
 //metier avancee
-void MainWindow::on_genererContratButton_clicked()
+void MainWindow::GenererContratJoueur()
 {
-    // Assurez-vous que ces pointeurs correspondent à vos widgets dans mainwindow.ui
-    ContratDialog dialog(
-        ui->equipeComboBox,    // QComboBox*
-        ui->contratTextEdit,   // QTextEdit*
-        ui->genererContratButton,     // QPushButton*
-        QSqlDatabase::database(),
-        this
-        );
+    // Get selected team from the combo box
+    if (ui->equipeComboBox->currentText().isEmpty() ||
+        ui->equipeComboBox->currentText() == "Aucune équipe disponible") {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner une équipe valide.");
+        return;
+    }
 
-    dialog.exec();
-}//metier avance speechto text
+    QString teamName = ui->equipeComboBox->currentText();
+    QString cityName; // Initialize city name
+    QDate startDate, endDate;
+
+    // Fetch the city name, start date, and end date from the database
+    QSqlQuery query;
+    query.prepare("SELECT NOMVILLE, DATEDEBUTCONTRAT, DATEFINCONTRAT FROM equipe WHERE NOMEQUIPE = :teamName");
+    query.bindValue(":teamName", teamName);
+
+    if (query.exec() && query.next()) {
+        cityName = query.value("NOMVILLE").toString();
+        startDate = query.value("DATEDEBUTCONTRAT").toDate();
+        endDate = query.value("DATEFINCONTRAT").toDate();
+    } else {
+        QMessageBox::warning(this, "Erreur", "Échec de la récupération des informations de l'équipe : " + query.lastError().text());
+        return;
+    }
+
+    // Demander les informations du joueur
+  //  bool ok;
+    QString joueurNom ="xxxx";
+
+    QString joueurDateNaissance = "xx/xx/xxxx";
+
+    QString joueurNationalite ="xxxxxx";
+
+    QString joueurAdresse ="xxx";
+
+    QString fileName = QFileDialog::getSaveFileName(this, "Enregistrer le contrat", "", "PDF Files (*.pdf)");
+    if (fileName.isEmpty()) return;
+
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+    printer.setPageSize(QPageSize(QPageSize::A4));
+    printer.setPageOrientation(QPageLayout::Portrait);
+
+    QPainter painter(&printer);
+    if (!painter.isActive()) {
+        QMessageBox::warning(this, "Erreur", "Impossible d'initialiser le PDF.");
+        return;
+    }
+
+    QRect printableArea = printer.pageLayout().paintRectPixels(printer.resolution());
+    int x = 50;
+    int y = 50;
+    int lineHeight = 30;
+    int pageWidth = printableArea.width();
+    int textWidth = pageWidth - 2 * x;
+
+    // Title
+    painter.setFont(QFont("Arial", 18, QFont::Bold));
+    painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignCenter, "CONTRAT DE JOUEUR ");
+    y += 2 * lineHeight;
+
+    // Team and City Information
+    painter.setFont(QFont("Arial", 12));
+    QString teamInfo = QString("Le Club : \nNom : %1\nSiège social : %2\nReprésenté par : Monsieur le Président du club\n").arg(teamName, cityName);
+    painter.drawText(QRect(x, y, textWidth, lineHeight * 4), Qt::AlignLeft | Qt::TextWordWrap, teamInfo);
+    y += lineHeight * 4;
+
+    // Player Information
+    QString joueurInfo = QString("Le Joueur :\nNom : %1\nNé le : %2\nNationalité : %3\nDomicilié à : %4\n")
+                             .arg(joueurNom, joueurDateNaissance, joueurNationalite, joueurAdresse);
+    painter.drawText(QRect(x, y, textWidth, lineHeight * 4), Qt::AlignLeft | Qt::TextWordWrap, joueurInfo);
+    y += lineHeight * 4 ;
+
+    // Contract Articles
+    QStringList articles = {
+        "Article 1: Objet du contrat\nLe présent contrat a pour objet d'établir les conditions dans lesquelles le Joueur s'engage à exercer à titre exclusif et professionnel l'activité de joueur de football au sein du Club.",
+        QString("Article 2 : Durée\nLe présent contrat est conclu pour une durée déterminée des saisons sportives, prenant effet à compter du %1 jusqu'au %2, sous réserve de l'homologation par la Ligue de Football Professionnel (LFP).").arg(startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy")),
+        "Article 3 : Fonction\nLe Joueur exercera ses fonctions de joueur professionnel de football au sein de l'équipe première du Club, ou toute autre équipe selon les besoins sportifs du Club. Il participera à toutes les séances d'entraînement, compétitions officielles et matchs amicaux."
+    };
+
+    painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignLeft, "Articles du contrat:");
+    y += lineHeight;
+
+    for (const QString &article : articles) {
+        QRect textRect(x, y, textWidth, lineHeight * 3); // Allow space for multiple lines
+        painter.drawText(textRect, Qt::AlignLeft | Qt::TextWordWrap, "- " + article);
+        y += lineHeight *3 ; // Adjust based on content height
+    }
+
+    y += 20;
+
+    // Signatures
+    QString signatureTxt = QString("Fait en quatre exemplaires originaux, à %1, le %2\n\n").arg(cityName, startDate.toString("dd/MM/yyyy"));
+    signatureTxt += "Signatures\n";
+    signatureTxt += "__________________________\n";
+    signatureTxt += "Représentant de l'équipe\n\n";
+    signatureTxt += " __________________________\n";
+    signatureTxt += joueurNom + "\n";
+    signatureTxt += "Le Joueur\n";
+
+    painter.drawText(QRect(x, y, textWidth, lineHeight * 6), Qt::AlignLeft | Qt::TextWordWrap, signatureTxt);
+
+    painter.end();
+    QMessageBox::information(this, "Succès", "Le contrat de travail a été généré avec succès !");
+}
+
+
+//metier avance speechto text
 #include <cstdlib> // Pour system()
 void MainWindow::on_voc_nom_clicked() {
     lastClickedField = "nome";
@@ -632,7 +734,7 @@ QString MainWindow::recordText()
 
     process.start(pythonExecutable, QStringList() << pythonScriptPath);
 
-    if (!process.waitForFinished(10000)) { // 10 second timeout
+    if (!process.waitForFinished(8000)) { // 10 second timeout
         QMessageBox::warning(this, "Error",
                              process.error() == QProcess::Timedout ?
                                  "Process timed out" : "Failed to execute the Python script");
@@ -648,4 +750,21 @@ QString MainWindow::recordText()
     }
 
     return output;
+}
+void MainWindow::loadTeamsIntoComboBox()
+{
+    ui->equipeComboBox->clear(); // Vider le ComboBox actuel
+
+    QSqlQuery query("SELECT NOMEQUIPE FROM equipe ORDER BY NOMEQUIPE");
+
+    while (query.next()) {
+        ui->equipeComboBox->addItem(query.value(0).toString());
+    }
+
+    if (ui->equipeComboBox->count() == 0) {
+        ui->equipeComboBox->addItem("Aucune équipe disponible");
+        ui->GenererContratJoueur->setEnabled(false); // Désactiver le bouton si aucune équipe
+    } else {
+        ui->GenererContratJoueur->setEnabled(true);
+    }
 }

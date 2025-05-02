@@ -788,7 +788,7 @@ height: 30px;</string>
             </rect>
            </property>
           </widget>
-          <widget class="QPushButton" name="genererContratButton">
+          <widget class="QPushButton" name="GenererContratJoueur">
            <property name="geometry">
             <rect>
              <x>120</x>
@@ -801,14 +801,19 @@ height: 30px;</string>
             <string>Generer contrat</string>
            </property>
           </widget>
-          <widget class="QTextEdit" name="contratTextEdit">
+          <widget class="QRadioButton" name="Article1_equipe">
            <property name="geometry">
             <rect>
-             <x>20</x>
+             <x>10</x>
              <y>60</y>
-             <width>171</width>
-             <height>151</height>
+             <width>681</width>
+             <height>61</height>
             </rect>
+           </property>
+           <property name="text">
+            <string>Le Joueur exercera ses fonctions de joueur professionnel de football au sein de l’équipe première
+ du Club,ou toute autre équipe selon les besoins sportifs du Club. Il participera à toutes
+ les séances d’entraînement,compétitions officielles et matchs amicaux.</string>
            </property>
           </widget>
          </widget>
