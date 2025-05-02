@@ -71,11 +71,11 @@ MainWindow::MainWindow(QWidget *parent)
     showMonthlyMatchStatistics();
     programmation_2 = ui->programmation_2;
     historique_table=ui->historique_table;
-    originalTabWidth = ui->tabWidget->geometry().width();
+    originalTabWidth = ui->tabWidget_match->geometry().width();
     originalTableWidth = ui->programmation_2->geometry().width();
-    originalWidget6Width = ui->widget_6->geometry().width();
+    originalWidget6Width = ui->widget_6_match->geometry().width();
     originalDeleteMatchX = ui->delete_match->geometry().x();
-    originalChercherWidth = ui->chercher->geometry().width();
+    originalChercherWidth = ui->chercher_match->geometry().width();
     isExpanded = false;
 
 
@@ -89,10 +89,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->programmation_2->setEditTriggers(QAbstractItemView::DoubleClicked);
     ui->historique_table->setEditTriggers(QAbstractItemView::DoubleClicked);
 
-    if (ui->widget_8->layout() == nullptr) {
-        ui->widget_8->setLayout(new QVBoxLayout());
+    if (ui->widget_8_match->layout() == nullptr) {
+        ui->widget_8_match->setLayout(new QVBoxLayout());
     }
-    ui->widget_8->layout()->addWidget(chatBot);
+    ui->widget_8_match->layout()->addWidget(chatBot);
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::checkForNullScoreEdit);
@@ -119,8 +119,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->add_match, &QPushButton::clicked, this, &MainWindow::on_addMatchButton_clicked);
     connect(ui->delete_match, &QPushButton::clicked, this, &MainWindow::deleteMatch);
     connect(ui->refresh, &QPushButton::clicked, this, &MainWindow::loadMatchesIntoTable);
-    connect(ui->random_arbitre, &QCheckBox::stateChanged, this, &MainWindow::handleRandomReferees);
-    connect(ui->chercher, &QLineEdit::textChanged, this, &MainWindow::filterTable);
+    connect(ui->random_arbitre_match, &QCheckBox::stateChanged, this, &MainWindow::handleRandomReferees);
+    connect(ui->chercher_match, &QLineEdit::textChanged, this, &MainWindow::filterTable);
     connect(ui->chercher_histo, &QLineEdit::textChanged, this, &MainWindow::filterTable);
     connect(ui->programmation_2, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(onCellDoubleClicked(int, int)));
     connect(ui->historique_table, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(onHistoriqueCellDoubleClicked(int, int)));
@@ -154,14 +154,14 @@ void MainWindow::toggleIconOnlySidebar()
         ui->stackedWidget->setMinimumWidth(1000);
         ui->stackedWidget->setMaximumWidth(1000);
 
-        ui->widget_6->setMinimumWidth(200);
-        ui->widget_6->setMaximumWidth(340);
+        ui->widget_6_match->setMinimumWidth(200);
+        ui->widget_6_match->setMaximumWidth(340);
 
-        ui->widget_7->setMinimumWidth(200);
-        ui->widget_7->setMaximumWidth(360);
+        ui->widget_7_match->setMinimumWidth(200);
+        ui->widget_7_match->setMaximumWidth(360);
 
-        ui->widget_8->setMinimumWidth(200);
-        ui->widget_8->setMaximumWidth(340);
+        ui->widget_8_match->setMinimumWidth(200);
+        ui->widget_8_match->setMaximumWidth(340);
     }
     else {
 
@@ -171,24 +171,24 @@ void MainWindow::toggleIconOnlySidebar()
         ui->stackedWidget->setMinimumWidth(1500);
         ui->stackedWidget->setMaximumWidth(1500);
 
-        ui->widget_6->setMinimumWidth(400);
-        ui->widget_6->setMaximumWidth(800);
+        ui->widget_6_match->setMinimumWidth(400);
+        ui->widget_6_match->setMaximumWidth(800);
 
-        ui->widget_7->setMinimumWidth(300);
-        ui->widget_7->setMaximumWidth(600);
+        ui->widget_7_match->setMinimumWidth(300);
+        ui->widget_7_match->setMaximumWidth(600);
 
-        ui->widget_8->setMinimumWidth(400);
-        ui->widget_8->setMaximumWidth(800);
+        ui->widget_8_match->setMinimumWidth(400);
+        ui->widget_8_match->setMaximumWidth(800);
     }
 
     // Update chartView's size to follow widget_6 size
-    chartView->resize(ui->widget_6->size());
+    chartView->resize(ui->widget_6_match->size());
 
     // Update widget and chart views
     ui->stackedWidget->update();
-    ui->widget_6->update();
-    ui->widget_7->update();
-    ui->widget_8->update();
+    ui->widget_6_match->update();
+    ui->widget_7_match->update();
+    ui->widget_8_match->update();
 }
 
 //------------------------------------------------AJOUT MATCH-------------------------------------------------------------------------------
@@ -206,8 +206,8 @@ void MainWindow::on_addMatchButton_clicked() {
     isInsertingMatch = true;
     ui->pushButton->setEnabled(false);
 
-    QDateTime dateTime = ui->dateTimeEdit_2->dateTime();
-    QString type = ui->comboBox->currentText();
+    QDateTime dateTime = ui->dateTimeEdit_2_match->dateTime();
+    QString type = ui->comboBox_match->currentText();
     QString equipe1 = ui->comboBox_2->currentText();
     QString equipe2 = ui->comboBox_3->currentText();
 
@@ -221,7 +221,7 @@ void MainWindow::on_addMatchButton_clicked() {
 
     QStringList arbitreNames;
 
-    if (ui->random_arbitre->isChecked()) {
+    if (ui->random_arbitre_match->isChecked()) {
         QSqlQuery query("SELECT NOM FROM ARBITRES");
         QStringList allArbitres;
 
@@ -384,7 +384,7 @@ void MainWindow::loadMatchesIntoTable()
 
 void MainWindow::filterTable()
 {
-    QString filterText = ui->chercher->text().trimmed();
+    QString filterText = ui->chercher_match->text().trimmed();
     QString filterOption = ui->tri_prog_match->currentText();
 
     for (int i = 0; i < ui->programmation_2->rowCount(); i++) {
@@ -537,7 +537,7 @@ void MainWindow::handleRandomReferees(int state) {
 
         if (allArbitres.size() < 4) {
             QMessageBox::warning(this, "Erreur", "Il n'y a pas assez d'arbitres pour une sélection aléatoire.");
-            ui->random_arbitre->setChecked(false);
+            ui->random_arbitre_match->setChecked(false);
             ui->comboBox_arbitre1->setEnabled(true);
             ui->comboBox_arbitre2->setEnabled(true);
             ui->comboBox_arbitre3->setEnabled(true);
@@ -758,15 +758,24 @@ void MainWindow::onCellDoubleClicked(int row, int column)
 void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
 {
     if (col == 4) {
-
         QDateTime now = QDateTime::currentDateTime();
-        QString dateTimeString = ui->historique_table->item(row, 5)->text();
-        QDateTime matchDateTime = QDateTime::fromString(dateTimeString, "yyyy-MM-dd HH:mm:ss");
+        QString dateTimeString = ui->historique_table->item(row, 5)->text().trimmed();
 
+        // Lire la date
+        QDateTime matchDateTime = QDateTime::fromString(dateTimeString, "yyyy-MM-dd'T'HH:mm:ss.zzz");
+
+        if (!matchDateTime.isValid()) {
+            QMessageBox::warning(this, "Erreur", "Format de date invalide pour ce match : " + dateTimeString);
+            return;
+        }
+
+        // Calculer la différence en secondes
         qint64 secondsDiff = matchDateTime.secsTo(now);
-        bool askTrackOption = (secondsDiff <= 9000);
 
-        if (askTrackOption) {
+        // Seulement si le match est à moins de 2,5 heures du moment actuel (2,5 h = 9000 secondes)
+        bool allowTracking = (secondsDiff >= 0 && secondsDiff <= 9000);
+
+        if (allowTracking) {
             QMessageBox msgBox;
             msgBox.setWindowTitle("Match en cours");
             msgBox.setText("Le match est toujours en cours.\nChoisissez comment vous souhaitez mettre à jour le score :");
@@ -812,6 +821,7 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
             }
         }
 
+        // Partie édition manuelle classique
         QString oldScore = ui->historique_table->item(row, col)->text();
 
         QRegularExpression regExp("^\\d+-\\d+$");
@@ -856,7 +866,6 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
         }
     }
 }
-
 
 
 
@@ -917,9 +926,9 @@ void MainWindow::checkForNullScoreEdit()
 
     QDate today = QDate::currentDate();
     QSqlQuery query("SELECT SCOREEDIT, DATE_MATCH FROM MATCHES WHERE SCOREEDIT IS NULL OR SCOREEDIT = '0'");
-    QList<QLabel*> existingLabels = ui->widget_7->findChildren<QLabel*>();
+    QList<QLabel*> existingLabels = ui->widget_7_match->findChildren<QLabel*>();
     for (QLabel* label : existingLabels) {
-        if (label != ui->label_21) {
+        if (label != ui->label_21_match) {
             label->deleteLater();
         }
     }
@@ -933,7 +942,7 @@ void MainWindow::checkForNullScoreEdit()
 
         if ((scoreEdit.isEmpty() || scoreEdit == "0") && matchDate.isValid() && matchDate < today) {
 
-            QLabel *label = new QLabel("❗", ui->widget_7);
+            QLabel *label = new QLabel("❗", ui->widget_7_match);
             label->setStyleSheet("font-size: 15px; color: red;");
             label->move(10, 10);
             label->show();
@@ -960,11 +969,11 @@ bool isExpandedShow3 = false;
 void MainWindow::onShowButtonClicked()
 {
     // Save current dimensions of the widgets
-    int currentTabWidth = ui->tabWidget->geometry().width();
+    int currentTabWidth = ui->tabWidget_match->geometry().width();
     int currentTableWidth = ui->programmation_2->geometry().width();
-    int currentWidget6Width = ui->widget_6->geometry().width();
+    int currentWidget6Width = ui->widget_6_match->geometry().width();
     int currentDeleteMatchX = ui->delete_match->geometry().x();
-    int currentChercherWidth = ui->chercher->geometry().width();
+    int currentChercherWidth = ui->chercher_match->geometry().width();
     int currentShow2X = ui->show_2->geometry().x();
     int currentTriProgX = ui->tri_prog->geometry().x();
 
@@ -973,9 +982,9 @@ void MainWindow::onShowButtonClicked()
     int shiftAmount = 280;
 
     // Create and configure the animation for tabWidget resizing
-    QPropertyAnimation *tabWidgetAnimation = new QPropertyAnimation(ui->tabWidget, "geometry");
+    QPropertyAnimation *tabWidgetAnimation = new QPropertyAnimation(ui->tabWidget_match, "geometry");
     tabWidgetAnimation->setDuration(duration);
-    QRect tabWidgetNewRect = ui->tabWidget->geometry();
+    QRect tabWidgetNewRect = ui->tabWidget_match->geometry();
     tabWidgetNewRect.setWidth(isExpandedShow2 ? currentTabWidth - shiftAmount : currentTabWidth + shiftAmount);
     tabWidgetAnimation->setEndValue(tabWidgetNewRect);
 
@@ -987,9 +996,9 @@ void MainWindow::onShowButtonClicked()
     tableWidgetAnimation->setEndValue(tableWidgetNewRect);
 
     // Animation for widget6 resizing and moving
-    QPropertyAnimation *widget6Animation = new QPropertyAnimation(ui->widget_6, "geometry");
+    QPropertyAnimation *widget6Animation = new QPropertyAnimation(ui->widget_6_match, "geometry");
     widget6Animation->setDuration(duration);
-    QRect widget6NewRect = ui->widget_6->geometry();
+    QRect widget6NewRect = ui->widget_6_match->geometry();
     widget6NewRect.setWidth(isExpandedShow2 ? currentWidget6Width - shiftAmount : currentWidget6Width + shiftAmount);
     widget6NewRect.moveLeft(isExpandedShow2 ? widget6NewRect.left() - shiftAmount : widget6NewRect.left() + shiftAmount);
     widget6Animation->setEndValue(widget6NewRect);
@@ -1001,9 +1010,9 @@ void MainWindow::onShowButtonClicked()
     deleteMatchNewRect.moveLeft(isExpandedShow2 ? currentDeleteMatchX - shiftAmount : currentDeleteMatchX + shiftAmount);
     deleteMatchAnimation->setEndValue(deleteMatchNewRect);
 
-    QPropertyAnimation *chercherAnimation = new QPropertyAnimation(ui->chercher, "geometry");
+    QPropertyAnimation *chercherAnimation = new QPropertyAnimation(ui->chercher_match, "geometry");
     chercherAnimation->setDuration(duration);
-    QRect chercherNewRect = ui->chercher->geometry();
+    QRect chercherNewRect = ui->chercher_match->geometry();
     chercherNewRect.setWidth(isExpandedShow2 ? currentChercherWidth - shiftAmount : currentChercherWidth + shiftAmount);
     chercherAnimation->setEndValue(chercherNewRect);
 
@@ -1034,8 +1043,8 @@ void MainWindow::onShowButtonClicked()
 void MainWindow::onShow3ButtonClicked()
 {
     // Save the current dimensions and positions of the widgets
-    int currentWidget7Width = ui->widget_7->geometry().width();
-    int currentWidget8X = ui->widget_8->geometry().x();
+    int currentWidget7Width = ui->widget_7_match->geometry().width();
+    int currentWidget8X = ui->widget_8_match->geometry().x();
     int currentHistoriqueTableWidth = ui->historique_table->geometry().width();
     int currentShow3X = ui->show_3->geometry().x();
     int currentTriHistoX = ui->tri_histo->geometry().x();
@@ -1046,16 +1055,16 @@ void MainWindow::onShow3ButtonClicked()
     int shiftAmount = 280;
 
     // Create and configure the animation for widget_7 resizing
-    QPropertyAnimation *widget7Animation = new QPropertyAnimation(ui->widget_7, "geometry");
+    QPropertyAnimation *widget7Animation = new QPropertyAnimation(ui->widget_7_match, "geometry");
     widget7Animation->setDuration(duration);
-    QRect widget7NewRect = ui->widget_7->geometry();
+    QRect widget7NewRect = ui->widget_7_match->geometry();
     widget7NewRect.setWidth(isExpanded ? currentWidget7Width - shiftAmount : currentWidget7Width + shiftAmount);
     widget7Animation->setEndValue(widget7NewRect);
 
     // Create and configure the animation for widget_8 moving to the left (opposite direction)
-    QPropertyAnimation *widget8Animation = new QPropertyAnimation(ui->widget_8, "geometry");
+    QPropertyAnimation *widget8Animation = new QPropertyAnimation(ui->widget_8_match, "geometry");
     widget8Animation->setDuration(duration);
-    QRect widget8NewRect = ui->widget_8->geometry();
+    QRect widget8NewRect = ui->widget_8_match->geometry();
     widget8NewRect.moveLeft(isExpanded ? currentWidget8X - shiftAmount : currentWidget8X + shiftAmount); // Move widget_8
     widget8Animation->setEndValue(widget8NewRect);
 
@@ -1599,8 +1608,8 @@ void MainWindow::showMonthlyMatchStatistics() {
 
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setParent(ui->widget_6);
-    chartView->resize(ui->widget_6->size());
+    chartView->setParent(ui->widget_6_match);
+    chartView->resize(ui->widget_6_match->size());
 
     QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect(chartView);
     chartView->setGraphicsEffect(opacityEffect);
