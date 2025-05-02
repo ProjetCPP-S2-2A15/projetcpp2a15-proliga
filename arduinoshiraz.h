@@ -14,7 +14,8 @@ class Arduinoshiraz : public QDialog
     Q_OBJECT
 
 public:
-    explicit Arduinoshiraz(QWidget *parent = nullptr, const QString &team1Name = "Team 1", const QString &team2Name = "Team 2");
+    explicit  Arduinoshiraz(QWidget *parent = nullptr, const QString &team1 = "", const QString &team2 = "");
+
     ~Arduinoshiraz();
     QString getFinalScore();
 

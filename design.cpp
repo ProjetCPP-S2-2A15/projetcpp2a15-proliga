@@ -81,7 +81,7 @@ void applyDesign(Ui::MainWindow *ui)
 
 
     // Style for tabs and their content
-    ui->tabWidget->setStyleSheet(
+    ui->tabWidget_match->setStyleSheet(
         "QTabWidget::pane {"
         "    background-color: white; "  // Ensure content area inside the tabs is white
         "    border: none; "
@@ -246,7 +246,7 @@ void applyDesign(Ui::MainWindow *ui)
         "    border-color: rgba(255, 255, 255, 1); "  // Stronger border color when the button is selected
         "}"
         );
-ui->random_arbitre->setStyleSheet(
+ui->random_arbitre_match->setStyleSheet(
     "QCheckBox {"
     "    font-size: 12px; "  // Smaller font size
     "    color: red; "  // Red text initially

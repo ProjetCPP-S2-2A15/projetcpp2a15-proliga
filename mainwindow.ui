@@ -707,7 +707,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
           </widget>
          </widget>
          <widget class="QWidget" name="page_2">
-          <widget class="QWidget" name="widget_6" native="true">
+          <widget class="QWidget" name="widget_6_match" native="true">
            <property name="geometry">
             <rect>
              <x>400</x>
@@ -720,7 +720,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
             <string notr="true">background-color: rgb(239, 239, 239);</string>
            </property>
           </widget>
-          <widget class="QWidget" name="widget_7" native="true">
+          <widget class="QWidget" name="widget_7_match" native="true">
            <property name="geometry">
             <rect>
              <x>20</x>
@@ -732,7 +732,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
            <property name="styleSheet">
             <string notr="true">background-color: rgb(239, 239, 239);</string>
            </property>
-           <widget class="QLabel" name="label_21">
+           <widget class="QLabel" name="label_21_match">
             <property name="geometry">
              <rect>
               <x>120</x>
@@ -918,7 +918,7 @@ font: 700 9pt &quot;System&quot;;
             </property>
            </widget>
           </widget>
-          <widget class="QWidget" name="widget_8" native="true">
+          <widget class="QWidget" name="widget_8_match" native="true">
            <property name="geometry">
             <rect>
              <x>400</x>
@@ -931,7 +931,7 @@ font: 700 9pt &quot;System&quot;;
             <string notr="true">background-color: rgb(239, 239, 239);</string>
            </property>
           </widget>
-          <widget class="QTabWidget" name="tabWidget">
+          <widget class="QTabWidget" name="tabWidget_match">
            <property name="geometry">
             <rect>
              <x>20</x>
@@ -981,7 +981,7 @@ font: 700 9pt &quot;System&quot;;
               </property>
              </item>
             </widget>
-            <widget class="QLineEdit" name="chercher">
+            <widget class="QLineEdit" name="chercher_match">
              <property name="geometry">
               <rect>
                <x>80</x>
@@ -1126,11 +1126,11 @@ font: 700 9pt &quot;System&quot;;
              </property>
             </widget>
            </widget>
-           <widget class="QWidget" name="ajout">
+           <widget class="QWidget" name="ajout_match">
             <attribute name="title">
              <string>ajouter un match</string>
             </attribute>
-            <widget class="QLabel" name="label_14">
+            <widget class="QLabel" name="label_14_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1146,7 +1146,7 @@ font: 700 9pt &quot;System&quot;;
               <string>Match Date :</string>
              </property>
             </widget>
-            <widget class="QLabel" name="label_15">
+            <widget class="QLabel" name="label_15_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1162,7 +1162,7 @@ font: 700 9pt &quot;System&quot;;
               <string>Match Type :</string>
              </property>
             </widget>
-            <widget class="QLabel" name="label_16">
+            <widget class="QLabel" name="label_16_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1178,7 +1178,7 @@ font: 700 9pt &quot;System&quot;;
               <string>Equipe 1:</string>
              </property>
             </widget>
-            <widget class="QLabel" name="label_22">
+            <widget class="QLabel" name="label_22_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1290,7 +1290,7 @@ font: 700 9pt &quot;System&quot;;
               </rect>
              </property>
             </widget>
-            <widget class="QLabel" name="label_23">
+            <widget class="QLabel" name="label_23_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1306,7 +1306,7 @@ font: 700 9pt &quot;System&quot;;
               <string>Arbitre 1 :</string>
              </property>
             </widget>
-            <widget class="QLabel" name="label_24">
+            <widget class="QLabel" name="label_24_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1322,7 +1322,7 @@ font: 700 9pt &quot;System&quot;;
               <string>Arbitre 2 :</string>
              </property>
             </widget>
-            <widget class="QLabel" name="label_25">
+            <widget class="QLabel" name="label_25_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1338,7 +1338,7 @@ font: 700 9pt &quot;System&quot;;
               <string>Arbitre 4 :</string>
              </property>
             </widget>
-            <widget class="QLabel" name="label_26">
+            <widget class="QLabel" name="label_26_match">
              <property name="geometry">
               <rect>
                <x>20</x>
@@ -1384,7 +1384,7 @@ font: 700 9pt &quot;System&quot;;
               </rect>
              </property>
             </widget>
-            <widget class="QCheckBox" name="random_arbitre">
+            <widget class="QCheckBox" name="random_arbitre_match">
              <property name="geometry">
               <rect>
                <x>180</x>
@@ -1397,7 +1397,7 @@ font: 700 9pt &quot;System&quot;;
               <string>Chois Aleatoire des Arbitres </string>
              </property>
             </widget>
-            <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+            <widget class="QDateTimeEdit" name="dateTimeEdit_2_match">
              <property name="geometry">
               <rect>
                <x>100</x>
@@ -1407,7 +1407,7 @@ font: 700 9pt &quot;System&quot;;
               </rect>
              </property>
             </widget>
-            <widget class="QComboBox" name="comboBox">
+            <widget class="QComboBox" name="comboBox_match">
              <property name="geometry">
               <rect>
                <x>110</x>

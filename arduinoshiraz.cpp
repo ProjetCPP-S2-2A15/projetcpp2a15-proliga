@@ -13,6 +13,7 @@ Arduinoshiraz::Arduinoshiraz(QWidget *parent, const QString &team1Name, const QS
     team1Name(team1Name),
     team2Name(team2Name)
 {
+    // Apply the gradient background to the whole dialog
     this->setStyleSheet(R"(
         Arduinoshiraz {
             background: qlineargradient(
@@ -24,8 +25,10 @@ Arduinoshiraz::Arduinoshiraz(QWidget *parent, const QString &team1Name, const QS
         }
     )");
 
+    // Main vertical layout
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
+    // Top layout with logo aligned to top-right
     QHBoxLayout *topLayout = new QHBoxLayout();
     QLabel *logoLabel = new QLabel(this);
     QPixmap logoPixmap(":/interface_icons/logb.png");
@@ -38,17 +41,20 @@ Arduinoshiraz::Arduinoshiraz(QWidget *parent, const QString &team1Name, const QS
     topLayout->addWidget(logoLabel);
     mainLayout->addLayout(topLayout);
 
+    // Score label centered with styling
     scoreLabel = new QLabel(QString("%1: 0 | %2: 0").arg(team1Name).arg(team2Name), this);
     scoreLabel->setAlignment(Qt::AlignCenter);
     scoreLabel->setStyleSheet("font-size: 24px; font-weight: bold; padding: 10px;");
     mainLayout->addWidget(scoreLabel);
 
+    // Stop button centered and styled
     stopButton = new QPushButton("Arrêter le suivi", this);
     stopButton->setStyleSheet("padding: 10px; font-size: 16px;");
     mainLayout->addWidget(stopButton, 0, Qt::AlignCenter);
     connect(stopButton, &QPushButton::clicked, this, &Arduinoshiraz::stopTracking);
 
-    serial->setPortName("COM6");
+    // Serial communication setup
+    serial->setPortName("COM6");  // Update this according to your system
     serial->setBaudRate(QSerialPort::Baud9600);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
