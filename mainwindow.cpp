@@ -645,7 +645,6 @@ void MainWindow::GenererContratJoueur()
     painter.drawText(joueurInfoRect, Qt::AlignLeft | Qt::TextWordWrap, joueurInfo);
     y += joueurInfoRect.height() + smallSpace;
 
-    // Articles du contrat (espace réduit)
     painter.setFont(QFont("Arial", 12, QFont::Bold));
     painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignLeft, "Articles du contrat:");
     y += lineHeight;
@@ -657,12 +656,26 @@ void MainWindow::GenererContratJoueur()
         "Article 3 : Fonction\nLe Joueur exercera ses fonctions de joueur professionnel de football au sein de l'équipe première du Club, ou toute autre équipe selon les besoins sportifs du Club. Il participera à toutes les séances d'entraînement, compétitions officielles et matchs amicaux."
     };
 
-    for (const QString &article : articles) {
-        QRect articleRect(x, y, textWidth, lineHeight * 2.5); // Hauteur réduite
-        painter.drawText(articleRect, Qt::AlignLeft | Qt::TextWordWrap, "- " + article);
-        y += articleRect.height() + smallSpace/2; // Espace très réduit
+    // Ajout de l'article 4 en fonction du radio button sélectionné
+
+    QString article4;
+    if (ui->Article1_equipe->isChecked()) {
+        article4 = "Article 4 : Droit à l'image\n " + ui->Article1_equipe->text();
     }
-    y += smallSpace;
+    else if (ui->Article2_equipe->isChecked()) {
+        article4 = "Article 4 : Obligation du joueur\n " + ui->Article2_equipe->text();
+    }
+    else if (ui->Article3_equipe->isChecked()) {
+        article4 = "Article 4 : Litiges\n" + ui->Article3_equipe->text();
+    }
+
+    articles.append(article4);
+
+    for (const QString &article : articles) {
+        QRect articleRect(x, y, textWidth, lineHeight * 2.5);
+        painter.drawText(articleRect, Qt::AlignLeft | Qt::TextWordWrap, "- " + article);
+        y += articleRect.height() + smallSpace/2;
+    }
     QString dateText = QString("Fait en quatre exemplaires originaux, à %1, le %2")
                            .arg(cityName, startDate.toString("dd/MM/yyyy"));
     painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignCenter, dateText);
