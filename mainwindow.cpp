@@ -587,19 +587,12 @@ void MainWindow::GenererContratJoueur()
         return;
     }
 
-    // Demander les informations du joueur
-  //  bool ok;
     QString joueurNom ="xxxx";
-
     QString joueurDateNaissance = "xx/xx/xxxx";
-
     QString joueurNationalite ="xxxxxx";
-
     QString joueurAdresse ="xxx";
-
     QString fileName = QFileDialog::getSaveFileName(this, "Enregistrer le contrat", "", "PDF Files (*.pdf)");
     if (fileName.isEmpty()) return;
-
     QPrinter printer(QPrinter::PrinterResolution);
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOutputFileName(fileName);
@@ -612,15 +605,27 @@ void MainWindow::GenererContratJoueur()
         return;
     }
 
+    // Charger les images de signature avec des chemins absolus pour test
+    QImage signaturePresident(":/interface_icons/president.jpg"); // Modifié le chemin
+    QImage signatureJoueur(":/interface_icons/joueur.jpg");       // Modifié le chemin
+
+    // Debug: Vérifier le chargement des images
+    if(signaturePresident.isNull()) {
+        qDebug() << "Échec du chargement de l'image du président";
+    }
+    if(signatureJoueur.isNull()) {
+        qDebug() << "Échec du chargement de l'image du joueur";
+    }
     QRect printableArea = printer.pageLayout().paintRectPixels(printer.resolution());
     int x = 50; // Marge gauche
     int y = 50; // Position verticale initiale
-    int lineHeight = 24; // Légèrement réduit
-    int smallSpace = 10; // Espace réduit entre sections
+    int lineHeight = 24;
+    int smallSpace = 10;
     int pageWidth = printableArea.width();
     int textWidth = pageWidth - 2 * x;
+    int signatureHeight = 60; // Hauteur des images de signature
 
-    // Titre
+
     painter.setFont(QFont("Arial", 18, QFont::Bold));
     painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignCenter, "CONTRAT DE JOUEUR");
     y += lineHeight + smallSpace;
@@ -653,12 +658,10 @@ void MainWindow::GenererContratJoueur()
     };
 
     for (const QString &article : articles) {
-        QRect articleRect(x, y, textWidth, lineHeight * 3); // Hauteur réduite
+        QRect articleRect(x, y, textWidth, lineHeight * 2.5); // Hauteur réduite
         painter.drawText(articleRect, Qt::AlignLeft | Qt::TextWordWrap, "- " + article);
-        y += articleRect.height() + smallSpace; // Espace très réduit
+        y += articleRect.height() + smallSpace/2; // Espace très réduit
     }
-
-    // Signatures alignées (espace réduit)
     y += smallSpace;
     QString dateText = QString("Fait en quatre exemplaires originaux, à %1, le %2")
                            .arg(cityName, startDate.toString("dd/MM/yyyy"));
@@ -666,18 +669,30 @@ void MainWindow::GenererContratJoueur()
     y += lineHeight + smallSpace;
 
     // Signature Président (gauche)
-    int signatureWidth = (textWidth - 20) / 2; // Moitié de largeur moins un espace
-    painter.drawText(QRect(x, y, signatureWidth, lineHeight), "__________________________");
-    painter.drawText(QRect(x, y + lineHeight, signatureWidth, lineHeight), "Représentant de l'équipe");
+    int signatureWidth = (textWidth - 20) / 2;
+    int signatureImageWidth = 150; // Largeur fixe pour les signatures
+
+    if(!signaturePresident.isNull()) {
+        // Ajustement de la taille en conservant le ratio
+        signaturePresident = signaturePresident.scaledToWidth(signatureImageWidth, Qt::SmoothTransformation);
+        painter.drawImage(QRect(x, y, signatureImageWidth, signatureHeight), signaturePresident);
+        painter.drawText(QRect(x, y + signatureHeight, signatureWidth, lineHeight), "Représentant de l'équipe");
+    } else {
+        painter.drawText(QRect(x, y + lineHeight, signatureWidth, lineHeight), "Représentant de l'équipe");
+    }
 
     // Signature Joueur (droite)
-    painter.drawText(QRect(x + signatureWidth + 20, y, signatureWidth, lineHeight), "__________________________");
-    painter.drawText(QRect(x + signatureWidth + 20, y + lineHeight, signatureWidth, lineHeight), "\nJoueur");
+    if(!signatureJoueur.isNull()) {
+        signatureJoueur = signatureJoueur.scaledToWidth(signatureImageWidth, Qt::SmoothTransformation);
+        painter.drawImage(QRect(x + signatureWidth + 20, y, signatureImageWidth, signatureHeight), signatureJoueur);
+        painter.drawText(QRect(x + signatureWidth + 20, y + signatureHeight, signatureWidth, lineHeight), "Le Joueur");
+    } else {
+        painter.drawText(QRect(x + signatureWidth + 20, y + lineHeight, signatureWidth, lineHeight),  " Joueur");
+    }
 
     painter.end();
     QMessageBox::information(this, "Succès", "Le contrat de travail a été généré avec succès !");
 }
-
 
 //metier avance speechto text
 #include <cstdlib> // Pour system()

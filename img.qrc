@@ -39,5 +39,7 @@
         <file>interface_icons/faceid.png</file>
         <file>interface_icons/micro1.png</file>
         <file>interface_icons/tri.png</file>
+        <file>interface_icons/president.jpg</file>
+        <file>interface_icons/joueur.jpg</file>
     </qresource>
 </RCC>
