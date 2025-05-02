@@ -613,57 +613,66 @@ void MainWindow::GenererContratJoueur()
     }
 
     QRect printableArea = printer.pageLayout().paintRectPixels(printer.resolution());
-    int x = 50;
-    int y = 50;
-    int lineHeight = 30;
+    int x = 50; // Marge gauche
+    int y = 50; // Position verticale initiale
+    int lineHeight = 24; // Légèrement réduit
+    int smallSpace = 10; // Espace réduit entre sections
     int pageWidth = printableArea.width();
     int textWidth = pageWidth - 2 * x;
 
-    // Title
+    // Titre
     painter.setFont(QFont("Arial", 18, QFont::Bold));
-    painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignCenter, "CONTRAT DE JOUEUR ");
-    y += 2 * lineHeight;
+    painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignCenter, "CONTRAT DE JOUEUR");
+    y += lineHeight + smallSpace;
 
-    // Team and City Information
+    // Informations de l'équipe (espace réduit)
     painter.setFont(QFont("Arial", 12));
-    QString teamInfo = QString("Le Club : \nNom : %1\nSiège social : %2\nReprésenté par : Monsieur le Président du club\n").arg(teamName, cityName);
-    painter.drawText(QRect(x, y, textWidth, lineHeight * 4), Qt::AlignLeft | Qt::TextWordWrap, teamInfo);
-    y += lineHeight * 4;
+    QString teamInfo = QString("Le Club :\nNom : %1\nSiège social : %2\nReprésenté par : Monsieur le Président du club")
+                           .arg(teamName, cityName);
+    QRect teamInfoRect(x, y, textWidth, lineHeight * 3); // Hauteur réduite
+    painter.drawText(teamInfoRect, Qt::AlignLeft | Qt::TextWordWrap, teamInfo);
+    y += teamInfoRect.height() + smallSpace;
 
-    // Player Information
-    QString joueurInfo = QString("Le Joueur :\nNom : %1\nNé le : %2\nNationalité : %3\nDomicilié à : %4\n")
+    // Informations du joueur (espace réduit)
+    QString joueurInfo = QString("Le Joueur :\nNom : %1\nNé le : %2\nNationalité : %3\nDomicilié à : %4")
                              .arg(joueurNom, joueurDateNaissance, joueurNationalite, joueurAdresse);
-    painter.drawText(QRect(x, y, textWidth, lineHeight * 4), Qt::AlignLeft | Qt::TextWordWrap, joueurInfo);
-    y += lineHeight * 4 ;
+    QRect joueurInfoRect(x, y, textWidth, lineHeight * 3); // Hauteur réduite
+    painter.drawText(joueurInfoRect, Qt::AlignLeft | Qt::TextWordWrap, joueurInfo);
+    y += joueurInfoRect.height() + smallSpace;
 
-    // Contract Articles
+    // Articles du contrat (espace réduit)
+    painter.setFont(QFont("Arial", 12, QFont::Bold));
+    painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignLeft, "Articles du contrat:");
+    y += lineHeight;
+
+    painter.setFont(QFont("Arial", 12));
     QStringList articles = {
         "Article 1: Objet du contrat\nLe présent contrat a pour objet d'établir les conditions dans lesquelles le Joueur s'engage à exercer à titre exclusif et professionnel l'activité de joueur de football au sein du Club.",
         QString("Article 2 : Durée\nLe présent contrat est conclu pour une durée déterminée des saisons sportives, prenant effet à compter du %1 jusqu'au %2, sous réserve de l'homologation par la Ligue de Football Professionnel (LFP).").arg(startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy")),
         "Article 3 : Fonction\nLe Joueur exercera ses fonctions de joueur professionnel de football au sein de l'équipe première du Club, ou toute autre équipe selon les besoins sportifs du Club. Il participera à toutes les séances d'entraînement, compétitions officielles et matchs amicaux."
     };
 
-    painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignLeft, "Articles du contrat:");
-    y += lineHeight;
-
     for (const QString &article : articles) {
-        QRect textRect(x, y, textWidth, lineHeight * 3); // Allow space for multiple lines
-        painter.drawText(textRect, Qt::AlignLeft | Qt::TextWordWrap, "- " + article);
-        y += lineHeight *3 ; // Adjust based on content height
+        QRect articleRect(x, y, textWidth, lineHeight * 3); // Hauteur réduite
+        painter.drawText(articleRect, Qt::AlignLeft | Qt::TextWordWrap, "- " + article);
+        y += articleRect.height() + smallSpace; // Espace très réduit
     }
 
-    y += 20;
+    // Signatures alignées (espace réduit)
+    y += smallSpace;
+    QString dateText = QString("Fait en quatre exemplaires originaux, à %1, le %2")
+                           .arg(cityName, startDate.toString("dd/MM/yyyy"));
+    painter.drawText(QRect(x, y, textWidth, lineHeight), Qt::AlignCenter, dateText);
+    y += lineHeight + smallSpace;
 
-    // Signatures
-    QString signatureTxt = QString("Fait en quatre exemplaires originaux, à %1, le %2\n\n").arg(cityName, startDate.toString("dd/MM/yyyy"));
-    signatureTxt += "Signatures\n";
-    signatureTxt += "__________________________\n";
-    signatureTxt += "Représentant de l'équipe\n\n";
-    signatureTxt += " __________________________\n";
-    signatureTxt += joueurNom + "\n";
-    signatureTxt += "Le Joueur\n";
+    // Signature Président (gauche)
+    int signatureWidth = (textWidth - 20) / 2; // Moitié de largeur moins un espace
+    painter.drawText(QRect(x, y, signatureWidth, lineHeight), "__________________________");
+    painter.drawText(QRect(x, y + lineHeight, signatureWidth, lineHeight), "Représentant de l'équipe");
 
-    painter.drawText(QRect(x, y, textWidth, lineHeight * 6), Qt::AlignLeft | Qt::TextWordWrap, signatureTxt);
+    // Signature Joueur (droite)
+    painter.drawText(QRect(x + signatureWidth + 20, y, signatureWidth, lineHeight), "__________________________");
+    painter.drawText(QRect(x + signatureWidth + 20, y + lineHeight, signatureWidth, lineHeight), "\nJoueur");
 
     painter.end();
     QMessageBox::information(this, "Succès", "Le contrat de travail a été généré avec succès !");

@@ -805,15 +805,42 @@ height: 30px;</string>
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>60</y>
+             <y>50</y>
              <width>681</width>
              <height>61</height>
             </rect>
            </property>
            <property name="text">
-            <string>Le Joueur exercera ses fonctions de joueur professionnel de football au sein de l’équipe première
- du Club,ou toute autre équipe selon les besoins sportifs du Club. Il participera à toutes
- les séances d’entraînement,compétitions officielles et matchs amicaux.</string>
+            <string>Le Joueur autorise le Club à utiliser son image dans le cadre des activités promotionnelles,
+ médiatiques et commerciales du Club.</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="Article2_equipe">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>110</y>
+             <width>681</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Le Joueur s'engage à participer aux entraînements et aux matchs,respecter les règlements du Club
+ et de la Ligue, et à ne pas s'engager avec un autre club sans autorisation.</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="Article3_equipe">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>170</y>
+             <width>681</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Tout litige relatif à l'interprétation ou à l'exécution du présent contrat sera soumis à la Commission
+ Juridique de la Fédération ou à défaut, aux tribunaux compétents du ressort du siège du Club.</string>
            </property>
           </widget>
          </widget>
