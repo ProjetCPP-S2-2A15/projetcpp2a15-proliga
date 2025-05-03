@@ -70,6 +70,9 @@ private:
                     const QString& prenom, const QString& age,
                     const QString& experience, const QString& sexe,
                     const QString& email, const QString& telephone);
+
+public slots:
+    void searchTable(const QString &text);
 };
 
 #endif // ARBITRE_H

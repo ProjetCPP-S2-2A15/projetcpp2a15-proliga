@@ -4,6 +4,7 @@ QT += widgets sql
 QT += printsupport
 QT += core gui sql network
 QT += network
+QT += widgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = interface

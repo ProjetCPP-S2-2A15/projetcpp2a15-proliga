@@ -621,3 +621,24 @@ void Arbitre::envoyerConfirmationsArbitres()
                              "Aucun email n'a pu être envoyé.");
     }
 }
+
+
+void Arbitre::searchTable(const QString &text) {
+    QTableWidget *tableWidget = mainWindow->ui->tableWidget_arbitres;
+
+    for (int i = 0; i < tableWidget->rowCount(); ++i) {
+        bool matchFound = false;
+
+        // Check each column for a match (excluding action buttons columns)
+        for (int j = 0; j < tableWidget->columnCount() - 3; ++j) {
+            QTableWidgetItem *item = tableWidget->item(i, j);
+            if (item && item->text().contains(text, Qt::CaseInsensitive)) {
+                matchFound = true;
+                break;
+            }
+        }
+
+        // Show/hide row based on search result
+        tableWidget->setRowHidden(i, !matchFound);
+    }
+}

@@ -45,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::on_pushButton_stats_clicked);
     connect(ui->pushButton_submit, &QPushButton::clicked,
             this, [this]() { A.envoyerConfirmationsArbitres(); });
+    connect(ui->searchLineEdit, &QLineEdit::textChanged,
+            &A, &Arbitre::searchTable);
 
 }
 

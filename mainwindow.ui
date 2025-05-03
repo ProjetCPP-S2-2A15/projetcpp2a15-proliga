@@ -673,560 +673,650 @@ height: 30px;</string>
         </widget>
        </widget>
        <widget class="QWidget" name="arbitrePage">
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <property name="spacing">
-          <number>15</number>
-         </property>
-         <property name="leftMargin">
-          <number>20</number>
-         </property>
-         <property name="topMargin">
-          <number>20</number>
-         </property>
-         <property name="rightMargin">
-          <number>20</number>
-         </property>
-         <property name="bottomMargin">
-          <number>20</number>
-         </property>
-         <item>
-          <widget class="QGroupBox" name="groupBox">
-           <property name="styleSheet">
-            <string notr="true">QGroupBox {
-                  border: 2px solid #4CAF50;
-                  border-radius: 8px;
-                  margin-top: 10px;
-                  padding-top: 15px;
-                  font: bold 12pt 'Segoe UI';
-                  color: #2C3E50;
-              }
-
-              QGroupBox::title {
-                  subcontrol-origin: margin;
-                  left: 10px;
-                  padding: 0 5px;
-              }</string>
-           </property>
-           <property name="title">
-            <string>Arbitre Information</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <property name="horizontalSpacing">
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="spacing">
              <number>15</number>
-            </property>
-            <property name="verticalSpacing">
-             <number>10</number>
-            </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>Nom:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_nom">
-              <property name="styleSheet">
-               <string notr="true">QLineEdit {
-                  background-color: #FFFFFF;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-                  selection-background-color: #4CAF50;
-              }
-
-              QLineEdit:focus {
-                  border: 1px solid #4CAF50;
-              }</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_9">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>Experience:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QSpinBox" name="lineEdit_experience">
-              <property name="styleSheet">
-               <string notr="true">QSpinBox {
-                  background-color: #FFFFFF;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-              }
-
-              QSpinBox:focus {
-                  border: 1px solid #4CAF50;
-              }</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>Prenom:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_prenom">
-              <property name="styleSheet">
-               <string notr="true">QLineEdit {
-                  background-color: #FFFFFF;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-                  selection-background-color: #4CAF50;
-              }
-
-              QLineEdit:focus {
-                  border: 1px solid #4CAF50;
-              }</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <widget class="QLabel" name="label_11">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>Email:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
-             <widget class="QLineEdit" name="lineEdit_email">
-              <property name="styleSheet">
-               <string notr="true">QLineEdit {
-                  background-color: #FFFFFF;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-                  selection-background-color: #4CAF50;
-              }
-
-              QLineEdit:focus {
-                  border: 1px solid #4CAF50;
-              }</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>Age:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QSpinBox" name="lineEdit_age">
-              <property name="styleSheet">
-               <string notr="true">QSpinBox {
-                  background-color: #FFFFFF;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-              }
-
-              QSpinBox:focus {
-                  border: 1px solid #4CAF50;
-              }</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QLabel" name="label_12">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>Sexe:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <widget class="QComboBox" name="comboBox_sexe">
-              <property name="styleSheet">
-               <string notr="true">QComboBox {
-                  background-color: #FFFFFF;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-                  min-width: 100px;
-              }
-
-              QComboBox:focus {
-                  border: 1px solid #4CAF50;
-              }
-
-              QComboBox QAbstractItemView {
-                  border: 1px solid #BDC3C7;
-                  selection-background-color: #4CAF50;
-                  selection-color: white;
-              }</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Homme</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Femme</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>ID:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="lineEdit_id">
-              <property name="styleSheet">
-               <string notr="true">QLineEdit {
-                  background-color: #F5F5F5;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-                  color: #7F8C8D;
-              }</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
-             <widget class="QLabel" name="label_13">
-              <property name="styleSheet">
-               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
-              </property>
-              <property name="text">
-               <string>Téléphone:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="3">
-             <widget class="QLineEdit" name="lineEdit_telephone">
-              <property name="styleSheet">
-               <string notr="true">QLineEdit {
-                  background-color: #FFFFFF;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  padding: 6px 12px;
-                  font: 10pt 'Segoe UI';
-                  selection-background-color: #4CAF50;
-              }
-
-              QLineEdit:focus {
-                  border: 1px solid #4CAF50;
-              }</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QPushButton" name="pushButton_stats">
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-                  background-color: #9B59B6;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  padding: 8px 16px;
-                  font: bold 10pt 'Segoe UI';
-                  min-width: 100px;
-              }
-
-              QPushButton:hover {
-                  background-color: #8E44AD;
-              }
-
-              QPushButton:pressed {
-                  background-color: #7D3C98;
-              }</string>
-             </property>
-             <property name="text">
-              <string>Stats</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_add">
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-                  background-color: #4CAF50;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  padding: 8px 16px;
-                  font: bold 10pt 'Segoe UI';
-                  min-width: 100px;
-              }
-
-              QPushButton:hover {
-                  background-color: #45A049;
-              }
-
-              QPushButton:pressed {
-                  background-color: #3D8B40;
-              }</string>
-             </property>
-             <property name="text">
-              <string>Ajouter</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_update">
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-                  background-color: #3498DB;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  padding: 8px 16px;
-                  font: bold 10pt 'Segoe UI';
-                  min-width: 100px;
-              }
-
-              QPushButton:hover {
-                  background-color: #2980B9;
-              }
-
-              QPushButton:pressed {
-                  background-color: #2472A4;
-              }</string>
-             </property>
-             <property name="text">
-              <string>Modifier</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_exporter">
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-                  background-color: #E74C3C;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  padding: 8px 16px;
-                  font: bold 10pt 'Segoe UI';
-                  min-width: 100px;
-              }
-
-              QPushButton:hover {
-                  background-color: #C0392B;
-              }
-
-              QPushButton:pressed {
-                  background-color: #A93226;
-              }</string>
-             </property>
-             <property name="text">
-              <string>Exporter</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_tri">
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-                  background-color: #606060;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  padding: 8px 16px;
-                  font: bold 10pt 'Segoe UI';
-                  min-width: 100px;
-              }
-
-              QPushButton:hover {
-                  background-color: #505050;
-              }
-
-              QPushButton:pressed {
-                  background-color: #404040;
-              }</string>
-             </property>
-             <property name="text">
-              <string>Tri</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_submit">
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-                  background-color: #9B59B6;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  padding: 8px 16px;
-                  font: bold 10pt 'Segoe UI';
-                  min-width: 100px;
-              }
-
-              QPushButton:hover {
-                  background-color: #8E44AD;
-              }
-
-              QPushButton:pressed {
-                  background-color: #7D3C98;
-              }</string>
-             </property>
-             <property name="text">
-              <string>submit</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QTableWidget" name="tableWidget_arbitres">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>200</height>
-            </size>
            </property>
-           <property name="styleSheet">
-            <string notr="true">QTableWidget {
-                  background-color: white;
-                  border: 1px solid #BDC3C7;
-                  border-radius: 4px;
-                  font: 9pt 'Segoe UI';
-                  gridline-color: #ECF0F1;
-              }
-
-              QTableWidget::item {
-                  padding: 6px;
-              }
-
-              QTableWidget::item:selected {
-                  background-color: #4CAF50;
-                  color: white;
-              }
-
-              QHeaderView::section {
-                  background-color: #4CAF50;
-                  color: white;
-                  padding: 6px;
-                  border: none;
-                  font: bold 9pt 'Segoe UI';
-              }
-
-              QTableCornerButton::section {
-                  background-color: #4CAF50;
-                  border: none;
-              }</string>
+           <property name="leftMargin">
+             <number>20</number>
            </property>
-           <column>
-            <property name="text">
-             <string>ID</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Nom</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Prenom</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Age</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Experience</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Sexe</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Email</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>CV</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Modifier</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Supprimer</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Téléphone</string>
-            </property>
-           </column>
-          </widget>
-         </item>
-        </layout>
+           <property name="topMargin">
+             <number>20</number>
+           </property>
+           <property name="rightMargin">
+             <number>20</number>
+           </property>
+           <property name="bottomMargin">
+             <number>20</number>
+           </property>
+           <item>
+             <widget class="QTabWidget" name="tabWidget">
+               <property name="styleSheet">
+                 <string notr="true">QTabWidget::pane {
+                       border: 1px solid #BDC3C7;
+                       border-radius: 4px;
+                       margin-top: 5px;
+                   }
+
+                   QTabBar::tab {
+                       background: #ECF0F1;
+                       border: 1px solid #BDC3C7;
+                       border-bottom: none;
+                       border-top-left-radius: 4px;
+                       border-top-right-radius: 4px;
+                       padding: 8px 16px;
+                       font: bold 10pt 'Segoe UI';
+                       color: #2C3E50;
+                   }
+
+                   QTabBar::tab:selected {
+                       background: #4CAF50;
+                       color: white;
+                       border-color: #4CAF50;
+                   }
+
+                   QTabBar::tab:hover {
+                       background: #D5DBDB;
+                   }</string>
+               </property>
+               <widget class="QWidget" name="infoTab">
+                 <attribute name="title">
+                   <string>Referee Information</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="verticalLayout_6">
+                   <property name="spacing">
+                     <number>15</number>
+                   </property>
+                   <item>
+                     <widget class="QGroupBox" name="groupBox">
+                       <property name="styleSheet">
+                         <string notr="true">QGroupBox {
+                               border: 2px solid #4CAF50;
+                               border-radius: 8px;
+                               margin-top: 10px;
+                               padding-top: 15px;
+                               font: bold 12pt 'Segoe UI';
+                               color: #2C3E50;
+                           }
+
+                           QGroupBox::title {
+                               subcontrol-origin: margin;
+                               left: 10px;
+                               padding: 0 5px;
+                           }</string>
+                       </property>
+                       <property name="title">
+                         <string>Arbitre Information</string>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_2">
+                         <property name="horizontalSpacing">
+                           <number>15</number>
+                         </property>
+                         <property name="verticalSpacing">
+                           <number>10</number>
+                         </property>
+                         <item row="0" column="0">
+                           <widget class="QLabel" name="label">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>Nom:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="0" column="1">
+                           <widget class="QLineEdit" name="lineEdit_nom">
+                             <property name="styleSheet">
+                               <string notr="true">QLineEdit {
+                                   background-color: #FFFFFF;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                                   selection-background-color: #4CAF50;
+                               }
+
+                               QLineEdit:focus {
+                                   border: 1px solid #4CAF50;
+                               }</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="0" column="2">
+                           <widget class="QLabel" name="label_9">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>Experience:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="0" column="3">
+                           <widget class="QSpinBox" name="lineEdit_experience">
+                             <property name="styleSheet">
+                               <string notr="true">QSpinBox {
+                                   background-color: #FFFFFF;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                               }
+
+                               QSpinBox:focus {
+                                   border: 1px solid #4CAF50;
+                               }</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="1" column="0">
+                           <widget class="QLabel" name="label_2">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>Prenom:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="1" column="1">
+                           <widget class="QLineEdit" name="lineEdit_prenom">
+                             <property name="styleSheet">
+                               <string notr="true">QLineEdit {
+                                   background-color: #FFFFFF;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                                   selection-background-color: #4CAF50;
+                               }
+
+                               QLineEdit:focus {
+                                   border: 1px solid #4CAF50;
+                               }</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="1" column="2">
+                           <widget class="QLabel" name="label_11">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>Email:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="1" column="3">
+                           <widget class="QLineEdit" name="lineEdit_email">
+                             <property name="styleSheet">
+                               <string notr="true">QLineEdit {
+                                   background-color: #FFFFFF;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                                   selection-background-color: #4CAF50;
+                               }
+
+                               QLineEdit:focus {
+                                   border: 1px solid #4CAF50;
+                               }</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="2" column="0">
+                           <widget class="QLabel" name="label_3">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>Age:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="2" column="1">
+                           <widget class="QSpinBox" name="lineEdit_age">
+                             <property name="styleSheet">
+                               <string notr="true">QSpinBox {
+                                   background-color: #FFFFFF;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                               }
+
+                               QSpinBox:focus {
+                                   border: 1px solid #4CAF50;
+                               }</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="2" column="2">
+                           <widget class="QLabel" name="label_12">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>Sexe:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="2" column="3">
+                           <widget class="QComboBox" name="comboBox_sexe">
+                             <property name="styleSheet">
+                               <string notr="true">QComboBox {
+                                   background-color: #FFFFFF;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                                   min-width: 100px;
+                               }
+
+                               QComboBox:focus {
+                                   border: 1px solid #4CAF50;
+                               }
+
+                               QComboBox QAbstractItemView {
+                                   border: 1px solid #BDC3C7;
+                                   selection-background-color: #4CAF50;
+                                   selection-color: white;
+                               }</string>
+                             </property>
+                             <item>
+                               <property name="text">
+                                 <string>Homme</string>
+                               </property>
+                             </item>
+                             <item>
+                               <property name="text">
+                                 <string>Femme</string>
+                               </property>
+                             </item>
+                           </widget>
+                         </item>
+                         <item row="3" column="0">
+                           <widget class="QLabel" name="label_8">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>ID:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="3" column="1">
+                           <widget class="QLineEdit" name="lineEdit_id">
+                             <property name="styleSheet">
+                               <string notr="true">QLineEdit {
+                                   background-color: #F5F5F5;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                                   color: #7F8C8D;
+                               }</string>
+                             </property>
+                             <property name="readOnly">
+                               <bool>true</bool>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="3" column="2">
+                           <widget class="QLabel" name="label_13">
+                             <property name="styleSheet">
+                               <string notr="true">font: 10pt 'Segoe UI'; color: #2C3E50;</string>
+                             </property>
+                             <property name="text">
+                               <string>Téléphone:</string>
+                             </property>
+                           </widget>
+                         </item>
+                         <item row="3" column="3">
+                           <widget class="QLineEdit" name="lineEdit_telephone">
+                             <property name="styleSheet">
+                               <string notr="true">QLineEdit {
+                                   background-color: #FFFFFF;
+                                   border: 1px solid #BDC3C7;
+                                   border-radius: 4px;
+                                   padding: 6px 12px;
+                                   font: 10pt 'Segoe UI';
+                                   selection-background-color: #4CAF50;
+                               }
+
+                               QLineEdit:focus {
+                                   border: 1px solid #4CAF50;
+                               }</string>
+                             </property>
+                           </widget>
+                         </item>
+                       </layout>
+                     </widget>
+                   </item>
+                   <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_3">
+                       <item>
+                         <widget class="QPushButton" name="pushButton_add">
+                           <property name="styleSheet">
+                             <string notr="true">QPushButton {
+                                 background-color: #4CAF50;
+                                 color: white;
+                                 border: none;
+                                 border-radius: 4px;
+                                 padding: 8px 16px;
+                                 font: bold 10pt 'Segoe UI';
+                                 min-width: 100px;
+                             }
+
+                             QPushButton:hover {
+                                 background-color: #45A049;
+                             }
+
+                             QPushButton:pressed {
+                                 background-color: #3D8B40;
+                             }</string>
+                           </property>
+                           <property name="text">
+                             <string>Ajouter</string>
+                           </property>
+                         </widget>
+                       </item>
+                       <item>
+                         <widget class="QPushButton" name="pushButton_update">
+                           <property name="styleSheet">
+                             <string notr="true">QPushButton {
+                                 background-color: #3498DB;
+                                 color: white;
+                                 border: none;
+                                 border-radius: 4px;
+                                 padding: 8px 16px;
+                                 font: bold 10pt 'Segoe UI';
+                                 min-width: 100px;
+                             }
+
+                             QPushButton:hover {
+                                 background-color: #2980B9;
+                             }
+
+                             QPushButton:pressed {
+                                 background-color: #2472A4;
+                             }</string>
+                           </property>
+                           <property name="text">
+                             <string>Modifier</string>
+                           </property>
+                         </widget>
+                       </item>
+                       <item>
+                         <widget class="QPushButton" name="pushButton_submit">
+                           <property name="styleSheet">
+                             <string notr="true">QPushButton {
+                                 background-color: #9B59B6;
+                                 color: white;
+                                 border: none;
+                                 border-radius: 4px;
+                                 padding: 8px 16px;
+                                 font: bold 10pt 'Segoe UI';
+                                 min-width: 100px;
+                             }
+
+                             QPushButton:hover {
+                                 background-color: #8E44AD;
+                             }
+
+                             QPushButton:pressed {
+                                 background-color: #7D3C98;
+                             }</string>
+                           </property>
+                           <property name="text">
+                             <string>Submit</string>
+                           </property>
+                         </widget>
+                       </item>
+                       <item>
+                         <spacer name="horizontalSpacer_3">
+                           <property name="orientation">
+                             <enum>Qt::Orientation::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                             <size>
+                               <width>40</width>
+                               <height>20</height>
+                             </size>
+                           </property>
+                         </spacer>
+                       </item>
+                     </layout>
+                   </item>
+                 </layout>
+               </widget>
+               <widget class="QWidget" name="tableTab">
+                 <attribute name="title">
+                   <string>Referees List</string>
+                 </attribute>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                   <property name="spacing">
+                     <number>15</number>
+                   </property>
+                   <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_4">
+                       <item>
+                         <widget class="QLineEdit" name="searchLineEdit">
+                           <property name="placeholderText">
+                             <string>Search referees...</string>
+                           </property>
+                           <property name="styleSheet">
+                             <string notr="true">QLineEdit {
+                                 background-color: white;
+                                 border: 1px solid #BDC3C7;
+                                 border-radius: 4px;
+                                 padding: 6px 12px;
+                                 font: 10pt 'Segoe UI';
+                                 selection-background-color: #4CAF50;
+                             }
+
+                             QLineEdit:focus {
+                                 border: 1px solid #4CAF50;
+                             }</string>
+                           </property>
+                         </widget>
+                       </item>
+                       <item>
+                         <widget class="QPushButton" name="pushButton_exporter">
+                           <property name="styleSheet">
+                             <string notr="true">QPushButton {
+                                 background-color: #E74C3C;
+                                 color: white;
+                                 border: none;
+                                 border-radius: 4px;
+                                 padding: 8px 16px;
+                                 font: bold 10pt 'Segoe UI';
+                                 min-width: 100px;
+                             }
+
+                             QPushButton:hover {
+                                 background-color: #C0392B;
+                             }
+
+                             QPushButton:pressed {
+                                 background-color: #A93226;
+                             }</string>
+                           </property>
+                           <property name="text">
+                             <string>Exporter</string>
+                           </property>
+                         </widget>
+                       </item>
+                       <item>
+                         <widget class="QPushButton" name="pushButton_tri">
+                           <property name="styleSheet">
+                             <string notr="true">QPushButton {
+                                 background-color: #606060;
+                                 color: white;
+                                 border: none;
+                                 border-radius: 4px;
+                                 padding: 8px 16px;
+                                 font: bold 10pt 'Segoe UI';
+                                 min-width: 100px;
+                             }
+
+                             QPushButton:hover {
+                                 background-color: #505050;
+                             }
+
+                             QPushButton:pressed {
+                                 background-color: #404040;
+                             }</string>
+                           </property>
+                           <property name="text">
+                             <string>Tri</string>
+                           </property>
+                         </widget>
+                       </item>
+                       <item>
+                         <widget class="QPushButton" name="pushButton_stats">
+                           <property name="styleSheet">
+                             <string notr="true">QPushButton {
+                                 background-color: #9B59B6;
+                                 color: white;
+                                 border: none;
+                                 border-radius: 4px;
+                                 padding: 8px 16px;
+                                 font: bold 10pt 'Segoe UI';
+                                 min-width: 100px;
+                             }
+
+                             QPushButton:hover {
+                                 background-color: #8E44AD;
+                             }
+
+                             QPushButton:pressed {
+                                 background-color: #7D3C98;
+                             }</string>
+                           </property>
+                           <property name="text">
+                             <string>Stats</string>
+                           </property>
+                         </widget>
+                       </item>
+                       <item>
+                         <spacer name="horizontalSpacer_4">
+                           <property name="orientation">
+                             <enum>Qt::Orientation::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                             <size>
+                               <width>40</width>
+                               <height>20</height>
+                             </size>
+                           </property>
+                         </spacer>
+                       </item>
+                     </layout>
+                   </item>
+                   <item>
+                     <widget class="QTableWidget" name="tableWidget_arbitres">
+                       <property name="minimumSize">
+                         <size>
+                           <width>0</width>
+                           <height>300</height>
+                         </size>
+                       </property>
+                       <property name="styleSheet">
+                         <string notr="true">QTableWidget {
+                               background-color: white;
+                               border: 1px solid #BDC3C7;
+                               border-radius: 4px;
+                               font: 9pt 'Segoe UI';
+                               gridline-color: #ECF0F1;
+                           }
+
+                           QTableWidget::item {
+                               padding: 6px;
+                           }
+
+                           QTableWidget::item:selected {
+                               background-color: #4CAF50;
+                               color: white;
+                           }
+
+                           QHeaderView::section {
+                               background-color: #4CAF50;
+                               color: white;
+                               padding: 6px;
+                               border: none;
+                               font: bold 9pt 'Segoe UI';
+                           }
+
+                           QTableCornerButton::section {
+                               background-color: #4CAF50;
+                               border: none;
+                           }</string>
+                       </property>
+                       <column>
+                         <property name="text">
+                           <string>ID</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Nom</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Prenom</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Age</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Experience</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Sexe</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Email</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>CV</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Modifier</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Supprimer</string>
+                         </property>
+                       </column>
+                       <column>
+                         <property name="text">
+                           <string>Téléphone</string>
+                         </property>
+                       </column>
+                     </widget>
+                   </item>
+                 </layout>
+               </widget>
+             </widget>
+           </item>
+         </layout>
        </widget>
        <widget class="QWidget" name="joueurPage">
         <property name="styleSheet">
