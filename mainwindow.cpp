@@ -477,8 +477,58 @@ void MainWindow::modifyEquipe(int equipeId) {
 void MainWindow::exportTableToPDF() {
     QTextDocument document;
     QTextCursor cursor(&document);
-    QString html = "<table border='1' cellpadding='5'>";
 
+    // Style CSS pour le thème football (vert et noir)
+    QString style = R"(
+        <style>
+            body { font-family: Arial, sans-serif; }
+            h1 {
+                color: #2E8B57; /* Forest green */
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin-bottom: 25px;
+            }
+            th {
+                background-color: #2E8B57; /* Forest green */
+                color: white;
+                font-weight: bold;
+                padding: 10px;
+                text-align: left;
+                border: 1px solid #1A5D34;
+            }
+            td {
+                padding: 8px;
+                border: 1px solid #ddd;
+            }
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            tr:hover {
+                background-color: #e6ffe6; /* Light green hover */
+            }
+            .footer {
+                text-align: right;
+                font-style: italic;
+                color: #555;
+                margin-top: 20px;
+            }
+        </style>
+    )";
+
+    // Début du document HTML avec style
+    QString html = "<html><head>" + style + "</head><body>";
+
+    // Ajout du titre
+    html += "<h1>Rapport des Equipes </h1>";
+
+    // Création du tableau
+    html += "<table>";
+
+    // En-têtes de colonnes
     html += "<tr>";
     for (int col = 0; col < ui->programme->model()->columnCount() - 1; ++col) {
         QString header = ui->programme->model()->headerData(col, Qt::Horizontal).toString();
@@ -486,6 +536,7 @@ void MainWindow::exportTableToPDF() {
     }
     html += "</tr>";
 
+    // Données du tableau
     for (int row = 0; row < ui->programme->model()->rowCount(); ++row) {
         html += "<tr>";
         for (int col = 0; col < ui->programme->model()->columnCount() - 1; ++col) {
@@ -496,21 +547,30 @@ void MainWindow::exportTableToPDF() {
     }
     html += "</table>";
 
+    // Pied de page
+    html += "<div class='footer'>Généré le " + QDate::currentDate().toString("dd/MM/yyyy") + "</div>";
+    html += "</body></html>";
+
     cursor.insertHtml(html);
+
+    // Configuration de l'export PDF
     QString fileName = QFileDialog::getSaveFileName(this, "Exporter en PDF", "", "Fichiers PDF (*.pdf)");
     if (fileName.isEmpty()) {
-        return; // Cancel if the user did not select a file
+        return;
     }
 
     QPrinter printer(QPrinter::HighResolution);
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOutputFileName(fileName);
+    printer.setPageMargins(QMarginsF(15, 15, 15, 15)); // Marges de 15mm
+
+    // Optionnel : définir l'orientation (commenté par défaut)
+    // printer.setPageOrientation(QPageLayout::Landscape);
+
     document.print(&printer);
 
     QMessageBox::information(this, "Succès", "Le tableau a été exporté en PDF avec succès !");
-}
-
-void MainWindow::rechercheEquipe() {
+}void MainWindow::rechercheEquipe() {
     QString keyword = ui->lineEditRecherche->text().trimmed();
     QSqlQueryModel *model = qobject_cast<QSqlQueryModel*>(ui->programme->model());
     if (!model) return;

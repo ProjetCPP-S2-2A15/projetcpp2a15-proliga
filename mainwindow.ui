@@ -681,7 +681,7 @@ height: 30px;</string>
           </rect>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="affichage">
           <attribute name="title">
@@ -776,7 +776,7 @@ height: 30px;</string>
          </widget>
          <widget class="QWidget" name="IA">
           <attribute name="title">
-           <string>IA generer</string>
+           <string>generer Contrat</string>
           </attribute>
           <widget class="QComboBox" name="equipeComboBox">
            <property name="geometry">
