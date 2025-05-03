@@ -1,10 +1,19 @@
 QT       += core gui
 QT += sql
 QT += widgets sql
-QT += printsupport
-QT += core gui sql network
 QT += network
 QT += widgets
+
+QT += axcontainer
+QT += printsupport
+QT += charts
+QT += serialport
+QT += quick location positioning
+QT += quickwidgets
+QT += positioning location
+QT += quick positioning location
+
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = interface
@@ -24,21 +33,32 @@ CONFIG += c++11
 
 SOURCES += \
     arbitre.cpp \
+    arduinoshiraz.cpp \
+    championnats.cpp \
     changeWidget.cpp \
      connexion.cpp \
     design.cpp \
     loginwindow.cpp \
     main.cpp \
+    match.cpp \
+    scene1.cpp \
+    statisticscontainer.cpp\
+    stades.cpp \
     mainwindow.cpp
-
 HEADERS += \
     arbitre.h \
+    mainwindow.cpp \
+    arduinoshiraz.h \
+    championnats.h \
     changeWidget.h \
       loginwindow.h \
      connexion.h\
     design.h \
-    mainwindow.h
-
+    mainwindow.h \
+    match.h \
+    scene1.h \
+    statisticscontainer.h\
+    stades.h
 FORMS += \
     mainwindow.ui
 

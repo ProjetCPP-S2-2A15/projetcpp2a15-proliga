@@ -12,6 +12,8 @@ bool Connection::createconnect()
     db.setUserName("C##hedi");
     db.setPassword("ghhmmss");
 
+
+
     if (db.open())
         test=true;
 
