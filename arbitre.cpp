@@ -358,7 +358,7 @@ void Arbitre::afficher(QTableWidget *tableWidget) {
                     telephone
                     );
                 mainWindow->setCurrentArbitreId(id.toInt());
-                mainWindow->ui->lineEdit_id->setText(id);
+                mainWindow->getUi()->lineEdit_id->setText(id);
             }
         });
 
@@ -624,7 +624,7 @@ void Arbitre::envoyerConfirmationsArbitres()
 
 
 void Arbitre::searchTable(const QString &text) {
-    QTableWidget *tableWidget = mainWindow->ui->tableWidget_arbitres;
+    QTableWidget *tableWidget = mainWindow->getUi()->tableWidget_arbitres;
 
     for (int i = 0; i < tableWidget->rowCount(); ++i) {
         bool matchFound = false;

@@ -3805,7 +3805,6 @@ QString MainWindow::ARD_consulter(const QString &champName)
     ui->tableViewConsulter->setModel(afficherConsulter());
 
     return QString("Succès: %1 assigné à %2 !").arg(champName, selectedStade);
->>>>>>> 816cc92b09284008d93476d48c66bfbcd010be1e
 }
 
 void MainWindow::remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email, QString telephone) {

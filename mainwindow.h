@@ -30,7 +30,6 @@
 #include <QGraphicsOpacityEffect>  // For opacity effect
 #include <QPropertyAnimation>  // For animations
 #include <QTimer>
-#include <QSerial>
 #include <QSerialPort>  // Include for serial port
 #include <QSerialPortInfo>
 
@@ -75,6 +74,7 @@ public:
     void setCurrentArbitreId(int id);
     int currentArbitreId;
     void checkForNullScoreEdit();
+    Ui::MainWindow* getUi() const { return ui; }
 
 
 
