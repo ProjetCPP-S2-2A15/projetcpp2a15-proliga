@@ -220,7 +220,7 @@ private slots:
     void modifyEquipe(int equipeId);
     void addButtonsToTable();
     void addActionColumn();
-    void exportTableToPDF();
+    void exportTableToPDFK();
     void trieEquipe() ;
     void rechercheEquipe() ;
     void afficherStatistiques() ;

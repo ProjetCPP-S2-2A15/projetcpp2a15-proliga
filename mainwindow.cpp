@@ -113,9 +113,9 @@ MainWindow::MainWindow(QWidget *parent)
     chartView2 = nullptr;
 
     // Create an instance of Statistique
-    if (!ui->widget_6->layout()) {
-        ui->widget_6->setLayout(new QVBoxLayout());
-        ui->widget_6->layout()->setContentsMargins(0, 0, 0, 0);
+    if (!ui->widget_9->layout()) {
+        ui->widget_9->setLayout(new QVBoxLayout());
+        ui->widget_9->layout()->setContentsMargins(0, 0, 0, 0);
     }
 
     // Connections
@@ -215,7 +215,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->coach, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
     connect(ui->nbmarquee, &QLineEdit::textChanged, this, &MainWindow::validateInputs);
     connect(ui->nbj, &QSpinBox::valueChanged, this, &MainWindow::validateInputs);*/
-    connect(ui->telechargement, &QPushButton::clicked, this, &MainWindow::exportTableToPDF);
+    connect(ui->telechargement, &QPushButton::clicked, this, &MainWindow::exportTableToPDFK);
     connect(ui->voc_nom, &QPushButton::clicked, this, &MainWindow::on_voc_nom_clicked);
     connect(ui->voc_coach, &QPushButton::clicked, this, &MainWindow::on_voc_coach_clicked);
     connect(ui->voc_nb, &QPushButton::clicked, this, &MainWindow::on_voc_nb_clicked);
@@ -4014,7 +4014,7 @@ void MainWindow::on_pushButton_stats_clicked() {
 void MainWindow::afficherStatistiques() {
     // Clear previous chart if it exists
     if (chartView2) {
-        ui->widget_6->layout()->removeWidget(chartView2);
+        ui->widget_9->layout()->removeWidget(chartView2);
         delete chartView2;
         chartView2 = nullptr;
     }
@@ -4027,12 +4027,11 @@ void MainWindow::afficherStatistiques() {
     chartView2->setRenderHint(QPainter::Antialiasing);
 
     // Add to layout
-    ui->widget_6->layout()->addWidget(chartView2);
+    ui->widget_9->layout()->addWidget(chartView2);
 
     // Ensure the widget is visible
-    ui->widget_6->show();
+    ui->widget_9->show();
 }
-// Other methods remain unchanged...
 void MainWindow::refreshTable() {
     QSqlQueryModel *model = new QSqlQueryModel(this);
     QSqlQuery query;
@@ -4362,7 +4361,7 @@ void MainWindow::modifyEquipe(int equipeId) {
         QMessageBox::critical(this, "Error", "Failed to modify the equipe: " + query.lastError().text());
     }
 }
-void MainWindow::exportTableToPDF() {
+void MainWindow::exportTableToPDFK() {
     QTextDocument document;
     QTextCursor cursor(&document);
 
