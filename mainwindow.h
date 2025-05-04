@@ -27,7 +27,7 @@ public:
     void setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers);
     void setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, const QString nom);
     void setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, const QString arg1);
-    void validateInputs();
+    void validateInputsJ();
     void freeInputs();
     void refreshStats();
     void setupArduinoConnection();
