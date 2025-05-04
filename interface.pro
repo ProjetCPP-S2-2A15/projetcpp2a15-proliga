@@ -21,7 +21,6 @@ CONFIG += c++11
 SOURCES += \
     changeWidget.cpp \
      connexion.cpp \
-    contratdialog.cpp \
     design.cpp \
     equipe.cpp \
     loginwindow.cpp \
@@ -31,7 +30,6 @@ SOURCES += \
 
 HEADERS += \
     changeWidget.h \
-    contratdialog.h \
     equipe.h \
       loginwindow.h \
      connexion.h\

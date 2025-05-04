@@ -22,12 +22,10 @@
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QChart>
 #include "statistique.h" // Include the Statistique header
-#include "contratdialog.h"
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QtConcurrent>
-#include <iostream> // For std::cout
-#include <exception> // For std::exception
+
 // if the library uses this namespace
 
 MainWindow::MainWindow(QWidget *parent)
@@ -816,7 +814,7 @@ void MainWindow::on_voc_pays_clicked() {
 
 QString MainWindow::recordText()
 {
-    QString pythonScriptPath = "C:/Users/PC_DELL/Downloads/c++/voc exec/voc.py";
+    QString pythonScriptPath = "C:/Users/PC_DELL/Downloads/voc exec/voc.py";
     QString pythonExecutable = "C:/Python312/python.exe";
 
     QProcess process;

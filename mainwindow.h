@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "contratdialog.h"
 #include <QThread>
 #include <QFuture>
 #include <QtConcurrent>
@@ -37,7 +36,6 @@ public:
 
 private slots:
     void Ajouter_clicked();
-
     void refreshTable();
     void openModificationDialog(int idEquipe);
     void modifyEquipe(int equipeId);
@@ -47,17 +45,14 @@ private slots:
     void trieEquipe() ;
     void rechercheEquipe() ;
     void afficherStatistiques() ;
-//void  initArticles();
     void GenererContratJoueur();
     void on_voc_nom_clicked();
     void on_voc_coach_clicked();
     void on_voc_nb_clicked();
     void on_voc_pays_clicked();
     QString recordText();
-  //  void generateContractPDF(const QString &teamName, const QStringList &articles);
     bool isTeamNameUnique(const QString& teamName, int excludedId = -1);
     void loadTeamsIntoComboBox();
- //   void updateSelectedArticles();
 private:
     Ui::MainWindow *ui;
     Statistique *statistique; // Declare the Statistique pointer
@@ -68,7 +63,6 @@ private:
     QFutureWatcher<QString> *futureWatcher;
     QString lastClickedField;
     QString m_lastAudioFile;
-    QList<QCheckBox*> articleCheckboxes;
     QMap<QString, QStringList> equipeArticles;
 
 
