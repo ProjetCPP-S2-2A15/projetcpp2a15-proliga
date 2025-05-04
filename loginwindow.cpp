@@ -95,6 +95,7 @@ LoginWindow::LoginWindow(QWidget *parent) : QWidget(parent) {
     mainLayout->addWidget(loginWidget);
 
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::checkLogin);
+
     connect(faceIdButton, &QPushButton::clicked, this, &LoginWindow::on_faceRecognitionButton_clicked);
 
 
@@ -167,3 +168,4 @@ void LoginWindow::on_faceRecognitionButton_clicked()
         qDebug() << "Face recognition started.";
     }
 }
+

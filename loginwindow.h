@@ -16,7 +16,9 @@ public:
 
 private slots:
     void checkLogin();
+
     void on_faceRecognitionButton_clicked();
+
 
 private:
     QLineEdit *emailInput;

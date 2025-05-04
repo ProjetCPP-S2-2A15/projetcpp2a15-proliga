@@ -37,5 +37,32 @@
         <file>interface_icons/koura.png</file>
         <file>interface_icons/login.png</file>
         <file>interface_icons/faceid.png</file>
+
+        <file>interface_icons/micro1.png</file>
+        <file>interface_icons/tri.png</file>
+        <file>interface_icons/president.jpg</file>
+        <file>interface_icons/joueur.jpg</file>
+        <file>interface_icons/deletee.png</file>
+        <file>interface_icons/editee7.png</file>
+        <file>interface_icons/chatbot.png</file>
+        <file>interface_icons/refresh.png</file>
+        <file>interface_icons/more.png</file>
+        <file>interface_icons/start.png</file>
+        <file>interface_icons/logb.png</file>
+        <file>interface_icons/tri.png</file>
+        <file>interface_icons/excel.png</file>
+        <file>interface_icons/next.png</file>
+        <file>interface_icons/prv.png</file>
+        <file>interface_icons/chatbot2.jpg</file>
+        <file>interface_icons/chatbot3.jpg</file>
+        <file>interface_icons/showarduino.png</file>
+        <file>MapView.qml</file>
+        <file>cleansh.svg</file>
+        <file>winner.svg</file>
+        <file>bestdef.svg</file>
+        <file>football-strike.svg</file>
+        <file>gain.svg</file>
+
+
     </qresource>
 </RCC>

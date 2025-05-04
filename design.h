@@ -3,7 +3,17 @@
 
 #include <QPushButton>
 #include "ui_mainwindow.h"
+
 #include "joueur.h"
+
+
+
+#include <QProxyStyle>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QTableWidget>
+void StyleTW(QTableWidget *tableWidget);
+
 
 void applyDesign(Ui::MainWindow *ui);
 

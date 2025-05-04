@@ -1,38 +1,3 @@
-/*
-#include "connexion.h"
-
-//the problem must be from the code (i use connection without clearing it maybe) not because i have too many databases !
-Connection::Connection() {
-    if (!QSqlDatabase::contains("my_connection")) {
-        db = QSqlDatabase::addDatabase("QODBC", "my_connection");
-    } else {
-        db = QSqlDatabase::database("my_connection");
-    }
-
-    db.setDatabaseName("ProjetCpp2A15");
-    db.setUserName("system");
-    db.setPassword("ala123");
-}
-
-
-bool Connection::createconnect(){
-    return db.open();
-}
-
-QSqlDatabase Connection::getDatabase() {
-    if (!db.isOpen() && !db.open()) {
-        qDebug() << "Failed to open database!";
-        return QSqlDatabase();
-    }
-    return db;
-}
-
--------2------------
-*/
-
-
-
-
 #include "connexion.h"
 
 Connection::Connection(){
@@ -62,5 +27,7 @@ QSqlDatabase Connection::getDatabase() {
     }
     return db;
 }
+
+void Connection::closeconnect(){db.close();}
 
 
