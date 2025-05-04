@@ -10,6 +10,10 @@ public:
     Connection();
     bool createconnect();
     void closeconnect();
+
+
+
+
 };
 
 #endif // CONNECTION_H

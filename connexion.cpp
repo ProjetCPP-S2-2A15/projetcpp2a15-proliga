@@ -7,10 +7,12 @@ Connection::Connection()
 
 bool Connection::createconnect()
 {bool test=false;
+
     db = QSqlDatabase::addDatabase("QODBC");
     db.setDatabaseName("ProjetCpp2A15");
     db.setUserName("khadija");
     db.setPassword("khadija");
+
 
     if (db.open())
         test=true;
@@ -21,4 +23,6 @@ bool Connection::createconnect()
 
     return  test;
 }
+
 void Connection::closeconnect(){db.close();}
+

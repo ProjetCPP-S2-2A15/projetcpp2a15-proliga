@@ -559,7 +559,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
         </rect>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="homePage">
         <widget class="QLabel" name="label_4">
@@ -3359,6 +3359,600 @@ font: 700 9pt &quot;System&quot;;
           <string>                                                                         Equipes Page</string>
          </property>
         </widget>
+        <widget class="QLabel" name="label_58">
+         <property name="geometry">
+          <rect>
+           <x>290</x>
+           <y>230</y>
+           <width>131</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: Transparent;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Nombre de joueur</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="nom2">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>40</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent ;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Nom </string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_59">
+         <property name="geometry">
+          <rect>
+           <x>350</x>
+           <y>165</y>
+           <width>111</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(0, 0, 0);
+background-color:Transparent
+;</string>
+         </property>
+         <property name="text">
+          <string>Fin de contrat</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="Pays">
+         <property name="geometry">
+          <rect>
+           <x>340</x>
+           <y>80</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(218, 218, 218);</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="nbmarquee">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>160</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(218, 218, 218);</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_60">
+         <property name="geometry">
+          <rect>
+           <x>360</x>
+           <y>55</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent ;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Pays</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="voc_coach">
+         <property name="geometry">
+          <rect>
+           <x>260</x>
+           <y>110</y>
+           <width>21</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-image: url(:/interface_icons/micro1.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="Ajouter">
+         <property name="geometry">
+          <rect>
+           <x>360</x>
+           <y>260</y>
+           <width>93</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(0, 0, 0);
+color: rgb(255,255,255
+);
+font: 700 10pt &quot;Times New Roman&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Ajouter</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="Normal">
+         <property name="geometry">
+          <rect>
+           <x>330</x>
+           <y>135</y>
+           <width>91</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Normal</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_61">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>85</y>
+           <width>104</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent ;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Nom entraineur</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="voc_nom">
+         <property name="geometry">
+          <rect>
+           <x>260</x>
+           <y>60</y>
+           <width>21</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-image: url(:/interface_icons/micro1.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="voc_pays">
+         <property name="geometry">
+          <rect>
+           <x>460</x>
+           <y>80</y>
+           <width>21</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-image: url(:/interface_icons/micro1.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_62">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>20</y>
+           <width>701</width>
+           <height>521</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: black;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QDateEdit" name="fincnt">
+         <property name="geometry">
+          <rect>
+           <x>350</x>
+           <y>190</y>
+           <width>110</width>
+           <height>26</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(218, 218, 218);</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_63">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>140</y>
+           <width>171</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent ;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Nombre de but marquées</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="nbj">
+         <property name="geometry">
+          <rect>
+           <x>420</x>
+           <y>225</y>
+           <width>16</width>
+           <height>26</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QDateEdit" name="dbcnt">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>210</y>
+           <width>121</width>
+           <height>26</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(218, 218, 218);</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="coach">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>110</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(218, 218, 218);
+</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_64">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>190</y>
+           <width>141</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(0, 0, 0);
+background-color: transparent;</string>
+         </property>
+         <property name="text">
+          <string>Debut de contrat</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="nome">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>60</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(218, 218, 218);</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_65">
+         <property name="geometry">
+          <rect>
+           <x>395</x>
+           <y>110</y>
+           <width>63</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_66">
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>10</y>
+           <width>141</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;
+color: rgb(0, 0, 0);
+font: 700 10pt &quot;Times New Roman&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Ajouter une equipe</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="widget_9" native="true">
+         <property name="geometry">
+          <rect>
+           <x>510</x>
+           <y>10</y>
+           <width>300</width>
+           <height>291</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QTabWidget" name="tabWidget_4">
+         <property name="geometry">
+          <rect>
+           <x>110</x>
+           <y>280</y>
+           <width>1671</width>
+           <height>279</height>
+          </rect>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="affichage">
+          <attribute name="title">
+           <string>Affichage</string>
+          </attribute>
+          <widget class="QTableView" name="programme">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>30</y>
+             <width>701</width>
+             <height>171</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="telechargement">
+           <property name="geometry">
+            <rect>
+             <x>560</x>
+             <y>200</y>
+             <width>101</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>telecharger</string>
+           </property>
+           <property name="icon">
+            <iconset resource="img.qrc">
+             <normaloff>:/interface_icons/pdf-file.png</normaloff>:/interface_icons/pdf-file.png</iconset>
+           </property>
+          </widget>
+          <widget class="QLineEdit" name="lineEditRecherche">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>5</y>
+             <width>201</width>
+             <height>21</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="sortFieldComboBox">
+           <property name="geometry">
+            <rect>
+             <x>490</x>
+             <y>2</y>
+             <width>76</width>
+             <height>26</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="sortOrderComboBox">
+           <property name="geometry">
+            <rect>
+             <x>610</x>
+             <y>2</y>
+             <width>76</width>
+             <height>26</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="triButton">
+           <property name="geometry">
+            <rect>
+             <x>576</x>
+             <y>4</y>
+             <width>22</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border-image: url(:/interface_icons/tri.png);</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="statistiquesButton">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>200</y>
+             <width>93</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>statistiques</string>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="IA">
+          <attribute name="title">
+           <string>generer Contrat</string>
+          </attribute>
+          <widget class="QComboBox" name="equipeComboBox">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>10</y>
+             <width>91</width>
+             <height>26</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="GenererContratJoueur">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>10</y>
+             <width>131</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Generer contrat</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="Article1_equipe">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>681</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Le Joueur autorise le Club à utiliser son image dans le cadre des activités promotionnelles,
+ médiatiques et commerciales du Club.</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="Article2_equipe">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>110</y>
+             <width>681</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Le Joueur s'engage à participer aux entraînements et aux matchs,respecter les règlements du Club
+ et de la Ligue, et à ne pas s'engager avec un autre club sans autorisation.</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="Article3_equipe">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>170</y>
+             <width>681</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Tout litige relatif à l'interprétation ou à l'exécution du présent contrat sera soumis à la Commission
+ Juridique de la Fédération ou à défaut, aux tribunaux compétents du ressort du siège du Club.</string>
+           </property>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QCheckBox" name="Nationnal">
+         <property name="geometry">
+          <rect>
+           <x>410</x>
+           <y>135</y>
+           <width>91</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;
+color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>Nationnal</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="voc_nb">
+         <property name="geometry">
+          <rect>
+           <x>260</x>
+           <y>160</y>
+           <width>21</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-image: url(:/interface_icons/micro1.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_7</zorder>
+        <zorder>label_62</zorder>
+        <zorder>fincnt</zorder>
+        <zorder>label_63</zorder>
+        <zorder>nbj</zorder>
+        <zorder>dbcnt</zorder>
+        <zorder>coach</zorder>
+        <zorder>label_64</zorder>
+        <zorder>nome</zorder>
+        <zorder>label_65</zorder>
+        <zorder>label_66</zorder>
+        <zorder>widget_9</zorder>
+        <zorder>tabWidget_4</zorder>
+        <zorder>Nationnal</zorder>
+        <zorder>Ajouter</zorder>
+        <zorder>Normal</zorder>
+        <zorder>Pays</zorder>
+        <zorder>label_58</zorder>
+        <zorder>label_59</zorder>
+        <zorder>label_60</zorder>
+        <zorder>label_61</zorder>
+        <zorder>nbmarquee</zorder>
+        <zorder>nom2</zorder>
+        <zorder>voc_coach</zorder>
+        <zorder>voc_nb</zorder>
+        <zorder>voc_nom</zorder>
+        <zorder>voc_pays</zorder>
        </widget>
        <widget class="QWidget" name="arbitrePage">
         <widget class="QTabWidget" name="tabWidget3">
@@ -3399,7 +3993,7 @@ font: 700 9pt &quot;System&quot;;
                    }</string>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="infoTab">
           <attribute name="title">
