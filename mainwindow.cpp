@@ -123,6 +123,22 @@ void MainWindow::setupArduinoConnection() {
             return;
         }
 
+        Connection conn;
+        if (conn.createconnect()) {
+            QSqlQuery query(conn.getDatabase());
+            query.prepare("SELECT RED_CARD FROM joueur1 WHERE NOM = ?");
+            query.addBindValue(playerName.trimmed());
+
+            if (query.exec() && query.next()) {
+                bool hasRedCard = query.value("RED_CARD").toBool();
+                if (hasRedCard) {
+                    // Add special prefix to trigger buzzer
+                    playerName = " !" + playerName.trimmed();
+                    qDebug() << "Player has red card - buzzer will sound";
+                }
+            }
+        }
+
         QByteArray playerNameBytes = playerName.toUtf8();
         playerNameBytes.append('\n');
         arduino->write_to_arduino(playerNameBytes);
