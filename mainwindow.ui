@@ -559,7 +559,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
         </rect>
        </property>
        <property name="currentIndex">
-        <number>7</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="homePage">
         <widget class="QLabel" name="label_4">
@@ -2850,7 +2850,8 @@ font: 700 9pt &quot;System&quot;;
               </rect>
              </property>
              <property name="styleSheet">
-              <string notr="true">font: 9pt &quot;Terminal&quot;;</string>
+              <string notr="true">font: 9pt &quot;Terminal&quot;;
+color: black;</string>
              </property>
              <property name="text">
               <string>Match Date :</string>
@@ -2866,7 +2867,8 @@ font: 700 9pt &quot;System&quot;;
               </rect>
              </property>
              <property name="styleSheet">
-              <string notr="true">font: 9pt &quot;Terminal&quot;;</string>
+              <string notr="true">font: 9pt &quot;Terminal&quot;;
+color: black;</string>
              </property>
              <property name="text">
               <string>Match Type :</string>
@@ -2882,7 +2884,8 @@ font: 700 9pt &quot;System&quot;;
               </rect>
              </property>
              <property name="styleSheet">
-              <string notr="true">font: 9pt &quot;Terminal&quot;;</string>
+              <string notr="true">font: 9pt &quot;Terminal&quot;;
+color: black;</string>
              </property>
              <property name="text">
               <string>Equipe 1:</string>
@@ -2928,6 +2931,9 @@ font: 700 9pt &quot;System&quot;;
                <width>53</width>
                <height>22</height>
               </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: black;</string>
              </property>
              <item>
               <property name="text">
@@ -3116,6 +3122,9 @@ font: 700 9pt &quot;System&quot;;
                <height>20</height>
               </rect>
              </property>
+             <property name="styleSheet">
+              <string notr="true">color: black;</string>
+             </property>
             </widget>
             <widget class="QComboBox" name="comboBox_match">
              <property name="geometry">
@@ -3125,6 +3134,9 @@ font: 700 9pt &quot;System&quot;;
                <width>111</width>
                <height>22</height>
               </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: black;</string>
              </property>
              <item>
               <property name="text">
@@ -4633,8 +4645,9 @@ color: rgb(0, 0, 0);</string>
           <bool>false</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">
-background-color: rgb(210, 247, 221);
+          <string notr="true">background-color: rgb(210, 247, 221);
+
+
 
 </string>
          </property>
@@ -5476,12 +5489,12 @@ color: rgb(58, 135, 58);</string>
           <rect>
            <x>110</x>
            <y>40</y>
-           <width>751</width>
-           <height>461</height>
+           <width>891</width>
+           <height>481</height>
           </rect>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="widget_4">
           <attribute name="title">
@@ -5979,8 +5992,8 @@ background-color: rgba(70, 130, 120, 255);</string>
             <rect>
              <x>29</x>
              <y>10</y>
-             <width>621</width>
-             <height>401</height>
+             <width>831</width>
+             <height>421</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="statsLayout"/>

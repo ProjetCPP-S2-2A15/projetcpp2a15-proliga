@@ -214,9 +214,3 @@ QChartView* createPositionChart() {
     return chartView;
 }
 
-
-
-
-
-
-

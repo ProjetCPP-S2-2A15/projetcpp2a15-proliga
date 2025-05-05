@@ -177,7 +177,7 @@ QVector<Joueur> Joueur::getJoueurs() {
     QString queryString;
     queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1";
 
-    QSqlQuery query;
+    QSqlQuery query(queryString);
 
     while (query.next()) {
         Joueur j;

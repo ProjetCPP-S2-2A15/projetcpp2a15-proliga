@@ -887,6 +887,11 @@ void MainWindow::deleteMatch()
 void MainWindow::loadRefereesIntoComboBox() {
     QSqlQuery query("SELECT NOM FROM ARBITRES");
 
+    if (!query.exec("SELECT NOM FROM ARBITRES")) {
+           qDebug() << "Query failed (arbitres):" << query.lastError().text();
+           return;
+       }
+
     while (query.next()) {
         QString refereeName = query.value(0).toString();
         ui->comboBox_arbitre1->addItem(refereeName);
@@ -894,6 +899,7 @@ void MainWindow::loadRefereesIntoComboBox() {
         ui->comboBox_arbitre3->addItem(refereeName);
         ui->comboBox_arbitre4->addItem(refereeName);
     }
+
 }
 void MainWindow::handleRandomReferees(int state) {
     bool randomMode = (state == Qt::Checked);
@@ -939,7 +945,7 @@ void MainWindow::handleRandomReferees(int state) {
 //---------------------------------GESTION EQUIPES DANS MATCHES-----------------------------------------------------------------------------------------------------
 
 void MainWindow::loadEquipes() {
-    QSqlQuery query("SELECT NOM_EQUIPE FROM EQUIPES");
+    QSqlQuery query("SELECT NOMEQUIPE FROM EQUIPE");
 
     ui->comboBox_2->clear();
     ui->comboBox_3->clear();
@@ -1020,7 +1026,7 @@ void MainWindow::onCellDoubleClicked(int row, int column)
 
     else if (columnName == "EQUIPE1" || columnName == "EQUIPE2") {
         QStringList teamOptions;
-        QSqlQuery query("SELECT NOM_EQUIPE FROM EQUIPES");
+        QSqlQuery query("SELECT NOMEQUIPE FROM EQUIPE");
 
         while (query.next()) {
             teamOptions << query.value(0).toString();
@@ -1137,19 +1143,20 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
         QDateTime now = QDateTime::currentDateTime();
         QString dateTimeString = ui->historique_table->item(row, 5)->text().trimmed();
 
-        // Lire la date
-        QDateTime matchDateTime = QDateTime::fromString(dateTimeString, "yyyy-MM-dd'T'HH:mm:ss.zzz");
+        // Try multiple formats
+        QDateTime matchDateTime = QDateTime::fromString(dateTimeString, Qt::ISODateWithMs); // yyyy-MM-ddTHH:mm:ss.zzz
+        if (!matchDateTime.isValid())
+            matchDateTime = QDateTime::fromString(dateTimeString, "d/M/yyyy"); // fallback like 5/5/2025
+        if (!matchDateTime.isValid())
+            matchDateTime = QDateTime::fromString(dateTimeString, "dd/MM/yyyy"); // fallback like 05/05/2025
 
         if (!matchDateTime.isValid()) {
             QMessageBox::warning(this, "Erreur", "Format de date invalide pour ce match : " + dateTimeString);
             return;
         }
 
-        // Calculer la différence en secondes
         qint64 secondsDiff = matchDateTime.secsTo(now);
-
-        // Seulement si le match est à moins de 2,5 heures du moment actuel (2,5 h = 9000 secondes)
-        bool allowTracking = (secondsDiff >= 0 && secondsDiff <= 9000);
+        bool allowTracking = (secondsDiff >= 0 && secondsDiff <= 9000); // 2.5 hours
 
         if (allowTracking) {
             QMessageBox msgBox;
@@ -1197,9 +1204,8 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
             }
         }
 
-        // Partie édition manuelle classique
+        // Manual edit
         QString oldScore = ui->historique_table->item(row, col)->text();
-
         QRegularExpression regExp("^\\d+-\\d+$");
         QRegularExpressionValidator validator(regExp, this);
 
@@ -1242,7 +1248,6 @@ void MainWindow::onHistoriqueCellDoubleClicked(int row, int col)
         }
     }
 }
-
 
 
 //--------------------------------------------DESIGN HISTORIQUE-----------------------------------------------------------------------------------------
@@ -3915,8 +3920,8 @@ QString MainWindow::ARD_consulter(const QString &champName)
 //=======ahmed (youfa hne)=============
 
 //======hedi(debut)=============
-void MainWindow::remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString sexe, QString email, QString telephone) {
-    ui->lineEdit_nom->setText(nom);
+void MainWindow::remplirFormulaireArbitre(QString nom, QString prenom, int age, int experience, QString email, QString sexe, QString telephone) {
+    ui->lineEdit_nom_2->setText(nom);
     ui->lineEdit_prenom->setText(prenom);
     ui->lineEdit_age->setValue(age);
     ui->lineEdit_experience->setValue(experience);
@@ -3931,7 +3936,7 @@ void MainWindow::setCurrentArbitreId(int id) {
 
 void MainWindow::on_pushButton_add_clicked()
 {
-    QString nom = ui->lineEdit_nom->text();
+    QString nom = ui->lineEdit_nom_2->text();
     QString prenom = ui->lineEdit_prenom->text();
     int age = ui->lineEdit_age->value();
     int experience = ui->lineEdit_experience->value();
@@ -3975,7 +3980,7 @@ void MainWindow::on_pushButton_update_clicked() {
         return;
     }
 
-    QString nom = ui->lineEdit_nom->text();
+    QString nom = ui->lineEdit_nom_2->text();
     QString prenom = ui->lineEdit_prenom->text();
     int age = ui->lineEdit_age->value();
     int experience = ui->lineEdit_experience->value();
@@ -3984,7 +3989,7 @@ void MainWindow::on_pushButton_update_clicked() {
     QString telephone = ui->lineEdit_telephone->text();
 
     // Call modifier with telephone
-    if (A.modifier(id, nom, prenom, age, experience, sexe, email, telephone)) {
+    if (A.modifier(id, nom, prenom, age, experience, email, sexe, telephone)) {
         QMessageBox::information(this, "Succès", "Arbitre modifié avec succès !");
         A.afficher(ui->tableWidget_arbitres);
     } else {
@@ -4727,8 +4732,8 @@ void MainWindow::on_voc_pays_clicked() {
 
 QString MainWindow::recordText()
 {
-    QString pythonScriptPath = "C:/Users/PC_DELL/Downloads/voc exec/voc.py";
-    QString pythonExecutable = "C:/Python312/python.exe";
+    QString pythonScriptPath = "C:\\Users\\alabe\\Pictures\\metiers avances\\voice\\voc.py";
+    QString pythonExecutable = "C:\\Users\\alabe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe";
 
     QProcess process;
 
@@ -4938,10 +4943,11 @@ void MainWindow::incrementRedCards(const QString &playerName) {
     }
 }
 
+/*
 void MainWindow::refreshStats() {
     int pageIndex = ui->stackedWidget->indexOf(ui->joueurPage);
     QWidget* joueurWidget = ui->stackedWidget->widget(pageIndex);
-    QTabWidget* tabWidget = joueurWidget->findChild<QTabWidget*>("tabWidget");
+    QTabWidget* tabWidget = joueurWidget->findChild<QTabWidget*>("tabWidget_5");
 
     if (tabWidget) {
         int tabIndex = tabWidget->indexOf(ui->statsTab);  // use tabWidget not ui->tabWidget
@@ -4971,6 +4977,54 @@ void MainWindow::refreshStats() {
         }
     } else {
         qDebug() << "joueurTabWidget not found!";
+    }
+}*/
+
+void MainWindow::refreshStats() {
+    // 1. Find the containing widgets
+    int pageIndex = ui->stackedWidget->indexOf(ui->joueurPage);
+    if (pageIndex == -1) {
+        qWarning() << "Player page not found in stacked widget";
+        return;
+    }
+
+    QTabWidget* tabWidget = ui->stackedWidget->widget(pageIndex)->findChild<QTabWidget*>("tabWidget_5");
+    if (!tabWidget) {
+        qWarning() << "Tab widget not found";
+        return;
+    }
+
+    // 2. Clear existing charts
+    QVBoxLayout* statsLayout = ui->statsTab->findChild<QVBoxLayout*>("statsLayout");
+    if (!statsLayout) {
+        qWarning() << "Stats layout not found";
+        return;
+    }
+
+    // Safely clear existing widgets
+    QLayoutItem* item;
+    while ((item = statsLayout->takeAt(0)) != nullptr) {
+        if (QWidget* widget = item->widget()) {
+            // Special handling for QChartView
+            if (auto chartView = qobject_cast<QChartView*>(widget)) {
+                delete chartView->chart(); // Clean up chart first
+            }
+            widget->deleteLater();
+        }
+        delete item;
+    }
+
+    // 3. Create and add new charts
+    try {
+        if (QChartView* chartView = createNationalityChart()) {
+            statsLayout->addWidget(chartView);
+        }
+
+        if (QChartView* positionChartView = createPositionChart()) {
+            statsLayout->addWidget(positionChartView);
+        }
+    } catch (const std::exception& e) {
+        qCritical() << "Chart creation failed:" << e.what();
     }
 }
 

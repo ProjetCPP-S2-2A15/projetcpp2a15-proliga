@@ -87,7 +87,7 @@ bool Arbitre::ajouter() {
     }
 
     QSqlQuery query;
-    query.prepare("INSERT INTO \"C##HEDI\".\"ARBITRE\" (NOM, PRENOM, AGE, EXPERIENCE, SEXE, EMAIL, TELEPHONE) "
+    query.prepare("INSERT INTO ARBITRES (NOM, PRENOM, AGE, EXPERIENCE, SEXE, EMAIL, TELEPHONE) "
                   "VALUES (:nom, :prenom, :age, :experience, :sexe, :email, :telephone)");
 
     query.bindValue(":nom", nom);
@@ -109,7 +109,7 @@ bool Arbitre::ajouter() {
 // Delete a referee
 bool Arbitre::supprimer(int id) {
     QSqlQuery query;
-    query.prepare("DELETE FROM \"C##HEDI\".\"ARBITRE\" WHERE ID_ARBITRE = :id");
+    query.prepare("DELETE FROM ARBITRES WHERE ID_ARBITRE = :id");
     query.bindValue(":id", id);
 
     if (!query.exec()) {
@@ -122,9 +122,9 @@ bool Arbitre::supprimer(int id) {
 }
 
 // Modify a referee
-bool Arbitre::modifier(int id, QString nom, QString prenom, int age, int experience, QString sexe, QString email, QString telephone) {
+bool Arbitre::modifier(int id, QString nom, QString prenom, int age, int experience, QString email, QString sexe, QString telephone) {
     QSqlQuery query;
-    query.prepare("UPDATE \"C##HEDI\".\"ARBITRE\" SET NOM = :nom, PRENOM = :prenom, AGE = :age, "
+    query.prepare("UPDATE ARBITRES SET NOM = :nom, PRENOM = :prenom, AGE = :age, "
                   "EXPERIENCE = :experience, SEXE = :sexe, EMAIL = :email, TELEPHONE = :telephone "
                   "WHERE ID_ARBITRE = :id");
 
@@ -283,7 +283,7 @@ void Arbitre::generateCV(QPainter& painter, const QString& id, const QString& no
 
 void Arbitre::afficher(QTableWidget *tableWidget) {
     QSqlQuery query;
-    query.prepare("SELECT * FROM \"C##HEDI\".\"ARBITRE\"");
+    query.prepare("SELECT * FROM ARBITRES");
 
     if (!query.exec()) {
         qDebug() << "❌ SQL Select Error:" << query.lastError().text();
@@ -320,8 +320,8 @@ void Arbitre::afficher(QTableWidget *tableWidget) {
         QString prenom = query.value(2).toString();
         QString age = query.value(3).toString();
         QString experience = query.value(4).toString();
-        QString sexe = query.value(5).toString();
-        QString email = query.value(6).toString();
+        QString email = query.value(5).toString();
+        QString sexe = query.value(6).toString();
         QString telephone = query.value(7).toString();
 
         // CV button action
@@ -353,8 +353,8 @@ void Arbitre::afficher(QTableWidget *tableWidget) {
                     prenom,
                     age.toInt(),
                     experience.toInt(),
-                    sexe,
                     email,
+                    sexe,
                     telephone
                     );
                 mainWindow->setCurrentArbitreId(id.toInt());
@@ -493,7 +493,7 @@ QString Arbitre::getExperienceStats() {
     stats["16+ ans"] = 0;
 
     QSqlQuery query;
-    query.prepare("SELECT EXPERIENCE FROM \"C##HEDI\".\"ARBITRE\"");
+    query.prepare("SELECT EXPERIENCE FROM ARBITRES");
 
     if (query.exec()) {
         while (query.next()) {
@@ -584,7 +584,7 @@ void Arbitre::sendEmail(const QString &email, const QString &subject, const QStr
 void Arbitre::envoyerConfirmationsArbitres()
 {
     QSqlQuery query;
-    query.prepare("SELECT EMAIL, NOM, PRENOM FROM \"C##HEDI\".\"ARBITRE\" ORDER BY DBMS_RANDOM.VALUE");
+    query.prepare("SELECT EMAIL, NOM, PRENOM FROM ARBITRES ORDER BY DBMS_RANDOM.VALUE");
 
     if (!query.exec()) {
         QMessageBox::critical(nullptr, "Error", "Database query failed: " + query.lastError().text());
