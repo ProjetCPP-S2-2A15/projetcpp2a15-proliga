@@ -13,8 +13,8 @@
 
 Joueur::Joueur() {}
 
-/*
 void Joueur::addJoueur() {
+    /*
     Connection conn;
 
     if (!conn.createconnect()) {
@@ -29,42 +29,8 @@ void Joueur::addJoueur() {
         return;
     }
 
-    QSqlQuery query(db);
-
-    query.prepare("INSERT INTO joueur1 (Nom, Prenom, Date_de_naissance, Pays_origine, Position) "
-                  "VALUES (:Nom, :Prenom, :Date_de_naissance, :Pays_origine, :Position)");
-
-    query.bindValue(":Nom", this->Nom);
-    query.bindValue(":Prenom", this->Prenom);
-    query.bindValue(":Date_de_naissance", this->Date_de_naissance);
-    query.bindValue(":Pays_origine", this->Pays_origine);
-    query.bindValue(":Position", this->Position);
-
-    if (!query.exec()) {
-        qDebug() << "Failed to add Joueur: " << query.lastError().text();
-    } else {
-        qDebug() << "Joueur added successfully!";
-    }
-
-}*/
-
-void Joueur::addJoueur() {
-    Connection conn;
-
-    if (!conn.createconnect()) {
-        qDebug() << "Failed to connect to database!";
-        return;
-    }
-
-    QSqlDatabase db = conn.getDatabase();
-
-    if (!db.isOpen()) {
-        qDebug() << "Database is not open!";
-        return;
-    }
-
-    QSqlQuery query(db);
-
+    QSqlQuery query(db);*/
+    QSqlQuery query;
     // Prepare the SQL query to insert data including the image BLOB
     query.prepare("INSERT INTO joueur1 (Nom, Prenom, Date_de_naissance, Pays_origine, Position, Img) "
                   "VALUES (:Nom, :Prenom, :Date_de_naissance, :Pays_origine, :Position, :Img)");
@@ -95,63 +61,10 @@ void Joueur::addJoueur() {
     }
 }
 
-/*
-void Joueur::readJoueur(QTableWidget *tableWidget) {
-    if (!tableWidget) return;
 
-    Connection conn;
-    if (!conn.createconnect()) {
-        qDebug() << "Failed to connect to database!";
-        return;
-    }
-
-    QSqlDatabase db = conn.getDatabase();
-    if (!db.isOpen()) {
-        qDebug() << "Database is not open!";
-        return;
-    }
-
-    //QSqlQuery query("SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1");
-    QString queryString;
-    if (filter == 1) {
-        // Filter by Name (Order by NOM)
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1 ORDER BY NOM";
-    } else if (filter == 2) {
-        // Filter by Nationality (Order by PAYS_ORIGINE)
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1 ORDER BY PAYS_ORIGINE";
-    } else {
-        // Filter by Position (Order by POSITION)
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1 ORDER BY POSITION";
-    }
-
-    // Create the query using the constructed query string
-    //QSqlQuery query(queryString);
-    QSqlQuery query(queryString, db);
-
-    tableWidget->setRowCount(0);
-    int row = 0;
-
-    while (query.next()) {
-        tableWidget->insertRow(row);
-
-        tableWidget->setItem(row, 0, new QTableWidgetItem(query.value("Nom").toString()));
-        tableWidget->setItem(row, 1, new QTableWidgetItem(query.value("Prenom").toString()));
-        tableWidget->setItem(row, 3, new QTableWidgetItem(query.value("Position").toString()));
-        tableWidget->setItem(row, 2, new QTableWidgetItem(query.value("Date_de_naissance").toDate().toString("yyyy-MM-dd")));
-        tableWidget->setItem(row, 4, new QTableWidgetItem(query.value("Pays_origine").toString()));
-
-        row++;
-    }
-
-    if (query.lastError().isValid()) {
-        qDebug() << "Error reading players:" << query.lastError().text();
-    } else {
-        qDebug() << "Players loaded successfully!";
-    }
-}*/
 
 void Joueur::getListe(QComboBox* liste){
-    Connection conn;
+    /*Connection conn;
     if (!conn.createconnect()) {
         qDebug() << "Failed to connect to database!";
         return;
@@ -161,12 +74,12 @@ void Joueur::getListe(QComboBox* liste){
     if (!db.isOpen()) {
         qDebug() << "Database is not open!";
         return;
-    }
+    }*/
 
     QString queryString;
     queryString = "SELECT NOM FROM joueur1";
 
-    QSqlQuery query(queryString, db);
+    QSqlQuery query;
 
     liste->clear();
 
@@ -181,17 +94,6 @@ void Joueur::getListe(QComboBox* liste){
 void Joueur::readJoueur(QTableWidget *tableWidget) {
     if (!tableWidget) return;
 
-    Connection conn;
-    if (!conn.createconnect()) {
-        qDebug() << "Failed to connect to database!";
-        return;
-    }
-
-    QSqlDatabase db = conn.getDatabase();
-    if (!db.isOpen()) {
-        qDebug() << "Database is not open!";
-        return;
-    }
 
     QString queryString;
     if (filter == 1) {
@@ -202,7 +104,7 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY POSITION";
     }
 
-    QSqlQuery query(queryString, db);
+    QSqlQuery query(queryString);
 
     tableWidget->setColumnCount(9);
     tableWidget->setHorizontalHeaderLabels(QStringList() << "Nom" << "Prenom" << "Date de Naissance" << "Position" << "Pays d'origine" << "Nb_Yellow" << "Red_Card" << "Photo");
@@ -260,7 +162,7 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
 QVector<Joueur> Joueur::getJoueurs() {
     QVector<Joueur> joueurs;
 
-    Connection conn;
+    /*Connection conn;
     if (!conn.createconnect()) {
         qDebug() << "Failed to connect to database!";
         return joueurs;
@@ -270,12 +172,12 @@ QVector<Joueur> Joueur::getJoueurs() {
     if (!db.isOpen()) {
         qDebug() << "Database is not open!";
         return joueurs;
-    }
+    }*/
 
     QString queryString;
     queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE FROM joueur1";
 
-    QSqlQuery query(queryString, db);
+    QSqlQuery query;
 
     while (query.next()) {
         Joueur j;
@@ -305,7 +207,7 @@ void Joueur::deleteJoueur(const QString &nom) {
         return;
     }
 
-    Connection conn;
+    /*Connection conn;
     if (!conn.createconnect()) {
         qDebug() << "Failed to connect to database!";
         return;
@@ -315,9 +217,9 @@ void Joueur::deleteJoueur(const QString &nom) {
     if (!db.isOpen()) {
         qDebug() << "Database is not open!";
         return;
-    }
+    }*/
 
-    QSqlQuery query(db);
+    QSqlQuery query;
     query.prepare("DELETE FROM joueur1 WHERE Nom = :Nom");
     query.bindValue(":Nom", nom);
 
@@ -329,7 +231,7 @@ void Joueur::deleteJoueur(const QString &nom) {
 }
 
 bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate &date, const QString &position, const QString &paysOrigine) {
-    Connection conn;
+    /*Connection conn;
 
     if (!conn.createconnect()) {
         qDebug() << "Failed to connect to database!";
@@ -342,8 +244,8 @@ bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate
         qDebug() << "Database is not open!";
         return false;
     }
-
-    QSqlQuery query(db);
+*/
+    QSqlQuery query;
     query.prepare("UPDATE joueur1 SET Prenom = :prenom, Date_de_naissance = TO_DATE(:date, 'YYYY-MM-DD'), Position = :position, Pays_origine = :paysOrigine WHERE Nom = :nom");
 
     // Bind values
@@ -365,7 +267,7 @@ bool Joueur::updateJoueur(const QString &nom, const QString &prenom, const QDate
 void Joueur::rechercheJoueur(QTableWidget *tableWidget, const QString &nom) {
     if (!tableWidget) return;
 
-    Connection conn;
+    /*Connection conn;
     if (!conn.createconnect()) {
         qDebug() << "Failed to connect to database!";
         return;
@@ -375,12 +277,12 @@ void Joueur::rechercheJoueur(QTableWidget *tableWidget, const QString &nom) {
     if (!db.isOpen()) {
         qDebug() << "Database is not open!";
         return;
-    }
+    }*/
 
     QString trimmedNom = nom.trimmed();
     QString lowerCaseNom = trimmedNom.toLower();
 
-    QSqlQuery query(db);
+    QSqlQuery query;
     QString queryString = QString("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance "
                                   "FROM joueur1 WHERE LOWER(Nom) = LOWER('%1')").arg(lowerCaseNom);
     query.prepare(queryString);
@@ -414,7 +316,7 @@ void Joueur::rechercheJoueur(QTableWidget *tableWidget, const QString &nom) {
 void Joueur::rechercheJoueurFilter(QTableWidget *tableWidget, const QString &arg1) {
     if (!tableWidget) return;
 
-    Connection conn;
+    /*Connection conn;
     if (!conn.createconnect()) {
         qDebug() << "Failed to connect to database!";
         return;
@@ -425,8 +327,8 @@ void Joueur::rechercheJoueurFilter(QTableWidget *tableWidget, const QString &arg
         qDebug() << "Database is not open!";
         return;
     }
-
-    QSqlQuery query(db);
+*/
+    QSqlQuery query;
     QString queryString = "SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueur1";
 
     // Modify query based on selected filter option

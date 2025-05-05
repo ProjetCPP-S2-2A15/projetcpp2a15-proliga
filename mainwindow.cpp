@@ -4812,21 +4812,21 @@ void MainWindow::setupArduinoConnection() {
             return;
         }
 
-        Connection conn;
-        if (conn.createconnect()) {
-            QSqlQuery query(conn.getDatabase());
-            query.prepare("SELECT RED_CARD FROM joueur1 WHERE NOM = ?");
-            query.addBindValue(playerName.trimmed());
 
-            if (query.exec() && query.next()) {
-                bool hasRedCard = query.value("RED_CARD").toBool();
-                if (hasRedCard) {
-                    // Add special prefix to trigger buzzer
-                    playerName = " !" + playerName.trimmed();
-                    qDebug() << "Player has red card - buzzer will sound";
-                }
+
+        QSqlQuery query;
+        query.prepare("SELECT RED_CARD FROM joueur1 WHERE NOM = ?");
+        query.addBindValue(playerName.trimmed());
+
+        if (query.exec() && query.next()) {
+            bool hasRedCard = query.value("RED_CARD").toBool();
+            if (hasRedCard) {
+                // Add special prefix to trigger buzzer
+                playerName = " !" + playerName.trimmed();
+                qDebug() << "Player has red card - buzzer will sound";
             }
         }
+
 
         QByteArray playerNameBytes = playerName.toUtf8();
         playerNameBytes.append('\n');
@@ -4879,16 +4879,16 @@ void MainWindow::handleArduinoData() {
 }
 
 void MainWindow::incrementYellowCards(const QString &playerName) {
-    Connection conn;
+    /*Connection conn;
     if (!conn.createconnect()) {
         qDebug() << "Database connection failed!";
         return;
     }
 
-    QSqlDatabase db = conn.getDatabase();
+    QSqlDatabase db = conn.getDatabase();*/
 
     // First get current yellow card count
-    QSqlQuery getQuery(db);
+    QSqlQuery getQuery;
     getQuery.prepare("SELECT NB_YELLOW, RED_CARD FROM joueur1 WHERE NOM = ?");
     getQuery.addBindValue(playerName);
 
@@ -4900,7 +4900,7 @@ void MainWindow::incrementYellowCards(const QString &playerName) {
     int currentYellows = getQuery.value("NB_YELLOW").toInt();
     int currentReds = getQuery.value("RED_CARD").toInt();
 
-    QSqlQuery updateQuery(db);
+    QSqlQuery updateQuery;
 
     if (currentYellows >= 1) {  // If player will reach 2 yellows after increment
         // Convert 2 yellows to 1 red and reset yellows
@@ -4921,13 +4921,13 @@ void MainWindow::incrementYellowCards(const QString &playerName) {
 }
 
 void MainWindow::incrementRedCards(const QString &playerName) {
-    Connection conn;
+    /*Connection conn;
     if (!conn.createconnect()) {
         qDebug() << "Database connection failed!";
         return;
-    }
+    }*/
 
-    QSqlQuery query(conn.getDatabase());
+    QSqlQuery query;
     query.prepare("UPDATE joueur1 SET RED_CARD = 1, NB_YELLOW = 0 WHERE NOM = ?");
     query.addBindValue(playerName);
 
@@ -5301,7 +5301,7 @@ void MainWindow::exportToPDFJ() {
         if (fileName.isEmpty()) return;  // User canceled
 
         // Step 2: Set up database connection
-        Connection conn;
+        /*Connection conn;
         if (!conn.createconnect()) {
             qDebug() << "Failed to connect to database!";
             return;
@@ -5311,10 +5311,10 @@ void MainWindow::exportToPDFJ() {
         if (!db.isOpen()) {
             qDebug() << "Database is not open!";
             return;
-        }
+        }*/
 
         // Step 3: Fetch data from the database
-        QSqlQuery query(db);
+        QSqlQuery query;
         query.prepare("SELECT Nom, Prenom, Pays_origine, Position, Date_de_naissance FROM joueur1");
 
         if (!query.exec()) {
