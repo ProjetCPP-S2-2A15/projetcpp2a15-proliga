@@ -2211,13 +2211,13 @@ void MainWindow::on_MsL_currentIndexChanged(const QString &selectedText) {
 
 void MainWindow::displayCoupeBracket(const QString& champname) {
     QSqlQuery query;
-    QString sql = QString("SELECT E1.NOM_EQUIPE AS HomeTeam, E2.NOM_EQUIPE AS VisitorTeam, "
+    QString sql = QString("SELECT E1.NOMEQUIPE AS HomeTeam, E2.NOMEQUIPE AS VisitorTeam, "
                           "M.DATE_MATCH AS MatchDate, M.ID_MATCH AS MatchID, M.SCORE AS MatchScore, "
                           "M.TYPE AS MatchType "
-                          "FROM MALEK.MATCHES M "
-                          "JOIN MALEK.JOUER J ON M.ID_MATCH = J.ID_MATCH "
-                          "JOIN MALEK.EQUIPES E1 ON J.ID_EQUIPEH = E1.ID_EQUIPE "
-                          "JOIN MALEK.EQUIPES E2 ON J.ID_EQUIPEV = E2.ID_EQUIPE "
+                          "FROM MATCHESC M "
+                          "JOIN JOUER J ON M.ID_MATCH = J.ID_MATCH "
+                          "JOIN EQUIPE E1 ON J.ID_EQUIPEH = E1.IDEQUIPE "
+                          "JOIN EQUIPE E2 ON J.ID_EQUIPEV = E2.IDEQUIPE "
                           "WHERE M.NOM_CHAMP = :champname "
                           "ORDER BY M.DATE_MATCH");
 
@@ -2345,11 +2345,11 @@ void MainWindow::loadLigueTable(const QString& nomChamp) {
 
 
     query.prepare("SELECT M.ID_MATCH, M.SCORE, J.ID_EQUIPEH, J.ID_EQUIPEV, "
-                  "EH.NOM_EQUIPE AS HOMETEAM, EV.NOM_EQUIPE AS AWAYTEAM "
-                  "FROM MATCHES M "
+                  "EH.NOMEQUIPE AS HOMETEAM, EV.NOMEQUIPE AS AWAYTEAM "
+                  "FROM MATCHESC M "
                   "JOIN JOUER J ON M.ID_MATCH = J.ID_MATCH "
-                  "JOIN EQUIPES EH ON J.ID_EQUIPEH = EH.ID_EQUIPE "
-                  "JOIN EQUIPES EV ON J.ID_EQUIPEV = EV.ID_EQUIPE "
+                  "JOIN EQUIPE EH ON J.ID_EQUIPEH = EH.IDEQUIPE "
+                  "JOIN EQUIPE EV ON J.ID_EQUIPEV = EV.IDEQUIPE "
                   "WHERE M.NOM_CHAMP = 'LALIGAB' AND M.SCORE IS NOT NULL");
     //query.bindValue(":champ", trimmedChamp);
 
@@ -2536,37 +2536,37 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
         QString leagueWinnerQuery = R"(
                     SELECT * FROM (
                         SELECT
-                            E.NOM_EQUIPE,
+                            E.NOMEQUIPE,
                             SUM(
                                 CASE
-                                    WHEN (J.ID_EQUIPEH = E.ID_EQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1)) >
+                                    WHEN (J.ID_EQUIPEH = E.IDEQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1)) >
                                                                       TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1))) THEN 3
-                                    WHEN (J.ID_EQUIPEV = E.ID_EQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1)) >
+                                    WHEN (J.ID_EQUIPEV = E.IDEQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1)) >
                                                                       TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1))) THEN 3
                                     WHEN (TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1)) =
                                           TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1)) AND
-                                         (J.ID_EQUIPEH = E.ID_EQUIPE OR J.ID_EQUIPEV = E.ID_EQUIPE)) THEN 1
+                                         (J.ID_EQUIPEH = E.IDEQUIPE OR J.ID_EQUIPEV = E.IDEQUIPE)) THEN 1
                                     ELSE 0
                                 END
                             ) AS POINTS,
 
                             SUM(
                                 CASE
-                                    WHEN J.ID_EQUIPEH = E.ID_EQUIPE THEN
+                                    WHEN J.ID_EQUIPEH = E.IDEQUIPE THEN
                                         TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1)) -
                                         TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1))
-                                    WHEN J.ID_EQUIPEV = E.ID_EQUIPE THEN
+                                    WHEN J.ID_EQUIPEV = E.IDEQUIPE THEN
                                         TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1)) -
                                         TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1))
                                     ELSE 0
                                 END
                             ) AS GOAL_DIFFERENCE
 
-                        FROM EQUIPES E
-                        JOIN JOUER J ON E.ID_EQUIPE = J.ID_EQUIPEH OR E.ID_EQUIPE = J.ID_EQUIPEV
-                        JOIN MATCHES M ON J.ID_MATCH = M.ID_MATCH
+                        FROM EQUIPE E
+                        JOIN JOUER J ON E.IDEQUIPE = J.ID_EQUIPEH OR E.IDEQUIPE = J.ID_EQUIPEV
+                        JOIN MATCHESC M ON J.ID_MATCH = M.ID_MATCH
                         WHERE M.NOM_CHAMP = :nomChamp
-                        GROUP BY E.NOM_EQUIPE
+                        GROUP BY E.NOMEQUIPE
                         ORDER BY POINTS DESC, GOAL_DIFFERENCE DESC
                     )
                     WHERE ROWNUM = 1
@@ -2575,7 +2575,7 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
         query.bindValue(":nomChamp", nomChamp);
 
         if (query.exec() && query.next()) {
-            winner = query.value("NOM_EQUIPE").toString();
+            winner = query.value("NOMEQUIPE").toString();
         } else {
             qDebug() << "Ligue Winner Query failed: " << query.lastError();
         }
@@ -2584,17 +2584,17 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
         QString bestAttackQuery = R"(
             SELECT * FROM (
                 SELECT
-                    E.NOM_EQUIPE,
+                    E.NOMEQUIPE,
                     SUM(CASE
-                            WHEN J.ID_EQUIPEH = E.ID_EQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1))
-                            WHEN J.ID_EQUIPEV = E.ID_EQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1))
+                            WHEN J.ID_EQUIPEH = E.IDEQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1))
+                            WHEN J.ID_EQUIPEV = E.IDEQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1))
                             ELSE 0
                         END) AS TOTAL_GOALS
-                FROM EQUIPES E
-                JOIN JOUER J ON E.ID_EQUIPE = J.ID_EQUIPEH OR E.ID_EQUIPE = J.ID_EQUIPEV
-                JOIN MATCHES M ON J.ID_MATCH = M.ID_MATCH
+                FROM EQUIPE E
+                JOIN JOUER J ON E.IDEQUIPE = J.ID_EQUIPEH OR E.IDEQUIPE = J.ID_EQUIPEV
+                JOIN MATCHESC M ON J.ID_MATCH = M.ID_MATCH
                 WHERE M.NOM_CHAMP = :nomChamp
-                GROUP BY E.NOM_EQUIPE
+                GROUP BY E.NOMEQUIPE
                 ORDER BY TOTAL_GOALS DESC
             )
             WHERE ROWNUM = 1
@@ -2603,7 +2603,7 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
         query.bindValue(":nomChamp", nomChamp);
 
         if (query.exec() && query.next()) {
-            winner = query.value("NOM_EQUIPE").toString();
+            winner = query.value("NOMEQUIPE").toString();
         } else {
             qDebug() << "Best Attack Query failed: " << query.lastError();
         }
@@ -2613,17 +2613,17 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
     QString bestDefenseQuery = R"(
         SELECT * FROM (
             SELECT
-                E.NOM_EQUIPE,
+                E.NOMEQUIPE,
                 SUM(CASE
-                        WHEN J.ID_EQUIPEH = E.ID_EQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1))
-                        WHEN J.ID_EQUIPEV = E.ID_EQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1))
+                        WHEN J.ID_EQUIPEH = E.IDEQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1))
+                        WHEN J.ID_EQUIPEV = E.IDEQUIPE THEN TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1))
                         ELSE 0
                     END) AS GOALS_CONCEDED
-            FROM EQUIPES E
-            JOIN JOUER J ON E.ID_EQUIPE = J.ID_EQUIPEH OR E.ID_EQUIPE = J.ID_EQUIPEV
-            JOIN MATCHES M ON J.ID_MATCH = M.ID_MATCH
+            FROM EQUIPE E
+            JOIN JOUER J ON E.IDEQUIPE = J.ID_EQUIPEH OR E.IDEQUIPE = J.ID_EQUIPEV
+            JOIN MATCHESC M ON J.ID_MATCH = M.ID_MATCH
             WHERE M.NOM_CHAMP = :nomChamp
-            GROUP BY E.NOM_EQUIPE
+            GROUP BY E.NOMEQUIPE
             ORDER BY GOALS_CONCEDED ASC
         )
         WHERE ROWNUM = 1
@@ -2634,7 +2634,7 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
     QString bestDefense = "Unknown";
 
     if (query.exec() && query.next()) {
-        bestDefense = query.value("NOM_EQUIPE").toString();
+        bestDefense = query.value("NOMEQUIPE").toString();
     } else {
         qDebug() << "Best Defense Query failed: " << query.lastError();
     }
@@ -2643,17 +2643,17 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
     QString cleanSheetsQuery = R"(
                 SELECT * FROM (
                     SELECT
-                        E.NOM_EQUIPE,
+                        E.NOMEQUIPE,
                         COUNT(DISTINCT M.ID_MATCH) AS CLEAN_SHEETS
-                    FROM EQUIPES E
-                    JOIN JOUER J ON E.ID_EQUIPE = J.ID_EQUIPEH OR E.ID_EQUIPE = J.ID_EQUIPEV
-                    JOIN MATCHES M ON J.ID_MATCH = M.ID_MATCH
+                    FROM EQUIPE E
+                    JOIN JOUER J ON E.IDEQUIPE = J.ID_EQUIPEH OR E.IDEQUIPE = J.ID_EQUIPEV
+                    JOIN MATCHESC M ON J.ID_MATCH = M.ID_MATCH
                     WHERE M.NOM_CHAMP = 'LALIGAB'
                       AND (
-                          (J.ID_EQUIPEH = E.ID_EQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1)) = 0) OR
-                          (J.ID_EQUIPEV = E.ID_EQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1)) = 0)
+                          (J.ID_EQUIPEH = E.IDEQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, INSTR(M.SCORE, '-') + 1)) = 0) OR
+                          (J.ID_EQUIPEV = E.IDEQUIPE AND TO_NUMBER(SUBSTR(M.SCORE, 1, INSTR(M.SCORE, '-') - 1)) = 0)
                       )
-                    GROUP BY E.NOM_EQUIPE
+                    GROUP BY E.NOMEQUIPE
                     ORDER BY CLEAN_SHEETS DESC
                 ) CLEAN_STATS
                 WHERE ROWNUM = 1;
@@ -2664,7 +2664,7 @@ void MainWindow::displayCompetitionStats(const QString& nomChamp)
     QString cleanSheets = "Unknown";
 
     if (query.exec() && query.next()) {
-        cleanSheets = query.value("NOM_EQUIPE").toString();
+        cleanSheets = query.value("NOMEQUIPE").toString();
     } else {
         qDebug() << "Clean Sheets Query failed: " << query.lastError();
     }

@@ -559,7 +559,7 @@ background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb
         </rect>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="homePage">
         <widget class="QLabel" name="label_4">
@@ -3005,6 +3005,9 @@ color: black;</string>
                <height>16</height>
               </rect>
              </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
             </widget>
             <widget class="QLabel" name="label_23_match">
              <property name="geometry">
@@ -3079,6 +3082,9 @@ color: black;</string>
                <height>16</height>
               </rect>
              </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
             </widget>
             <widget class="QComboBox" name="comboBox_arbitre3">
              <property name="geometry">
@@ -3089,6 +3095,9 @@ color: black;</string>
                <height>16</height>
               </rect>
              </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
             </widget>
             <widget class="QComboBox" name="comboBox_arbitre4">
              <property name="geometry">
@@ -3098,6 +3107,9 @@ color: black;</string>
                <width>101</width>
                <height>16</height>
               </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
              </property>
             </widget>
             <widget class="QCheckBox" name="random_arbitre_match">
@@ -3295,10 +3307,10 @@ color: black;</string>
           <widget class="QComboBox" name="listChamp_3">
            <property name="geometry">
             <rect>
-             <x>490</x>
-             <y>110</y>
-             <width>91</width>
-             <height>20</height>
+             <x>450</x>
+             <y>100</y>
+             <width>101</width>
+             <height>31</height>
             </rect>
            </property>
            <property name="styleSheet">
@@ -3313,24 +3325,28 @@ color: black;</string>
           <widget class="QCalendarWidget" name="CW">
            <property name="geometry">
             <rect>
-             <x>450</x>
+             <x>440</x>
              <y>140</y>
-             <width>171</width>
-             <height>151</height>
+             <width>191</width>
+             <height>191</height>
             </rect>
            </property>
           </widget>
           <widget class="QPushButton" name="CBT">
            <property name="geometry">
             <rect>
-             <x>510</x>
-             <y>300</y>
-             <width>81</width>
-             <height>18</height>
+             <x>560</x>
+             <y>100</y>
+             <width>41</width>
+             <height>20</height>
             </rect>
            </property>
            <property name="text">
-            <string>Championnats</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="img.qrc">
+             <normaloff>:/interface_icons/showarduino.png</normaloff>:/interface_icons/showarduino.png</iconset>
            </property>
           </widget>
          </widget>
