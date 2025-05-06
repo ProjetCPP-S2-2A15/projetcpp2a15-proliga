@@ -536,7 +536,65 @@ ui->random_arbitre_match->setStyleSheet(
     "}"
 );
 
+    ui->CW->setStyleSheet(
+        "QCalendarWidget {"
+        "    background-color: white;"
+        "    border: 1px solid #ccc;"
+        "    color: black;"
+        "    font-size: 14px;"
+        "}"
+        "QCalendarWidget QToolButton {"
+        "    background-color: transparent;"
+        "    color: black;"
+        "    margin: 5px;"
+        "    font-weight: bold;"
+        "}"
+        "QCalendarWidget QToolButton:hover {"
+        "    background-color: #56657380;"
+        "}"
+        "QCalendarWidget QMenu {"
+        "    background-color: white;"
+        "    color: black;"
+        "}"
+        "QCalendarWidget QSpinBox {"
+        "    margin: 5px;"
+        "    background: white;"
+        "    color: black;"
+        "}"
+        "QCalendarWidget QSpinBox::up-button, QCalendarWidget QSpinBox::down-button {"
+        "    background: #ccc;"
+        "}"
+        "QCalendarWidget QAbstractItemView {"
+        "    background-color: rgb(239, 239, 239);"
+        "    selection-background-color: rgb(51, 217, 153);"
+        "    selection-color: black;"
+        "    gridline-color: #ccc;"
+        "}"
+        "QCalendarWidget QWidget#qt_calendar_navigationbar {"
+        "    background-color: white;"
+        "}"
+        );
 
+
+
+    ui->CBT->setStyleSheet(
+        "QPushButton {"
+        "    background-color: rgb(239, 239, 239);"
+        "    color: black;"
+        "    border: 1px solid #ccc;"
+        "    border-radius: 4px;"
+        "    padding: 2px 6px;"           // Reduced padding
+        "    font-size: 8px;"            // Smaller text
+        "    font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #56657380;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: rgb(51, 217, 153);"
+        "    color: black;"
+        "}"
+        );
 
 
 }

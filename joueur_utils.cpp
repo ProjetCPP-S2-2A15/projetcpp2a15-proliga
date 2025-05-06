@@ -49,6 +49,13 @@ void createJoueurFromUI(MainWindow *mainWin) {
         qDebug() << "PositionInput not found!";
     }
 
+    QComboBox* NomEquipeComboBox = joueurWidget->findChild<QComboBox*>("EquipeInput");
+    if (NomEquipeComboBox) {
+        j.setNom_Equipe(NomEquipeComboBox->currentText());
+    } else {
+        qDebug() << "PositionInput not found!";
+    }
+
     QDateEdit* dsInput = joueurWidget->findChild<QDateEdit*>("dsInput");
     if (dsInput){
         j.setDateDeNaissance(dsInput->date());

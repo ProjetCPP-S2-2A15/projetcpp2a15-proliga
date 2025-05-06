@@ -244,6 +244,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->dsInput, &QDateEdit::dateChanged, this, &MainWindow::validateInputsJ);
     connect(ui->Img_pathInput, &QLineEdit::textChanged, this, &MainWindow::validateInputsJ);
 
+    populateEquipeComboBox();
+
     //read joueur
     Joueur j;
 
@@ -5051,7 +5053,7 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
 
     // Clear previous widgets in column 6
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 8);
+        tableWidgetPlayers->removeCellWidget(row, 9);
     }
 
     // Add action buttons (Delete & Update)
@@ -5085,7 +5087,7 @@ void MainWindow::setupTableWithDeleteButtons(QTableWidget* tableWidgetPlayers) {
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 8, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 9, buttonContainer);
     }
 }
 
@@ -5105,7 +5107,7 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
 
     // Clear previous widgets in column 5 (Delete and Update buttons)
     for (int row = 0; row < rowCount; ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 8);
+        tableWidgetPlayers->removeCellWidget(row, 9);
     }
 
     // Add action buttons (Delete & Update)
@@ -5141,7 +5143,7 @@ void MainWindow::setupTableWithDeleteButtons2(QTableWidget* tableWidgetPlayers, 
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 8, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 9, buttonContainer);
     }
 }
 
@@ -5159,7 +5161,7 @@ void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, 
 
     // Clear previous widgets in column 6
     for (int row = 0; row < tableWidgetPlayers->rowCount(); ++row) {
-        tableWidgetPlayers->removeCellWidget(row, 8);
+        tableWidgetPlayers->removeCellWidget(row, 9);
     }
 
     // Add action buttons (Delete & Update)
@@ -5193,9 +5195,27 @@ void MainWindow::setupTableWithDeleteButtons3(QTableWidget* tableWidgetPlayers, 
         buttonContainer->setLayout(layout);
 
         // Insert the container widget into the 6th column (index 5)
-        tableWidgetPlayers->setCellWidget(row, 8, buttonContainer);
+        tableWidgetPlayers->setCellWidget(row, 9, buttonContainer);
     }
 }
+
+void MainWindow::populateEquipeComboBox()
+{
+    // Clear existing items
+    ui->EquipeInput->clear();
+
+    // Query the database for equipe names
+    QSqlQuery query;
+    if (query.exec("SELECT NOMEQUIPE FROM equipe")) {
+        while (query.next()) {
+            QString equipeName = query.value(0).toString();
+            ui->EquipeInput->addItem(equipeName);
+        }
+    } else {
+        qDebug() << "Error fetching equipe names:" << query.lastError().text();
+    }
+}
+
 
 void MainWindow::validateInputsJ() {
     bool allValid = true;
@@ -5344,6 +5364,24 @@ void MainWindow::validateInputsJ() {
                 "font-weight: bold; "
                 "padding: 2px; ");
         }
+
+        //validate equipe
+        if (ui->EquipeInput->currentText().trimmed().isEmpty()) {
+                ui->EquipeError->setText("invalide !");
+                ui->EquipeError->setStyleSheet(
+                    "color: #D32F2F; "
+                    "font-size: 10px; "
+                    "font-weight: bold; "
+                    "padding: 2px; ");
+                allValid = false;
+            } else {
+                ui->EquipeError->setText("valide");
+                ui->EquipeError->setStyleSheet(
+                    "color: #2E7D32; "
+                    "font-size: 10px; "
+                    "font-weight: bold; "
+                    "padding: 2px; ");
+            }
 
         // Enable the button only if all inputs are valid
         ui->AjouterButton->setEnabled(allValid);

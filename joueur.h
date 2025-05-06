@@ -28,6 +28,7 @@ public:
     void setImgPath(const QString &imgPath) { ImgPath = imgPath; }
     void setSalaire(float s) { salaire = s; }
     void setFilter(int x) { filter = x; }
+    void setNom_Equipe(const QString &nom_Equipe) { Nom_Equipe=nom_Equipe; }
 
     // Getters
     QString getNom() const { return Nom; }
@@ -36,6 +37,7 @@ public:
     QString getPaysOrigine() const { return Pays_origine; }
     QString getPosition() const { return Position; }
     QString getImgPath() const { return ImgPath; }
+    QString getNom_Equipe() const { return Nom_Equipe; }
     float getSalaire() const { return salaire; }
 
 
@@ -47,6 +49,7 @@ private:
     QString Pays_origine;
     QString Position;
     QString ImgPath;
+    QString Nom_Equipe;
     float salaire;
     int filter = 1;
 };

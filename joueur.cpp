@@ -32,8 +32,8 @@ void Joueur::addJoueur() {
     QSqlQuery query(db);*/
     QSqlQuery query;
     // Prepare the SQL query to insert data including the image BLOB
-    query.prepare("INSERT INTO joueur1 (Nom, Prenom, Date_de_naissance, Pays_origine, Position, Img) "
-                  "VALUES (:Nom, :Prenom, :Date_de_naissance, :Pays_origine, :Position, :Img)");
+    query.prepare("INSERT INTO joueur1 (Nom, Prenom, Date_de_naissance, Pays_origine, Position, Img, NOMEQUIPE) "
+                  "VALUES (:Nom, :Prenom, :Date_de_naissance, :Pays_origine, :Position, :Img, :NOMEQUIPE)");
 
     // Bind values for other fields
     query.bindValue(":Nom", this->Nom);
@@ -41,6 +41,7 @@ void Joueur::addJoueur() {
     query.bindValue(":Date_de_naissance", this->Date_de_naissance);
     query.bindValue(":Pays_origine", this->Pays_origine);
     query.bindValue(":Position", this->Position);
+    query.bindValue(":NOMEQUIPE", this->Nom_Equipe);
 
     // Read the image from the file path and bind it as a BLOB
     QString imagePath = this->ImgPath;  // Assuming Img_pathInput contains the path to the image
@@ -97,17 +98,17 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
 
     QString queryString;
     if (filter == 1) {
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY NOM";
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, NOMEQUIPE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY NOM";
     } else if (filter == 2) {
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY PAYS_ORIGINE";
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, NOMEQUIPE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY PAYS_ORIGINE";
     } else {
-        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY POSITION";
+        queryString = "SELECT NOM, PRENOM, PAYS_ORIGINE, POSITION, DATE_DE_NAISSANCE, NOMEQUIPE, IMG, NB_YELLOW, RED_CARD FROM joueur1 ORDER BY POSITION";
     }
 
     QSqlQuery query(queryString);
 
-    tableWidget->setColumnCount(9);
-    tableWidget->setHorizontalHeaderLabels(QStringList() << "Nom" << "Prenom" << "Date de Naissance" << "Position" << "Pays d'origine" << "Nb_Yellow" << "Red_Card" << "Photo");
+    tableWidget->setColumnCount(10);
+    tableWidget->setHorizontalHeaderLabels(QStringList() << "Nom" << "Prenom" << "Date de Naissance" << "Position" << "Pays d'origine" << "Nom_Equipe" << "Nb_Yellow" << "Red_Card" << "Photo");
     tableWidget->setRowCount(0);
 
     int row = 0;
@@ -120,8 +121,9 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         tableWidget->setItem(row, 2, new QTableWidgetItem(query.value("Date_de_naissance").toDate().toString("yyyy-MM-dd")));
         tableWidget->setItem(row, 3, new QTableWidgetItem(query.value("Position").toString()));
         tableWidget->setItem(row, 4, new QTableWidgetItem(query.value("PAYS_ORIGINE").toString()));
-        tableWidget->setItem(row, 5, new QTableWidgetItem(query.value("Nb_Yellow").toString()));
-        tableWidget->setItem(row, 6, new QTableWidgetItem(query.value("Red_Card").toString()));
+        tableWidget->setItem(row, 5, new QTableWidgetItem(query.value("NOMEQUIPE").toString()));
+        tableWidget->setItem(row, 6, new QTableWidgetItem(query.value("Nb_Yellow").toString()));
+        tableWidget->setItem(row, 7, new QTableWidgetItem(query.value("Red_Card").toString()));
 
         // 🖼️ Load image
         QByteArray imageData = query.value("IMG").toByteArray();
@@ -140,11 +142,11 @@ void Joueur::readJoueur(QTableWidget *tableWidget) {
         }
 
         // Set the image label in the table
-        tableWidget->setCellWidget(row, 7, imageLabel);
+        tableWidget->setCellWidget(row, 8, imageLabel);
 
         // Optional: Adjust row height and column width
         tableWidget->setRowHeight(row, 100);
-        tableWidget->setColumnWidth(7, 100);
+        tableWidget->setColumnWidth(8, 100);
 
         row++;
 

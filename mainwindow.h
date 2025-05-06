@@ -102,6 +102,7 @@ public:
     void handleArduinoData();
     void incrementYellowCards(const QString &playerName);
     void incrementRedCards(const QString &playerName);
+    void populateEquipeComboBox();
 
 
 
